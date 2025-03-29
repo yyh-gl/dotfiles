@@ -7,3 +7,6 @@
 [submodule "depended-repositories/prezto"]
 	path = depended-repositories/prezto
 	url = git@github.com:sorin-ionescu/prezto.git
+[submodule "depended-repositories/scripts"]
+	path = depended-repositories/scripts
+	url = git@github.com:yyh-gl/scripts.git

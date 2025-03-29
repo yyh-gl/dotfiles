@@ -30,8 +30,8 @@ export GOPATH=$HOME/go/1.24.0
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 
-## TODO: scripts
-export PATH=$HOME/workspaces/github.com/yyh-gl/Shellscript:$PATH
+## scripts
+export PATH=$HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/scripts:$PATH
 
 ## JDK
 # 使用したいJDKのバージョンを指定すること
