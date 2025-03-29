@@ -26,12 +26,12 @@ export LANG="`defaults read -g AppleLocale | sed 's/@.*$//g'`.UTF-8"
 export EDITOR=emacs VISUAL=emacs
 
 ## Go
-export GOPATH=$HOME/github.com/yyh-gl/Go/1.24.0
+export GOPATH=$HOME/go/1.24.0
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 
-## scripts
-export PATH=$HOME/github.com/yyh-gl/Shellscript:$PATH
+## TODO: scripts
+export PATH=$HOME/workspaces/github.com/yyh-gl/Shellscript:$PATH
 
 ## JDK
 # 使用したいJDKのバージョンを指定すること
@@ -202,8 +202,8 @@ alias my='cd $HOME/Desktop/hobby/00_Engineering/00_my-mac/'
 alias study='cd $HOME/GoogleDrive/01_メイン同期フォルダ/00_Engineering/01_StudyMeeting/'
 alias job='cd $HOME/GoogleDrive/01_メイン同期フォルダ/00_Engineering/03_JobChange/'
 alias google='cd $HOME/GoogleDrive/'
-alias blog='cd $HOME/github.com/yyh-gl/tech-blog/'
-alias api='cd $HOME/github.com/yyh-gl/hobigon-golang-api-server/'
-alias play='cd $HOME/github.com/yyh-gl/go-playground/'
-alias hobigon='cd $HOME/github.com/yyh-gl/hobigon/'
-alias dot='$HOME/github.com/yyh-gl/config/dotfiles'
+alias blog='cd $HOME/workspaces/github.com/yyh-gl/tech-blog/'
+alias api='cd $HOME/workspaces/github.com/yyh-gl/hobigon-golang-api-server/'
+alias play='cd $HOME/workspaces/github.com/yyh-gl/go-playground/'
+alias hobigon='cd $HOME/workspaces/github.com/yyh-gl/hobigon/'
+alias dot='$HOME/workspaces/github.com/yyh-gl/config/dotfiles'
