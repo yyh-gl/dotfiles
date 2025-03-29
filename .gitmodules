@@ -4,3 +4,6 @@
 [submodule "depended-repositories/go-installer"]
 	path = depended-repositories/go-installer
 	url = git@github.com:yyh-gl/go-installer.git
+[submodule "depended-repositories/prezto"]
+	path = depended-repositories/prezto
+	url = git@github.com:sorin-ionescu/prezto.git

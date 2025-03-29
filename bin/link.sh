@@ -11,6 +11,8 @@ ln -s ./zpreztorc $HOME/
 ln -s ./zprofile $HOME/
 ln -s ./zshenv $HOME/
 ln -s ./zshrc $HOME/
+mkdir $HOME/.zprezto
+ln -s ./depended-repositories/prezto/init.zsh $HOME/.zprezto
 
 ## .config
 mkdir -p $HOME/.config
