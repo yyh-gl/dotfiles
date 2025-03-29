@@ -5,7 +5,6 @@
 echo '[Rectangle] Import RectangleConfig.json'
 echo '[iTerm2] Import Profiles.json'
 
-git clone git@github.com:yyh-gl/go-installer.git
 echo '[Go] Install Go'
 
 curl \

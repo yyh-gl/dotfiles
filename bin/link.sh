@@ -4,7 +4,6 @@
 
 # Link to config
 ## Zsh
-git clone https://github.com/sorin-ionescu/prezto
 ln -s ./zlogin $HOME/
 ln -s ./zlogout $HOME/
 ln -s ./zpreztorc $HOME/
