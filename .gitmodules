@@ -1,0 +1,6 @@
+[submodule "depended-repositories/dotfiles-private"]
+	path = depended-repositories/dotfiles-private
+	url = git@github.com:yyh-gl/dotfiles-private.git
+[submodule "depended-repositories/go-installer"]
+	path = depended-repositories/go-installer
+	url = git@github.com:yyh-gl/go-installer.git
