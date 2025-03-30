@@ -27,3 +27,7 @@ mkdir -p $HOME/workspaces/github.com/yyh-gl
 git clone --recurse-submodules git@github.com:yyh-gl/dotfiles.git $HOME/workspaces/github.com/yyh-gl/dotfiles
 rm -rf $HOME/.ssh
 ln -s $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/.ssh $HOME/
+
+## Google Drive
+read STDIN'?Please setup Google Drive. If you complete to setup. -> [ENTER]: '
+mkdir $HOME/Desktop/hobby
