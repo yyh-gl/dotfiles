@@ -36,9 +36,8 @@ echo "\n<< Uptime >>" &&
 echo -n " -> " &&
 uptime &&
 
-# TODO: 対応
 ## 記念日カウント
-ruby ~/workspaces/Ruby/CelebrateAnniversary.rb
+./celebrate-anniversary.sh
 
 ## ログイン時メッセージ
 echo &&

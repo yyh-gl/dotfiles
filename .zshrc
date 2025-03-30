@@ -159,9 +159,9 @@ back() {
 ##############################################
 
 # ショートカット作成プログラム
-alias mksh='makeShortcut.sh'
+alias mksh='make-shortcut.sh'
 # シンボリックリンク作成プログラム
-alias mksl='makeSymbolicLink.sh'
+alias mksl='make-symbolic-link.sh'
 
 ##############################################
 # エイリアス
