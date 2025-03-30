@@ -5,13 +5,6 @@
 echo '[Rectangle] Import RectangleConfig.json'
 echo '[iTerm2] Import Profiles.json'
 
-echo '[Go] Install Go'
-
-curl \
-  -L https://download.oracle.com/java/24/latest/jdk-24_macos-aarch64_bin.tar.gz \
-  -o $HOME/jvm/jdk-24
-echo '[JVM] Install JDK'
-
 ## Google Drive
 read STDIN'?Please setup Google Drive. If you complete to setup. -> [ENTER]: '
 mkdir $HOME/Desktop/hobby
