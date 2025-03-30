@@ -7,6 +7,7 @@ help: # Help me
 
 .PHONY: build
 build: # Setup my macOS
+	@echo "Setup mode: ${MODE}"
 	./bin/init.sh
 	./bin/brew.sh
 	./bin/link.sh
