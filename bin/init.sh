@@ -19,10 +19,10 @@ xcode-select --install
 #   5. Setup of SSH (full)
 read STDIN'?Please setup 1Password. If you complete to setup. -> [ENTER]: '
 mkdir $HOME/.ssh
-cat <<EOF
+cat <<EOF > $HOME/.ssh/config
 Host *
   IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-EOF > $HOME/.ssh/config
+EOF
 mkdir -p $HOME/workspaces/github.com/yyh-gl
 git clone --recurse-submodules git@github.com:yyh-gl/dotfiles.git $HOME/workspaces/github.com/yyh-gl/dotfiles
 rm -rf $HOME/.ssh
