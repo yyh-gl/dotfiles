@@ -85,8 +85,8 @@ if [ -f '/Users/yyh-gl/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/yy
 # ブランチ一覧表示からの git checkout 機能
 gico() {
   local branches branch
-  branches=$(git branch -vv) &&
-  branch=$(echo "$branches" | fzf +m) &&
+  branches=$(git branch -vv)
+  branch=$(echo "$branches" | fzf +m)
   # sed で現在選択中を意味する * を削除
   git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
 }

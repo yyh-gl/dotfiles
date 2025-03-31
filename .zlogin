@@ -23,23 +23,23 @@ if (( $+commands[fortune] )); then
 fi
 
 ## IPアドレスを表示
-echo "\n<< Used IP address >>" &&
-echo -n " -> " &&
-ipconfig getifaddr en0 || echo "No Connection" &&
+echo "\n<< Used IP address >>"
+echo -n " -> "
+ipconfig getifaddr en0 || echo "No Connection"
 
 ## ディスク使用度
-echo "\n<< Machine Used >>" &&
-df -h . &&
+echo "\n<< Machine Used >>"
+df -h .
 
 ## 起動時間
-echo "\n<< Uptime >>" &&
-echo -n " -> " &&
-uptime &&
+echo "\n<< Uptime >>"
+echo -n " -> "
+uptime
 
 ## 記念日カウント
 ./celebrate-anniversary.sh
 
 ## ログイン時メッセージ
-echo &&
-# figlet -f cosmic welcome &&
+echo
+# figlet -f cosmic welcome
 figlet -f banner3-D -w 300 Welcome
