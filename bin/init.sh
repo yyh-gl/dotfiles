@@ -13,14 +13,14 @@ brew install git
 xcode-select --install
 
 # Setup for Zsh
-ln -s ./.zlogin "$HOME"/
-ln -s ./.zlogout "$HOME"/
-ln -s ./.zpreztorc "$HOME"/
-ln -s ./.zprofile "$HOME"/
-ln -s ./.zshenv "$HOME"/
-ln -s ./.zshrc "$HOME"/
+ln -s "$HOME"/workspaces/github.com/yyh-gl/.zlogin "$HOME"/
+ln -s "$HOME"/workspaces/github.com/yyh-gl/.zlogout "$HOME"/
+ln -s "$HOME"/workspaces/github.com/yyh-gl/.zpreztorc "$HOME"/
+ln -s "$HOME"/workspaces/github.com/yyh-gl/.zprofile "$HOME"/
+ln -s "$HOME"/workspaces/github.com/yyh-gl/.zshenv "$HOME"/
+ln -s "$HOME"/workspaces/github.com/yyh-gl/.zshrc "$HOME"/
 mkdir "$HOME"/.zprezto
-ln -s ./depended-repositories/prezto/init.zsh "$HOME"/.zprezto
+ln -s "$HOME"/workspaces/github.com/yyh-gl/depended-repositories/prezto/init.zsh "$HOME"/.zprezto/
 
 # Setup for SSH
 read -r STDIN'?Please setup 1Password. If you complete to setup. -> [ENTER]: '
