@@ -3,7 +3,7 @@
 # This script is the first step of setup
 
 # Install Xcode
-rm -rf /Library/Developer/CommandLineTools
+sudo rm -rf /Library/Developer/CommandLineTools
 xcode-select --install
 
 # Setup for Zsh
