@@ -31,7 +31,7 @@ export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 
 ## scripts
-export PATH=$HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/scripts:$PATH
+export PATH=$HOME/workspaces/github.com/yyh-gl/config/dotfiles/depended-repositories/scripts:$PATH
 
 ## JDK
 # 使用したいJDKのバージョンを指定すること
