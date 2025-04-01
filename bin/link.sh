@@ -20,13 +20,17 @@ ln -s "$HOME"/workspaces/config/dotfiles-private/.aws "$HOME"
 
 ## Google Drive
 read -r STDIN'?Please setup Google Drive. If you complete to setup. -> [ENTER]: '
-mkdir "$HOME"/Desktop/hobby
-ln -s "$HOME"/GoogleDrive/01_Personal/00_Engineering "$HOME"/Desktop/hobby
-ln -s "$HOME"/GoogleDrive/01_Personal/01_CasualLife "$HOME"/Desktop/hobby
-ln -s "$HOME"/GoogleDrive/01_Personal/01_CasualLife/99_Pictures/00_Profile "$HOME"/Pictures
-ln -s "$HOME"/GoogleDrive/01_Personal/01_CasualLife/99_Pictures/01_Wallpapers "$HOME"/Pictures
-ln -s "$HOME"/GoogleDrive/01_Personal/01_CasualLife/99_Pictures/02_Geeks "$HOME"/Pictures
-ln -s "$HOME"/GoogleDrive/01_Personal/01_CasualLife/99_Pictures/03_IconsForMac "$HOME"/Pictures
-ln -s "$HOME"/GoogleDrive/01_Personal/01_CasualLife/99_Pictures/04_SlackStamps "$HOME"/Pictures
-ln -s "$HOME"/GoogleDrive/01_Personal/01_CasualLife/99_Pictures/05_Works "$HOME"/Pictures
-ln -s "$HOME"/GoogleDrive/01_Personal/01_CasualLife/99_Pictures/99_Others "$HOME"/Pictures
+if [ "$MODE" = "hobby" ]; then
+  mkdir "$HOME"/Desktop/hobby
+  ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/00_Engineering "$HOME"/Desktop/hobby
+  ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife "$HOME"/Desktop/hobby
+elif [ "$MODE" = "work" ]; then
+  mkdir "$HOME"/Desktop/work
+fi
+ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/00_Profile "$HOME"/Pictures
+ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/01_Wallpapers "$HOME"/Pictures
+ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/02_Geeks "$HOME"/Pictures
+ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/03_IconsForMac "$HOME"/Pictures
+ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/04_SlackStamps "$HOME"/Pictures
+ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/05_Works "$HOME"/Pictures
+ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/99_Others "$HOME"/Pictures
