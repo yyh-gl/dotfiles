@@ -12,11 +12,21 @@ brew install git
 ## Xcode
 xcode-select --install
 
-# Setup of SSH
+# Setup for Zsh
+ln -s ./.zlogin "$HOME"/
+ln -s ./.zlogout "$HOME"/
+ln -s ./.zpreztorc "$HOME"/
+ln -s ./.zprofile "$HOME"/
+ln -s ./.zshenv "$HOME"/
+ln -s ./.zshrc "$HOME"/
+mkdir "$HOME"/.zprezto
+ln -s ./depended-repositories/prezto/init.zsh "$HOME"/.zprezto
+
+# Setup for SSH
 read -r STDIN'?Please setup 1Password. If you complete to setup. -> [ENTER]: '
 rm -rf "$HOME"/.ssh
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/.ssh "$HOME"/
 
-## Google Drive
+## Setup for Google Drive
 read -r STDIN'?Please setup Google Drive. If you complete to setup. -> [ENTER]: '
 mkdir "$HOME"/Desktop/hobby
