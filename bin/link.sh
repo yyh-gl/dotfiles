@@ -4,12 +4,12 @@
 
 # Link to config
 ## Zsh
-ln -s ./zlogin "$HOME"/
-ln -s ./zlogout "$HOME"/
-ln -s ./zpreztorc "$HOME"/
-ln -s ./zprofile "$HOME"/
-ln -s ./zshenv "$HOME"/
-ln -s ./zshrc "$HOME"/
+ln -s ./.zlogin "$HOME"/
+ln -s ./.zlogout "$HOME"/
+ln -s ./.zpreztorc "$HOME"/
+ln -s ./.zprofile "$HOME"/
+ln -s ./.zshenv "$HOME"/
+ln -s ./.zshrc "$HOME"/
 mkdir "$HOME"/.zprezto
 ln -s ./depended-repositories/prezto/init.zsh "$HOME"/.zprezto
 
