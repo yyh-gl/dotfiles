@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: color-black
+# key: bb
+# --
+\color{black}

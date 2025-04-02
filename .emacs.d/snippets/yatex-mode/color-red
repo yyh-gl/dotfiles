@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: color-red
+# key: rr
+# --
+\color{red}
