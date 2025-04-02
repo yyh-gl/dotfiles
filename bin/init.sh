@@ -4,8 +4,9 @@
 
 # Install Xcode
 sudo rm -rf /Library/Developer/CommandLineTools
-xcode-select --install
+sudo xcode-select --install
 read -r STDIN'?Please setup Xcode. If you complete to setup. -> [ENTER]: '
+sudo xcodebuild -license accept
 
 # Setup for Zsh
 ln -s "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles/.zlogin "$HOME"
