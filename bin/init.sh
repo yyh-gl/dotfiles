@@ -3,10 +3,15 @@
 # This script is the first step of setup
 
 # Install Xcode
-sudo rm -rf /Library/Developer/CommandLineTools
-sudo xcode-select --install
-read -r STDIN'?Please setup Xcode. If you complete to setup. -> [ENTER]: '
-sudo xcodebuild -license accept
+# /Library/Developer/CommandLineToolsの存在確認を行う
+if [ -d /Library/Developer/CommandLineTools ]; then
+  echo "Skip Xcode installation"
+else
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+  read -r STDIN'?Please setup Xcode. If you complete to setup. -> [ENTER]: '
+  sudo xcodebuild -license accept
+fi
 
 # Setup for Zsh
 ln -s "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles/.zlogin "$HOME"
