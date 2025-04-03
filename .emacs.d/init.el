@@ -2,7 +2,6 @@
 ;; yyh-gl's init.el
 ;;
 
-
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -20,6 +19,25 @@
         ("melpa" . "http://melpa.org/packages/")
         ("marmalade" . "http://marmalade-repo.org/packages/")
         ("org" . "http://orgmode.org/elpa/")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; パッケージ自動インストール設定
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; パッケージ情報の更新
+(unless package-archive-contents
+  (package-refresh-contents))
+
+;; インストールするパッケージのリスト
+(defvar my-packages
+  '(linum auto-complete auto-complete-config smartparens-config flycheck
+    hlinum smart-compile projectile projectile-rails scala-mode
+    web-mode php-mode json-mode yaml-mode markdown-mode
+    terraform-mode rcodetools yasnippet expand-region))
+
+;; パッケージがインストールされていなければインストールする
+(dolist (package my-packages)
+  (unless (package-installed-p package)
+    (package-install package)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ライブラリ読み込み
@@ -384,23 +402,4 @@
 ;;              ))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; emacs自動生成
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (expand-region terraform-mode markdown-mode yasnippet yaml-mode json-mode go-mode php-mode web-mode yatex undo-tree smartparens smart-compile scala-mode projectile-rails hlinum git-gutter-fringe git-gutter+ flycheck auto-complete 0blayout))))
-
 (provide 'init)
-;;; init.el ends here
