@@ -29,21 +29,14 @@
 
 ;; インストールするパッケージのリスト
 (defvar my-packages
-  '(linum auto-complete auto-complete-config smartparens-config flycheck
-    hlinum smart-compile projectile projectile-rails scala-mode
-    web-mode php-mode json-mode yaml-mode markdown-mode
-    terraform-mode rcodetools yasnippet expand-region))
+  '(auto-complete flycheck smart-compile scala-mode web-mode
+    php-mode json-mode yaml-mode markdown-mode terraform-mode
+    yasnippet expand-region))
 
 ;; パッケージがインストールされていなければインストールする
 (dolist (package my-packages)
   (unless (package-installed-p package)
     (package-install package)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ライブラリ読み込み
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; >> rcodetools.el に必要
-(add-to-list 'load-path "~/.emacs.d/elpa/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; CUI用ウィンドウ設定
@@ -92,12 +85,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 行番号表示
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'linum)
-(global-linum-mode 1)
-(set-face-attribute 'linum nil
-					:foreground "#ECEFF1" ;; 行番号の色
-					:height 0.5)
-(setq linum-format "%4d | ")
+(global-display-line-numbers-mode t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 括弧の対応関係表示
@@ -132,26 +120,9 @@
 ;;; 自動補完設定
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-complete)
-(require 'auto-complete-config) ; 必須ではないが一応
 (global-auto-complete-mode t)
 (setq ac-delay 0)
 (setq ac-auto-show-menu 0.05)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; undo-tree設定
-; C-x u : undo-tree-visualize
-; x : 現在地
-; p : 一つ上の変更をたどる
-; n : 一つ下の変更をたどる
-; f，b : 枝の切り替え
-; q : 終了
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-undo-tree-mode t)
-(define-key global-map (kbd "C-M-/") 'undo-tree-redo) ;; GUI用
-(define-key global-map (kbd "M-/") 'undo-tree-redo) ;; CUI用（CUIだと C-M-/ が入力できない）
-;; undoの回数を増やす
-(setq undo-limit 100000)
-(setq undo-strong-limit 130000)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; git-gutter-frieng設定
@@ -193,12 +164,6 @@
 (setq interprogram-paste-function 'copy-from-osx)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 括弧補完設定
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'smartparens-config)
-(smartparens-global-mode t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Flycheck設定
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flycheck)
@@ -206,12 +171,6 @@
 (define-key global-map (kbd "\C-cn") 'flycheck-next-error)
 (define-key global-map (kbd "\C-cp") 'flycheck-previous-error)
 (define-key global-map (kbd "\C-cd") 'flycheck-list-errors)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; hlinum設定
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'hlinum)
-(hlinum-activate)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 「C-h」にバックスペースを割り当て
@@ -271,13 +230,6 @@
      (insert (format-time-string "%Y/%m/%d %H:%M:%S"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Rails開発モード設定
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'projectile)
-(require 'projectile-rails)
-(projectile-rails-global-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 拡張子とシンタックスハイライトの関連付け
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'auto-mode-alist '("\\.ma\\'" . asm-mode))
@@ -325,12 +277,6 @@
 (when (require 'markdown-mode nil t))
 ;; terraform-mode
 (require 'terraform-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Ruby開発におけるのデバッグ出力をコメントとして表示する機能追加
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'rcodetools)
-(define-key ruby-mode-map (kbd "M-p") 'xmp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; yasnippet
