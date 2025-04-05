@@ -2,27 +2,26 @@
 
 # This script is the first step of setup
 
-# Tools setup
-## Homebrew
+# Setup for Homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-## 1Password
+# Setup for 1Password
 brew install --cask 1password
 echo 'Please setup 1Password.'
 read -r STDIN'?First, please sign in. [ENTER]: '
 read -r STDIN'?Last, please enable SSH Agent. [ENTER]: '
 
-## Git
+# Setup for Git
 brew install git
 
-### Set temporary SSH config
+## Set temporary SSH config
 mkdir "$HOME"/.ssh
 cat <<EOF > "$HOME"/.ssh/config
 Host *
 IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 EOF
 
-## Xcode
+# Setup for Xcode
 if [ -d /Library/Developer/CommandLineTools ]; then
   echo "Skip Xcode installation"
 else
