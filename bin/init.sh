@@ -52,3 +52,6 @@ ln -s "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles/depended-repositories
 # Setup for SSH
 rm -rf "$HOME"/.ssh
 ln -s "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles/depended-repositories/dotfiles-private/.ssh "$HOME"
+
+# Setup for anyenv
+anyenv install --init
