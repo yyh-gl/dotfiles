@@ -56,3 +56,6 @@ ln -s "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles/depended-repositories
 
 # Setup for anyenv
 anyenv install --init
+
+# Setup for Emacs
+ln -s "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles/.emacs.d "$HOME"
