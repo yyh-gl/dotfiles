@@ -9,7 +9,8 @@
 brew install --cask 1password
 echo 'Please setup 1Password.'
 read -r STDIN'?First, please sign in. [ENTER]: '
-read -r STDIN'?Last, please enable SSH Agent. [ENTER]: '
+read -r STDIN'?Second, please enable SSH Agent. [ENTER]: '
+read -r STDIN'?Last, please add "ssh-keys" to .config/1Password/ssh/agent.toml as needed. [ENTER]: '
 
 # Setup for Git
 brew install git
