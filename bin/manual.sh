@@ -9,3 +9,4 @@ echo '[Finder] Sort items in side bar (root, Desktop, Downloads, Pictures, Docum
 echo '[UI] Change to dark mode'
 echo '[Battery] Enable "電源アダプタ使用時はディスプレイがオフのときに自動でスリープさせない"（Battery > Option）'
 echo '[JetBrains ToolBox] Log in with a personal account and authenticate the license with a code (to inherit the settings of the personal account)'
+echo '[Google 日本語入力] Import user dictionary file (dotfiles-private/..dictionary.txt) and change space to half-width'
