@@ -37,7 +37,7 @@ echo -n " -> "
 uptime
 
 ## 記念日カウント
-./celebrate-anniversary.sh
+celebrate-anniversary.sh
 
 ## ログイン時メッセージ
 echo
