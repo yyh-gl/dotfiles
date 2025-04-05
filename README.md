@@ -2,40 +2,11 @@
 
 ## Setup
 
-1. Install Homebrew
-   ```sh
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
-2. Setup for 1Password
-    1. Sign in
-    2. Enable SSH Agent
-3. Install Git
-   ```sh
-   brew install git
-   ```
-4. Setup fot SSH (temporary)
-   ```sh
-   mkdir "$HOME"/.ssh
-   cat <<EOF > "$HOME"/.ssh/config
-   Host *
-   IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-   EOF
-   ```
-5. Clone my dotfiles
-   ```sh
-   mkdir -p "$HOME"/workspaces/github.com/yyh-gl/config
-   git clone --recurse-submodules git@github.com:yyh-gl/dotfiles.git "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles
-   ```
-6. Customize the environment variables in `.env`
-    - `MODE`: Set to either "hobby" or "work"
-        - hobby: for personal
-        - work: for company job
-    - `GO_VERSION`: Go version to install
-    - `JVM_VERSION`: JVM version to install
-7. Run setup command
-   ```sh
-   make build
-   ```
+Let's run setup command.
+
+```sh
+make build
+```
 
 ## Repository Structure
 
