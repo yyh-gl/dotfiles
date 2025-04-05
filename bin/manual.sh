@@ -3,7 +3,7 @@
 # This script is the final step of setup
 
 echo '[Rectangle] Import RectangleConfig.json'
-echo '[iTerm2] Import Profiles.json'
+echo '[iTerm2] Import .iterm2-profiles.json'
 echo '[Menu bar] Show percentage of battery remaining'
 echo '[Finder] Sort items in side bar (root, Desktop, Downloads, Pictures, Documents, Applications, AirDrop)'
 echo '[UI] Change to dark mode'
