@@ -19,7 +19,7 @@ ln -s "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles-pirvate/.kube-config 
 ln -s "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles-private/.aws "$HOME"
 
 ## Google Drive
-read -r STDIN'?Please setup Google Drive. If you complete to setup. -> [ENTER]: '
+read -r STDIN'?Please setup Google Drive. [ENTER]: '
 if [ "$MODE" = "hobby" ]; then
   mkdir "$HOME"/Desktop/hobby
   ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/00_Engineering "$HOME"/Desktop/hobby

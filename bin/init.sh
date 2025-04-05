@@ -28,7 +28,7 @@ if [ -d /Library/Developer/CommandLineTools ]; then
 else
   sudo rm -rf /Library/Developer/CommandLineTools
   sudo xcode-select --install
-  read -r STDIN'?Please setup Xcode. If you complete to setup. -> [ENTER]: '
+  read -r STDIN'?Please setup Xcode. [ENTER]: '
   sudo xcodebuild -license accept
 fi
 
@@ -51,6 +51,5 @@ ln -s "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles/depended-repositories
 ln -s "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles/depended-repositories/prezto/modules "$HOME"/.zprezto
 
 # Setup for SSH
-read -r STDIN'?Please setup 1Password. If you complete to setup. -> [ENTER]: '
 rm -rf "$HOME"/.ssh
 ln -s "$HOME"/workspaces/github.com/yyh-gl/config/dotfiles/depended-repositories/dotfiles-private/.ssh "$HOME"
