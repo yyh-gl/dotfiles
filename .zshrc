@@ -167,22 +167,10 @@ alias mksl='make-symbolic-link.sh'
 # エイリアス
 ##############################################
 
-alias cdzsh='cd $HOME/.zprezto/runcoms/'
-alias fix='e $HOME/.zprezto/runcoms/zshrc'
-alias fixp='e $HOME/.zprezto/runcoms/zpreztorc'
+alias fix='e $HOME/workspaces/github.com/yyh-gl/dotfiles/.zshrc'
 alias load='exec $SHELL -l'
-alias dsh='docker exec -it $(docker ps | fzf | cut -f 1 -d " ") /bin/sh'
-alias ksh='kubectl exec -it $(kubectl get po | fzf | cut -f 1 -d " ") -- /bin/sh'
-
-## 隠しファイル 表示/非表示
-alias appear='defaults write com.apple.finder AppleShowAllFiles TRUE'
-alias hide='defaults write com.apple.finder AppleShowAllFiles FALSE'
-alias kf='killall Finder'
 
 ## 開発関連
-alias p='python'
-alias r='ruby'
-alias rl='rails'
 alias fixe='e $HOME/.emacs.d/init.el'
 alias fixs='e $HOME/.ssh/config'
 alias xcode='open -a Xcode'
@@ -191,17 +179,14 @@ alias k='kubectl'
 alias kc='kubectx'
 alias kn='kubens'
 alias tailscale='/Applications/Tailscale.app/Contents/MacOS/Tailscale'
+alias ts='tailscale'
+alias dsh='docker exec -it $(docker ps | fzf | cut -f 1 -d " ") /bin/sh'
+alias ksh='kubectl exec -it $(kubectl get po | fzf | cut -f 1 -d " ") -- /bin/sh'
 
 ## Anti-Pattern用ショートカット
-alias anti='cd $HOME/github.com/Go/src/github.com/Anti-Pattern-Inc/engineed-dev-env/'
+alias anti='cd $HOME/workspaces/github.com/Anti-Pattern-Inc/engineed-dev-env/'
 
 ## ショートカット
-alias hobby='cd $HOME/Desktop/hobby/'
-alias life='cd $HOME/Desktop/hobby/01_CasualLife/'
-alias my='cd $HOME/Desktop/hobby/00_Engineering/00_my-mac/'
-alias study='cd $HOME/GoogleDrive/01_Personal/00_Engineering/01_StudyMeeting/'
-alias job='cd $HOME/GoogleDrive/01_Personal/00_Engineering/03_JobChange/'
-alias google='cd $HOME/GoogleDrive/'
 alias blog='cd $HOME/workspaces/github.com/yyh-gl/tech-blog/'
 alias api='cd $HOME/workspaces/github.com/yyh-gl/hobigon-golang-api-server/'
 alias play='cd $HOME/workspaces/github.com/yyh-gl/go-playground/'
