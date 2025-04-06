@@ -31,7 +31,7 @@ export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 
 ## scripts
-export PATH=$HOME/workspaces/github.com/yyh-gl/config/dotfiles/depended-repositories/scripts:$PATH
+export PATH=$HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/scripts:$PATH
 
 ## JDK
 # 使用したいJDKのバージョンを指定すること
@@ -206,4 +206,4 @@ alias blog='cd $HOME/workspaces/github.com/yyh-gl/tech-blog/'
 alias api='cd $HOME/workspaces/github.com/yyh-gl/hobigon-golang-api-server/'
 alias play='cd $HOME/workspaces/github.com/yyh-gl/go-playground/'
 alias hobigon='cd $HOME/workspaces/github.com/yyh-gl/hobigon/'
-alias dot='$HOME/workspaces/github.com/yyh-gl/config/dotfiles'
+alias dot='$HOME/workspaces/github.com/yyh-gl/dotfiles'
