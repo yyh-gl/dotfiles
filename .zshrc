@@ -26,7 +26,7 @@ export LANG="`defaults read -g AppleLocale | sed 's/@.*$//g'`.UTF-8"
 export EDITOR=emacs VISUAL=emacs
 
 ## Go
-export GOPATH=$HOME/go/1.24.0
+export GOPATH=$HOME/go/1.24.1
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 
