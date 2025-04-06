@@ -12,7 +12,7 @@ ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.gh-config.yml "$HOME"/.conf
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.git-config "$HOME"/.config/git
 
 ## k8s
-mkdir "$HOME"/.kube
+mkdir -p "$HOME"/.kube
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles-pirvate/.kube-config "$HOME"/.kube/config
 
 ## AWS
@@ -21,11 +21,11 @@ ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles-private/.aws "$HOME"
 ## Google Drive
 read -r STDIN'?Please setup Google Drive. [ENTER]: '
 if [ "$MODE" = "hobby" ]; then
-  mkdir "$HOME"/Desktop/hobby
+  mkdir -p "$HOME"/Desktop/hobby
   ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/00_Engineering "$HOME"/Desktop/hobby
   ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife "$HOME"/Desktop/hobby
 elif [ "$MODE" = "work" ]; then
-  mkdir "$HOME"/Desktop/work
+  mkdir -p "$HOME"/Desktop/work
 fi
 ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/00_Profile "$HOME"/Pictures
 ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/01_Wallpapers "$HOME"/Pictures

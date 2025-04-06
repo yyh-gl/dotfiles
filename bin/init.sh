@@ -16,7 +16,7 @@ read -r STDIN'?Last, please add "ssh-keys" to .config/1Password/ssh/agent.toml a
 brew install git
 
 ## Set temporary SSH config
-mkdir "$HOME"/.ssh
+mkdir -p "$HOME"/.ssh
 cat <<EOF > "$HOME"/.ssh/config
 Host *
 IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
@@ -46,7 +46,7 @@ ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.zpreztorc "$HOME"
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.zprofile "$HOME"
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.zshenv "$HOME"
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.zshrc "$HOME"
-mkdir "$HOME"/.zprezto
+mkdir -p "$HOME"/.zprezto
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/prezto/init.zsh "$HOME"/.zprezto
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/prezto/modules "$HOME"/.zprezto
 
