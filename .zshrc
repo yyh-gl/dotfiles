@@ -182,6 +182,7 @@ alias tailscale='/Applications/Tailscale.app/Contents/MacOS/Tailscale'
 alias ts='tailscale'
 alias dsh='docker exec -it $(docker ps | fzf | cut -f 1 -d " ") /bin/sh'
 alias ksh='kubectl exec -it $(kubectl get po | fzf | cut -f 1 -d " ") -- /bin/sh'
+alias sb='supabase'
 
 ## Anti-Pattern用ショートカット
 alias anti='cd $HOME/workspaces/github.com/Anti-Pattern-Inc/engineed-dev-env/'
