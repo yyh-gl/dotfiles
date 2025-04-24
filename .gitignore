@@ -22,3 +22,4 @@
 .emacs.d/.projectile
 .emacs.d/.dir-locals.el
 .emacs.d/network-security.data
+.emacs.d/ac-comphist.dat
