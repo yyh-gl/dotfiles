@@ -47,6 +47,13 @@ typeset -U path cdpath fpath manpath
 
 
 ##############################################
+# Secret
+##############################################
+
+export OPENAI_API_KEY="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/openai-api-key.txt)"
+
+
+##############################################
 # 「cd」後に「ls」を自動実行
 ##############################################
 
