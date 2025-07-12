@@ -26,7 +26,7 @@ export LANG="`defaults read -g AppleLocale | sed 's/@.*$//g'`.UTF-8"
 export EDITOR=emacs VISUAL=emacs
 
 ## Go
-export GOPATH=$HOME/go/1.24.1
+export GOPATH=$HOME/go/1.24.5
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 
@@ -35,7 +35,7 @@ export PATH=$HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/sc
 
 ## JDK
 # 使用したいJDKのバージョンを指定すること
-export JAVA_HOME="$(/usr/libexec/java_home -v 24)"
+export JAVA_HOME=$HOME/jvm/jdk-24.0.1.jdk/Contents/Home
 export PATH="$JAVA_HOME/bin:$PATH"
 
 ## Homebrew bin
