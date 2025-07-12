@@ -5,7 +5,7 @@
 brew install mas-cli/tap/mas
 
 # LINE
-mas install 443904275
+mas install 539883307
 # Kindle
 mas install 302584613
 # 1Password for Safari
