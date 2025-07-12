@@ -13,10 +13,10 @@ ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.git-config "$HOME"/.config/
 
 ## k8s
 mkdir -p "$HOME"/.kube
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles-pirvate/.kube-config "$HOME"/.kube/config
+ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/.kube-config "$HOME"/.kube/config
 
 ## AWS
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles-private/.aws "$HOME"
+ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/.aws "$HOME"
 
 ## Google Drive
 read -r STDIN'?Please setup Google Drive. [ENTER]: '
