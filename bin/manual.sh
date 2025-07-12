@@ -11,3 +11,4 @@ echo '[Battery] Enable "電源アダプタ使用時はディスプレイがオ�
 echo '[JetBrains ToolBox] Log in with a personal account and authenticate the license with a code (to inherit the settings of the personal account)'
 echo '[Google 日本語入力] Import user dictionary file (dotfiles-private/..dictionary.txt) and change space to half-width'
 echo '[Key shortcut] Disable "入力メニューの次のソースを選択" (System Preferences > Keyboard > Keyboard Shortcuts > Input Sources)'
+echo '[Tailscale] Set ACL tags for this machine'
