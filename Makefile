@@ -14,6 +14,7 @@ build: # Setup my macOS
 	@echo "Setup mode: ${MODE}"
 	./bin/base.sh
 	./bin/brew.sh
+	./bin/gh.sh
 	./bin/link.sh
 	./bin/defaults.sh
 	./bin/mas.sh
