@@ -5,10 +5,14 @@ include .env
 help: # Help me
 	@echo "Let's 'make build'"
 
+.PHONY: init
+init: # Initialize the environment
+	./bin/init.sh
+
 .PHONY: build
 build: # Setup my macOS
 	@echo "Setup mode: ${MODE}"
-	./bin/init.sh
+	./bin/base.sh
 	./bin/brew.sh
 	./bin/link.sh
 	./bin/defaults.sh

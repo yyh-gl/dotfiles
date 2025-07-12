@@ -2,11 +2,13 @@
 
 ## Setup
 
-Let's run setup command.
-
 ```sh
+make init
 make build
 ```
+
+> [!NOTE]
+> Run `make init` only once at the beginning
 
 ## Repository Structure
 

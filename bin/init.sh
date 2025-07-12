@@ -19,7 +19,7 @@ brew install git
 mkdir -p "$HOME"/.ssh
 cat <<EOF > "$HOME"/.ssh/config
 Host *
-IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 EOF
 
 # Setup for Xcode
@@ -36,26 +36,4 @@ fi
 mkdir -p "$HOME"/workspaces/github.com/yyh-gl/config
 git clone --recurse-submodules git@github.com:yyh-gl/dotfiles.git "$HOME"/workspaces/github.com/yyh-gl/dotfiles
 
-# Update .env
-vi "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.env
-
-# Setup for Zsh
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.zlogin "$HOME"
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.zlogout "$HOME"
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.zpreztorc "$HOME"
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.zprofile "$HOME"
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.zshenv "$HOME"
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.zshrc "$HOME"
-mkdir -p "$HOME"/.zprezto
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/prezto/init.zsh "$HOME"/.zprezto
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/prezto/modules "$HOME"/.zprezto
-
-# Setup for SSH
-rm -rf "$HOME"/.ssh
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/.ssh "$HOME"
-
-# Setup for anyenv
-anyenv install --init
-
-# Setup for Emacs
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.emacs.d "$HOME"
+echo "Go to cloned dotfiles directory and run 'make build'."
