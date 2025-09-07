@@ -189,6 +189,7 @@ alias tailscale='/Applications/Tailscale.app/Contents/MacOS/Tailscale'
 alias ts='tailscale'
 alias dsh='docker exec -it $(docker ps | fzf | cut -f 1 -d " ") /bin/bash'
 alias ksh='kubectl exec -it $(kubectl get po | fzf | cut -f 1 -d " ") -- /bin/bash'
+alias supabase='npx supabase'
 alias sb='supabase'
 
 ## Anti-Pattern用ショートカット
