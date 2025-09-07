@@ -34,3 +34,7 @@ ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pict
 ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/04_SlackStamps "$HOME"/Pictures
 ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/05_Works "$HOME"/Pictures
 ln -s "$HOME"/Google\ Drive/マイドライブ/01_Personal/01_CasualLife/99_Pictures/99_Others "$HOME"/Pictures
+
+## k1LoW/deck
+mkdir -p "$HOME"/.local/share/deck
+ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/.deck/credentials.json "$HOME"/.local/share/deck/
