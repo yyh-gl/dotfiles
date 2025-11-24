@@ -1,5 +1,5 @@
-# Update .env
-vi "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.env
+# Update .env.public
+vi "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.env.public
 
 # Setup for Zsh
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.zlogin "$HOME"

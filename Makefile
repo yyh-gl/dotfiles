@@ -1,4 +1,4 @@
-include .env
+include .env.public
 
 .DEFAULT_GOAL := help
 .PHONY: help

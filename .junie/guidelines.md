@@ -4,18 +4,18 @@
 This repository contains dotfiles and configuration files for various tools and applications. Dotfiles are configuration files in Unix-like systems that start with a dot (.) and are typically hidden in directory listings. This collection helps maintain consistent development environments across different machines.
 
 ## Setup
-1. Customize the environment variables in the `.env` file if needed:
+1. Customize the environment variables in the `.env.public` file if needed:
    - `MODE`: Set to either "work" or "hobby" (default: "hobby")
    - `GO_VERSION`: Go version to install (default: "1.24.2")
    - `JVM_VERSION`: JVM version to install (default: "24")
 
 2. Run one of the following commands:
    - `make build`: Setup for macOS
-   - `make build-go`: Install Go with the version specified in .env
-   - `make build-jvm`: Install JVM with the version specified in .env
+   - `make build-go`: Install Go with the version specified in .env.public
+   - `make build-jvm`: Install JVM with the version specified in .env.public
 
 ## Repository Structure
-- `.env`: Environment variables used by the Makefile
+- `.env.public`: Environment variables used by the Makefile
 - `.brewfile-base`, `.brewfile-hobby`: Homebrew package lists for installing software
 - `.defaults`: macOS system defaults configuration
 - `.gh-config`: GitHub CLI configuration

@@ -12,7 +12,7 @@ make build
 
 ## Repository Structure
 
-- `.env`: Environment variables used by the Makefile
+- `.env.public`: Environment variables used by the Makefile
 - `.brewfile-base`, `.brewfile-hobby`: Homebrew package lists for installing software
 - `.defaults`: macOS system defaults configuration
 - `.gh-config`: GitHub CLI configuration
