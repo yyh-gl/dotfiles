@@ -11,6 +11,10 @@ mkdir -p "$HOME"/.config/gh
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.gh-config.yml "$HOME"/.config/gh/config.yml
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.git-config "$HOME"/.config/git
 
+## Claude
+mkdir -p "$HOME"/.claude
+ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.claude/skills/ "$HOME"/.claude/skills
+
 ## k8s
 mkdir -p "$HOME"/.kube
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/.kube-config "$HOME"/.kube/config
