@@ -1,6 +1,8 @@
 ###############################
 # window
 ###############################
+theme = Ayu
+palette = 5=#2986cc
 window-height = 99999
 window-width = 99999
 
@@ -9,7 +11,7 @@ background = black
 background-opacity = 0.7
 
 # font
-font-size = 14
+font-size = 13
 
 ###############################
 # behavior
