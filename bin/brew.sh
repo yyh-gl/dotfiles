@@ -2,8 +2,8 @@
 
 # Depend on init.sh
 
-brew bundle --file=.Brewfile-base
+brew bundle --file=.brewfile-base
 
 if [ "$MODE" = "hobby" ]; then
-  brew bundle --file=.Brewfile-hobby
+  brew bundle --file=.brewfile-hobby
 fi
