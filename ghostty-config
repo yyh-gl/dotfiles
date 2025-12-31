@@ -1,11 +1,21 @@
+###############################
 # window
+###############################
 window-height = 99999
 window-width = 99999
+
+# background
 background = black
 background-opacity = 0.7
 
 # font
 font-size = 14
 
+###############################
 # behavior
+###############################
 copy-on-select = clipboard
+macos-option-as-alt = true
+
+## keybind
+keybind = ctrl+m=text:\r
