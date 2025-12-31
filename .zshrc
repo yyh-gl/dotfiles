@@ -193,7 +193,7 @@ alias supabase='npx supabase'
 alias sb='supabase'
 
 ## Anti-Pattern用ショートカット
-alias anti='cd $HOME/workspaces/github.com/Anti-Pattern-Inc/engineed-dev-env/'
+alias anti='cd $HOME/workspaces/github.com/Anti-Pattern-Inc/'
 
 ## ショートカット
 alias blog='cd $HOME/workspaces/github.com/yyh-gl/tech-blog/'
