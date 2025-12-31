@@ -1,3 +1,10 @@
 cask "discord"
 cask "tailscale"
 cask "adobe-acrobat-reader"
+cask "1password"
+cask "1password-cli"
+mas "1Password for Safari", id: 1569813296
+mas "Kindle", id: 302584613
+mas "LINE", id: 539883307
+mas "Skitch", id: 425955336
+mas "Tailscale", id: 1475387142
