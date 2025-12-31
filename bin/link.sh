@@ -10,6 +10,8 @@ ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.karabiner "$HOME"/.config/k
 mkdir -p "$HOME"/.config/gh
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.gh-config.yml "$HOME"/.config/gh/config.yml
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.git-config "$HOME"/.config/git
+mkdir -p "$HOME"/.config/ghostty
+ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/ghostty-config "$HOME"/.config/ghostty/config
 
 ## Claude
 mkdir -p "$HOME"/.claude
