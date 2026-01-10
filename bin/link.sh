@@ -15,7 +15,7 @@ ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/ghostty-config "$HOME"/.conf
 
 ## Claude
 mkdir -p "$HOME"/.claude
-ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.claude/skills/ "$HOME"/.claude/skills
+ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.claude/settings.json "$HOME"/.claude/settings.json
 
 ## k8s
 mkdir -p "$HOME"/.kube
