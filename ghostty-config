@@ -2,12 +2,6 @@
 # window
 ###############################
 theme = Ayu
-palette = 4=#ffe599
-palette = 5=#53bdfa
-palette = 6=#cda1fa
-palette = 12=#95e6cb
-palette = 13=#59c2ff
-palette = 14=#d2a6ff
 window-height = 99999
 window-width = 99999
 
