@@ -38,8 +38,9 @@ export PATH=$HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/sc
 export JAVA_HOME=$HOME/jvm/jdk-24.0.1.jdk/Contents/Home
 export PATH="$JAVA_HOME/bin:$PATH"
 
-## Homebrew bin
+## bin
 export PATH="/opt/homebrew/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 ## 重複パスを削除
 # TODO: パスはzshrcに書くべきではない？要調査
