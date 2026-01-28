@@ -17,6 +17,8 @@ font-size = 13
 ###############################
 copy-on-select = clipboard
 macos-option-as-alt = true
+working-directory = home
+window-inherit-working-directory = false
 
 ## keybind
 keybind = ctrl+m=text:\r
