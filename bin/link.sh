@@ -19,6 +19,7 @@ ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.claude/settings.json "$HOME
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.claude/rules "$HOME"/.claude/rules
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.claude/agents "$HOME"/.claude/agents
 ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.claude/skills "$HOME"/.claude/skills
+ln -s "$HOME"/workspaces/github.com/yyh-gl/dotfiles/.claude/hooks "$HOME"/.claude/hooks
 
 ## k8s
 mkdir -p "$HOME"/.kube

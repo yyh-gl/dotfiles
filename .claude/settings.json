@@ -22,5 +22,31 @@
     "frontend-design@claude-code-plugins": true
   },
   "alwaysThinkingEnabled": true,
-  "language": "japanese"
+  "language": "japanese",
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/slack-notify.sh 'Claude Code has questions'",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/slack-notify.sh 'Claude Code is free now'",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
 }
