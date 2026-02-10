@@ -23,6 +23,10 @@
   },
   "alwaysThinkingEnabled": true,
   "language": "japanese",
+  "plansDirectory": "docs/plans",
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "hooks": {
     "Notification": [
       {
