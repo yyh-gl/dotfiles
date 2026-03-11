@@ -51,9 +51,18 @@ typeset -U path cdpath fpath manpath
 # Secret
 ##############################################
 
+export GITHUB_PAT="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/github-pat.txt)"
+export OPENROUTER_API_KEY="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/openrouter-api-key.txt)"
 export OPENAI_API_KEY="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/openai-api-key.txt)"
 export AI_AGENTS_SLACK_WEBHOOK_URL="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/ai-agents-slack-webhook-url.txt)"
 
+##############################################
+# Anthropic
+# https://openrouter.ai/docs/guides/guides/claude-code-integration
+##############################################
+export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
+export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
+export ANTHROPIC_API_KEY="" # Important: Must be explicitly empty
 
 ##############################################
 # 「cd」後に「ls」を自動実行
