@@ -55,5 +55,13 @@
     "frontend-design@claude-code-plugins": true
   },
   "language": "japanese",
-  "plansDirectory": "docs/plans"
+  "plansDirectory": "docs/plans",
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    }
+  }
 }
