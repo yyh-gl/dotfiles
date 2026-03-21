@@ -60,9 +60,9 @@ export AI_AGENTS_SLACK_WEBHOOK_URL="$(cat $HOME/workspaces/github.com/yyh-gl/dot
 # Anthropic
 # https://openrouter.ai/docs/guides/guides/claude-code-integration
 ##############################################
-export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
-export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
-export ANTHROPIC_API_KEY="" # Important: Must be explicitly empty
+# export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
+# export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
+# export ANTHROPIC_API_KEY="" # Important: Must be explicitly empty
 
 ##############################################
 # 「cd」後に「ls」を自動実行
