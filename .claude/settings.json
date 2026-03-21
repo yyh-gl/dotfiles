@@ -51,14 +51,26 @@
     "type": "command",
     "command": "bash ~/.claude/statusline.sh"
   },
-  "language": "japanese",
-  "plansDirectory": "docs/plans",
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
       "source": {
         "source": "github",
         "repo": "anthropics/claude-plugins-official"
       }
+    },
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
     }
+  },
+  "language": "japanese",
+  "sandbox": {
+    "enabled": true
+  },
+  "plansDirectory": "docs/plans",
+  "enabledPlugins": {
+    "skill-creator@claude-plugins-official": true
   }
 }
