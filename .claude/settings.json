@@ -70,6 +70,10 @@
     "enabled": true
   },
   "plansDirectory": "docs/plans",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "enabledPlugins": {
     "skill-creator@claude-plugins-official": true
   }
