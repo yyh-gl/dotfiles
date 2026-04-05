@@ -11,7 +11,8 @@
       "Bash(pnpm run typecheck)",
       "Bash(pnpm run test:*)",
       "Read(~/.zshrc)",
-      "Read(./.env.example)"
+      "Read(./.env.example)",
+      "Read(~/.claude/skills/dev-team)"
     ],
     "deny": [
       "Bash(curl:*)",
