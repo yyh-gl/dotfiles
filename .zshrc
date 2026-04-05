@@ -38,6 +38,10 @@ export PATH=$HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/sc
 export JAVA_HOME=$HOME/jvm/jdk-24.0.1.jdk/Contents/Home
 export PATH="$JAVA_HOME/bin:$PATH"
 
+## Bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 ## bin
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
@@ -170,6 +174,12 @@ back() {
     git reset --soft $(git rev-parse head~)
     git restore --staged .
 }
+
+
+##############################################
+# Bun completions
+##############################################
+[ -s "/Users/yyh-gl/.bun/_bun" ] && source "/Users/yyh-gl/.bun/_bun"
 
 
 ##############################################
