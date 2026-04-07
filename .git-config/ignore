@@ -135,4 +135,6 @@ http-client.private.env.json
 # Built Visual Studio Code Extensions
 *.vsix
 
+# Claude
 **/.claude/settings.local.json
+**/docs/plans/*.md
