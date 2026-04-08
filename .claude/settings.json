@@ -1,6 +1,11 @@
 {
+  "respectGitignore": false,
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
   },
   "permissions": {
     "allow": [
@@ -48,10 +53,12 @@
       }
     ]
   },
-  "respectGitignore": false,
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline.sh"
+  },
+  "enabledPlugins": {
+    "skill-creator@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
@@ -72,11 +79,5 @@
     "enabled": true
   },
   "plansDirectory": "docs/plans",
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
-  "enabledPlugins": {
-    "skill-creator@claude-plugins-official": true
-  }
+  "effortLevel": "high"
 }
