@@ -21,11 +21,16 @@
     ],
     "deny": [
       "Bash(curl:*)",
+      "Bash(git push *)",
+      "Bash(chmod *)",
       "Read(./.env)",
       "Read(./.env.*)",
       "Read(./secrets/**)",
-      "Read(./credentials/**)"
-    ]
+      "Read(./credentials/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)"
+    ],
+    "disableBypassPermissionsMode": "disable"
   },
   "hooks": {
     "Notification": [
@@ -76,7 +81,17 @@
   },
   "language": "japanese",
   "sandbox": {
-    "enabled": true
+    "enabled": true,
+    "allowUnsandboxedCommands": false,
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "*.githubusercontent.com",
+        "*.npmjs.org",
+        "registry.yarnpkg.com",
+        "pypi.org"
+      ]
+    }
   },
   "plansDirectory": "docs/plans",
   "effortLevel": "high"
