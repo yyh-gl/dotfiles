@@ -269,7 +269,10 @@
             (c-set-offset 'arglist-close' 0)))
 ;; json-mode
 (when (require 'json-mode)
-  (add-to-list 'auto-mode-alist '("\\.json$" . json-mode)))
+  (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
+  (add-hook 'json-mode-hook
+            (lambda ()
+              (setq-local js-indent-level 2))))
 ;; yaml-mode
 (when (require 'yaml-mode)
   (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode)))
