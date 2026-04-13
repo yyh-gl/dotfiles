@@ -23,3 +23,5 @@
 .emacs.d/.dir-locals.el
 .emacs.d/network-security.data
 .emacs.d/ac-comphist.dat
+.emacs.d/.lsp-session-v1
+.emacs.d/tree-sitter
