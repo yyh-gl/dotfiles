@@ -323,13 +323,69 @@
 (setq lsp-ui-sideline-enable t)
 ;; キーバインド
 (with-eval-after-load 'lsp-mode
-  (define-key lsp-mode-map (kbd "C-'") #'lsp-find-definition))
+  (defun my/lsp-smart-jump ()
+    "定義上なら lsp-find-references を、使用箇所なら lsp-find-definition を呼ぶ。"
+    (interactive)
+    (let* ((cur-uri  (lsp--buffer-uri))
+           (cur-line (1- (line-number-at-pos))) ; LSP は 0-indexed
+           (response (lsp-request "textDocument/definition"
+                                  (lsp--text-document-position-params)))
+           ;; ベクター / 単体 を統一してリストへ
+           (locs     (cond ((vectorp response) (append response nil))
+                           ((listp response)   response)
+                           (response           (list response))
+                           (t                  nil)))
+           ;; 返ってきた定義位置のいずれかが現在行なら「定義上」と判断
+           (on-def   (cl-some
+                      (lambda (loc)
+                        (let* ((uri  (or (ignore-errors (lsp:location-uri loc))
+                                         (ignore-errors (lsp:location-link-target-uri loc))))
+                               (rng  (or (ignore-errors (lsp:location-range loc))
+                                         (ignore-errors (lsp:location-link-target-range loc))))
+                               (line (when rng
+                                       (lsp:position-line (lsp:range-start rng)))))
+                          (and uri line
+                               (string= uri cur-uri)
+                               (= line cur-line))))
+                      locs)))
+      (if on-def
+          (lsp-find-references)
+        (lsp-find-definition))))
+  (define-key lsp-mode-map (kbd "C-'") #'my/lsp-smart-jump)
+  (define-key lsp-mode-map (kbd "C-M-;") #'lsp-find-implementation))
+;; xref: 参照選択後に *xref* ウィンドウを自動で閉じる
+(with-eval-after-load 'xref
+  (defun my/xref-close-after-jump ()
+    "ジャンプ後に *xref* バッファのウィンドウを閉じる。"
+    (when-let* ((buf (get-buffer "*xref*"))
+                (win (get-buffer-window buf)))
+      (quit-window nil win)))
+  (add-hook 'xref-after-jump-hook #'my/xref-close-after-jump))
 ;; company（LSP バッファでは auto-complete を無効化して company を使用）
 (require 'company)
 (add-hook 'lsp-mode-hook
           (lambda ()
             (auto-complete-mode -1)
             (company-mode 1)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ヘッダーライン（ファイルパス表示）カラー設定
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; header-line の背景をエディタ背景に合わせて暗くし、文字は白にする
+(set-face-attribute 'header-line nil
+                    :background "#1c1c1c"
+                    :foreground "white"
+                    :box nil)
+;; LSP breadcrumb のパス・シンボル文字色を白に変更
+(with-eval-after-load 'lsp-headerline
+  (set-face-attribute 'lsp-headerline-breadcrumb-path-face nil
+                      :foreground "white")
+  (set-face-attribute 'lsp-headerline-breadcrumb-separator-face nil
+                      :foreground "gray60")
+  (set-face-attribute 'lsp-headerline-breadcrumb-symbols-face nil
+                      :foreground "white")
+  (set-face-attribute 'lsp-headerline-breadcrumb-project-prefix-face nil
+                      :foreground "gray80"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; yasnippet
