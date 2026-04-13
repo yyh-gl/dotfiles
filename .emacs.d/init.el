@@ -23,19 +23,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; パッケージ自動インストール設定
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; パッケージ情報の更新
-(unless package-archive-contents
-  (package-refresh-contents))
-
 ;; インストールするパッケージのリスト
 (defvar my-packages
   '(auto-complete flycheck smart-compile scala-mode web-mode
     php-mode json-mode yaml-mode markdown-mode terraform-mode
-    yasnippet expand-region))
+    yasnippet expand-region
+    kotlin-mode lsp-mode lsp-ui company))
 
 ;; パッケージがインストールされていなければインストールする
+;; アーカイブにパッケージが見つからない場合のみリフレッシュする
 (dolist (package my-packages)
   (unless (package-installed-p package)
+    (unless (assq package package-archive-contents)
+      (package-refresh-contents))
     (package-install package)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -280,6 +280,56 @@
 (when (require 'markdown-mode nil t))
 ;; terraform-mode
 (require 'terraform-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; treesitter 文法ソース設定 + 自動インストール
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq treesit-language-source-alist
+      '((typescript "https://github.com/tree-sitter/tree-sitter-typescript"
+                    "master" "typescript/src")
+        (tsx        "https://github.com/tree-sitter/tree-sitter-typescript"
+                    "master" "tsx/src")
+        (go         "https://github.com/tree-sitter/tree-sitter-go")))
+;; 未インストールの grammar を起動時に自動インストール
+(dolist (lang (mapcar #'car treesit-language-source-alist))
+  (unless (treesit-language-available-p lang)
+    (condition-case err
+        (treesit-install-language-grammar lang)
+      (error (message "treesit grammar install failed (%s): %s" lang err)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; TypeScript / Go / Kotlin モード設定
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'auto-mode-alist '("\\.ts\\'"  . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
+;; kotlin-mode (MELPA)
+(when (require 'kotlin-mode nil t)
+  (add-to-list 'auto-mode-alist '("\\.kts?\\'" . kotlin-mode)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LSP設定 (lsp-mode + lsp-ui + company)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'lsp-mode)
+(setq lsp-keymap-prefix "C-c l")
+(add-hook 'typescript-ts-mode-hook #'lsp-deferred)
+(add-hook 'tsx-ts-mode-hook        #'lsp-deferred)
+(add-hook 'go-ts-mode-hook         #'lsp-deferred)
+(add-hook 'kotlin-mode-hook        #'lsp-deferred)
+;; lsp-ui
+(require 'lsp-ui)
+(add-hook 'lsp-mode-hook #'lsp-ui-mode)
+(setq lsp-ui-doc-enable      t)
+(setq lsp-ui-sideline-enable t)
+;; キーバインド
+(with-eval-after-load 'lsp-mode
+  (define-key lsp-mode-map (kbd "C-'") #'lsp-find-definition))
+;; company（LSP バッファでは auto-complete を無効化して company を使用）
+(require 'company)
+(add-hook 'lsp-mode-hook
+          (lambda ()
+            (auto-complete-mode -1)
+            (company-mode 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; yasnippet
