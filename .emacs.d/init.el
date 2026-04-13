@@ -28,7 +28,7 @@
   '(auto-complete flycheck smart-compile scala-mode web-mode
     php-mode json-mode yaml-mode markdown-mode terraform-mode
     yasnippet expand-region
-    kotlin-mode lsp-mode lsp-ui company))
+    kotlin-ts-mode lsp-mode lsp-ui company))
 
 ;; パッケージがインストールされていなければインストールする
 ;; アーカイブにパッケージが見つからない場合のみリフレッシュする
@@ -289,7 +289,9 @@
                     "master" "typescript/src")
         (tsx        "https://github.com/tree-sitter/tree-sitter-typescript"
                     "master" "tsx/src")
-        (go         "https://github.com/tree-sitter/tree-sitter-go")))
+        (go         "https://github.com/tree-sitter/tree-sitter-go")
+        (kotlin     "https://github.com/tree-sitter/kotlin-tree-sitter"
+                    "master" "tsx/ktreesitter/src")))
 ;; 未インストールの grammar を起動時に自動インストール
 (dolist (lang (mapcar #'car treesit-language-source-alist))
   (unless (treesit-language-available-p lang)
@@ -303,19 +305,22 @@
 (add-to-list 'auto-mode-alist '("\\.ts\\'"  . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
-;; kotlin-mode (MELPA)
-(when (require 'kotlin-mode nil t)
-  (add-to-list 'auto-mode-alist '("\\.kts?\\'" . kotlin-mode)))
+;; kotlin-ts-mode (MELPA)
+(when (require 'kotlin-ts-mode nil t)
+  (add-to-list 'auto-mode-alist '("\\.kts?\\'" . kotlin-ts-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LSP設定 (lsp-mode + lsp-ui + company)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'lsp-mode)
 (setq lsp-keymap-prefix "C-c l")
+;; 未インストールの LSP サーバーを起動時に自動インストール
+(with-eval-after-load 'lsp-mode
+  (lsp-ensure-server 'kotlin-ls))
 (add-hook 'typescript-ts-mode-hook #'lsp-deferred)
 (add-hook 'tsx-ts-mode-hook        #'lsp-deferred)
 (add-hook 'go-ts-mode-hook         #'lsp-deferred)
-(add-hook 'kotlin-mode-hook        #'lsp-deferred)
+(add-hook 'kotlin-ts-mode-hook     #'lsp-deferred)
 ;; lsp-ui
 (require 'lsp-ui)
 (add-hook 'lsp-mode-hook #'lsp-ui-mode)

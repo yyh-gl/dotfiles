@@ -25,3 +25,4 @@
 .emacs.d/ac-comphist.dat
 .emacs.d/.lsp-session-v1
 .emacs.d/tree-sitter
+.emacs.d/.cache
