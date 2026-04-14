@@ -35,7 +35,7 @@ export PATH=$HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/sc
 
 ## JDK
 # 使用したいJDKのバージョンを指定すること
-export JAVA_HOME=$HOME/jvm/jdk-24.0.1.jdk/Contents/Home
+export JAVA_HOME=$HOME/jvm/jdk-24.0.2.jdk/Contents/Home
 export PATH="$JAVA_HOME/bin:$PATH"
 
 ## Bun
