@@ -7,7 +7,8 @@
          (go-mode . yas-minor-mode)
          (before-save . gofmt-before-save))
   :config
-  (setq gofmt-command "goimports"))
+  (setq gofmt-command "goimports")
+  (add-hook 'go-mode-hook (lambda () (setq-local tab-width 4))))
 
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs

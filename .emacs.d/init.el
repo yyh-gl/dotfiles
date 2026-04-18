@@ -42,8 +42,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Key Bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-'") #'xref-find-definitions)
-(global-set-key (kbd "C-;") #'xref-find-references)
+(global-set-key (kbd "C-'")   #'xref-find-definitions)
+(global-set-key (kbd "C-;")   #'xref-find-references)
+(global-set-key (kbd "C-M-;") #'eglot-find-implementation)
 (setq xref-prompt-for-identifier
       '(not xref-find-definitions
             xref-find-definitions-other-window
