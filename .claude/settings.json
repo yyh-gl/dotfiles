@@ -64,7 +64,9 @@
     "command": "bash ~/.claude/statusline.sh"
   },
   "enabledPlugins": {
-    "skill-creator@claude-plugins-official": true
+    "skill-creator@claude-plugins-official": true,
+    "supabase@supabase-agent-skills": true,
+    "postgres-best-practices@supabase-agent-skills": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
@@ -77,6 +79,12 @@
       "source": {
         "source": "github",
         "repo": "anthropics/skills"
+      }
+    },
+    "supabase-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "supabase/agent-skills"
       }
     }
   },
