@@ -34,11 +34,21 @@
   :ensure t
   :config (projectile-mode +1))
 
+;; Theme
+(use-package ayu-theme
+  :ensure t
+  :config (load-theme 'ayu-dark t))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Key Bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-'") #'xref-find-definitions)
 (global-set-key (kbd "C-;") #'xref-find-references)
+(setq xref-prompt-for-identifier
+      '(not xref-find-definitions
+            xref-find-definitions-other-window
+            xref-find-definitions-other-frame
+            xref-find-references))
 (keyboard-translate ?\C-h ?\C-?)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
