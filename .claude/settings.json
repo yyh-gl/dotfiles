@@ -94,6 +94,6 @@
       ]
     }
   },
-  "plansDirectory": "docs/plans",
-  "effortLevel": "high"
+  "effortLevel": "xhigh",
+  "plansDirectory": "docs/plans"
 }
