@@ -95,7 +95,8 @@
             xref-find-definitions-other-frame
             xref-find-references))
 (keyboard-translate ?\C-h ?\C-?)
-(global-set-key (kbd "M-g") #'goto-line)
+(global-set-key (kbd "M-g")   #'goto-line)
+(global-set-key (kbd "C-x f") #'projectile-find-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Hooks
