@@ -2,6 +2,7 @@
 ;; ▼ Basic Features
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq inhibit-startup-screen t)
+(delete-selection-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Related Config Imports
@@ -54,6 +55,18 @@
 (global-set-key (kbd "C-'")   #'xref-find-definitions)
 (global-set-key (kbd "C-;")   #'xref-find-references)
 (global-set-key (kbd "C-M-;") #'eglot-find-implementation)
+(global-set-key (kbd "C-S-f")
+                (lambda ()
+                  (interactive)
+                  (call-interactively #'projectile-grep)
+                  (pop-to-buffer "*grep*")))
+(unless (display-graphic-p)
+  (define-key key-translation-map "\e[102;6u" (kbd "C-S-f"))
+  (define-key key-translation-map "\e[70;6u"  (kbd "C-S-f")))
+(with-eval-after-load 'grep
+  (define-key grep-mode-map (kbd "C-g") #'quit-window))
+(with-eval-after-load 'xref
+  (define-key xref--xref-buffer-mode-map (kbd "C-g") #'quit-window))
 (setq xref-prompt-for-identifier
       '(not xref-find-definitions
             xref-find-definitions-other-window
