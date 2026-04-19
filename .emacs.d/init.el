@@ -4,6 +4,7 @@
 (setq inhibit-startup-screen t)
 (setq confirm-kill-processes nil)
 (delete-selection-mode 1)
+(global-display-line-numbers-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Related Config Imports
@@ -74,14 +75,18 @@
   (define-key key-translation-map "\e[102;6u" (kbd "C-S-f"))
   (define-key key-translation-map "\e[70;6u"  (kbd "C-S-f")))
 (with-eval-after-load 'grep
-  (define-key grep-mode-map (kbd "C-g") #'quit-window)
-  (define-key grep-mode-map (kbd "RET")
+  (define-key grep-mode-map (kbd "C-g") #'quit-window))
+(with-eval-after-load 'compile
+  (define-key compilation-button-map (kbd "RET")
     (lambda ()
       (interactive)
-      (let ((win (selected-window)))
+      (let ((buf (when (derived-mode-p 'grep-mode) (current-buffer))))
         (compile-goto-error)
-        (when (window-live-p win)
-          (delete-window win))))))
+        (when buf
+          (let ((win (get-buffer-window buf))
+                (kill-buffer-query-functions nil))
+            (when win
+              (quit-window t win))))))))
 (with-eval-after-load 'xref
   (define-key xref--xref-buffer-mode-map (kbd "C-g") #'quit-window))
 (setq xref-prompt-for-identifier
@@ -90,6 +95,7 @@
             xref-find-definitions-other-frame
             xref-find-references))
 (keyboard-translate ?\C-h ?\C-?)
+(global-set-key (kbd "M-g") #'goto-line)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Hooks
