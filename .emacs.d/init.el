@@ -97,6 +97,18 @@
 (keyboard-translate ?\C-h ?\C-?)
 (global-set-key (kbd "M-g")   #'goto-line)
 (global-set-key (kbd "C-x f") #'projectile-find-file)
+(global-set-key (kbd "C-v")
+                (lambda ()
+                  (interactive)
+                  (condition-case nil
+                      (scroll-up-command)
+                    (end-of-buffer (goto-char (point-max))))))
+(global-set-key (kbd "M-v")
+                (lambda ()
+                  (interactive)
+                  (condition-case nil
+                      (scroll-down-command)
+                    (beginning-of-buffer (goto-char (point-min))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Hooks
