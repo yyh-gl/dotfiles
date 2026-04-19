@@ -19,8 +19,12 @@
 [https]
 [core]
 	editor = vim
-	pager = less -R -F -X
+	# pager = less -R -F -X
+	pager = delta
 [pull]
 	rebase = true
 [init]
 	defaultBranch = main
+[delta]
+	navigate = true
+	side-by-side = true
