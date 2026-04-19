@@ -55,16 +55,32 @@
 (global-set-key (kbd "C-'")   #'xref-find-definitions)
 (global-set-key (kbd "C-;")   #'xref-find-references)
 (global-set-key (kbd "C-M-;") #'eglot-find-implementation)
+(defvar my--switch-to-grep-buffer nil)
+(add-hook 'projectile-grep-finished-hook
+          (lambda ()
+            (when my--switch-to-grep-buffer
+              (setq my--switch-to-grep-buffer nil)
+              (let ((buf (cl-find-if
+                          (lambda (b) (string-match-p "\\*grep" (buffer-name b)))
+                          (buffer-list))))
+                (when buf (pop-to-buffer buf))))))
 (global-set-key (kbd "C-S-f")
                 (lambda ()
                   (interactive)
-                  (call-interactively #'projectile-grep)
-                  (pop-to-buffer "*grep*")))
+                  (setq my--switch-to-grep-buffer t)
+                  (call-interactively #'projectile-grep)))
 (unless (display-graphic-p)
   (define-key key-translation-map "\e[102;6u" (kbd "C-S-f"))
   (define-key key-translation-map "\e[70;6u"  (kbd "C-S-f")))
 (with-eval-after-load 'grep
-  (define-key grep-mode-map (kbd "C-g") #'quit-window))
+  (define-key grep-mode-map (kbd "C-g") #'quit-window)
+  (define-key grep-mode-map (kbd "RET")
+    (lambda ()
+      (interactive)
+      (let ((win (selected-window)))
+        (compile-goto-error)
+        (when (window-live-p win)
+          (delete-window win))))))
 (with-eval-after-load 'xref
   (define-key xref--xref-buffer-mode-map (kbd "C-g") #'quit-window))
 (setq xref-prompt-for-identifier
