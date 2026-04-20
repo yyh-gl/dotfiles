@@ -79,9 +79,9 @@
           (lambda () (shell-command-to-string "pbpaste")))
     (setq interprogram-cut-function
           (lambda (text &optional _push)
-            (let ((proc (start-process "pbcopy" nil "pbcopy")))
-              (process-send-string proc text)
-              (process-send-eof proc))))))
+            (with-temp-buffer
+              (insert text)
+              (call-process-region (point-min) (point-max) "pbcopy"))))))
 (with-eval-after-load 'grep
   (define-key grep-mode-map (kbd "C-g") #'quit-window))
 (with-eval-after-load 'compile
