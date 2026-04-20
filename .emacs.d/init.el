@@ -73,7 +73,15 @@
                   (call-interactively #'projectile-grep)))
 (unless (display-graphic-p)
   (define-key key-translation-map "\e[102;6u" (kbd "C-S-f"))
-  (define-key key-translation-map "\e[70;6u"  (kbd "C-S-f")))
+  (define-key key-translation-map "\e[70;6u"  (kbd "C-S-f"))
+  (when (eq system-type 'darwin)
+    (setq interprogram-paste-function
+          (lambda () (shell-command-to-string "pbpaste")))
+    (setq interprogram-cut-function
+          (lambda (text &optional _push)
+            (let ((proc (start-process "pbcopy" nil "pbcopy")))
+              (process-send-string proc text)
+              (process-send-eof proc))))))
 (with-eval-after-load 'grep
   (define-key grep-mode-map (kbd "C-g") #'quit-window))
 (with-eval-after-load 'compile
