@@ -56,7 +56,8 @@ typeset -U path cdpath fpath manpath
 ##############################################
 
 export GITHUB_PAT="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/github-pat.txt)"
-export OPENROUTER_API_KEY="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/openrouter-api-key.txt)"
+export CLAUDE_CODE_API_KEY="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/claude-code-api-key.txt)"
+export CODEX_API_KEY="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/codex-api-key.txt)"
 export OPENAI_API_KEY="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/openai-api-key.txt)"
 export AI_AGENTS_SLACK_WEBHOOK_URL="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/ai-agents-slack-webhook-url.txt)"
 
