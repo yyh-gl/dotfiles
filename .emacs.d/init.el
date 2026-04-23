@@ -18,6 +18,7 @@
 (require 'kotlin)
 (require 'java)
 (require 'vue)
+(require 'json2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Packages
