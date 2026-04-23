@@ -3,6 +3,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq inhibit-startup-screen t)
 (setq confirm-kill-processes nil)
+(setq make-backup-files nil)
+(setq auto-save-default nil)
 (delete-selection-mode 1)
 (global-display-line-numbers-mode 1)
 
