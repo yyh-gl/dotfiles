@@ -4,6 +4,7 @@
 theme = Ayu
 window-height = 99999
 window-width = 99999
+split-divider-color = #5f6527
 
 # background
 background = black
