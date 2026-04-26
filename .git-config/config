@@ -1,6 +1,7 @@
 [user]
 	name = yyh-gl
 	email = yhonda.95.gl@gmail.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAkaiLY/oWmPkrav+TwCBMIkXlEEsKCTdIWiFhGb2IQX
 [color]
 	ui = true
 [alias]
@@ -28,3 +29,9 @@
 [delta]
 	navigate = true
 	side-by-side = true
+[gpg]
+  format = ssh
+[gpg "ssh"]
+  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+[commit]
+  gpgsign = true
