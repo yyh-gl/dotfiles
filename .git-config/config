@@ -2,8 +2,10 @@
 	name = yyh-gl
 	email = yhonda.95.gl@gmail.com
 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAkaiLY/oWmPkrav+TwCBMIkXlEEsKCTdIWiFhGb2IQX
+
 [color]
 	ui = true
+
 [alias]
 	tree = log --graph --all --format=\"%x09%C(cyan bold)%an%Creset%x09%C(yellow)%h%Creset %C(magenta reverse)%d%Creset %s\"
 	st = status
@@ -13,25 +15,27 @@
 	df = diff
 	gr = grep
 	cp = cherry-pick
-[http]
-[https]
-[url "https://"]
-[http]
-[https]
+
 [core]
 	editor = vim
 	# pager = less -R -F -X
 	pager = delta
+
 [pull]
 	rebase = true
+
 [init]
 	defaultBranch = main
+
 [delta]
 	navigate = true
 	side-by-side = true
+
 [gpg]
   format = ssh
+
 [gpg "ssh"]
   program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
 [commit]
   gpgsign = true
