@@ -5,6 +5,7 @@
 (setq confirm-kill-processes nil)
 (setq make-backup-files nil)
 (setq auto-save-default nil)
+(setq require-final-newline t)
 (delete-selection-mode 1)
 (global-display-line-numbers-mode 1)
 
