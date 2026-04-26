@@ -19,6 +19,7 @@
 (require 'java)
 (require 'vue)
 (require 'json2)
+(require 'yaml)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Packages
