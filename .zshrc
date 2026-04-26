@@ -13,8 +13,6 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 	source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
-
 ##############################################
 # PATH
 ##############################################
@@ -50,7 +48,6 @@ export PATH="$HOME/.local/bin:$PATH"
 # TODO: パスはzshrcに書くべきではない？要調査
 typeset -U path cdpath fpath manpath
 
-
 ##############################################
 # Secret
 ##############################################
@@ -79,14 +76,12 @@ cdls ()
 }
 alias cd='cdls'
 
-
 ##############################################
 # lessコマンドの色付け
 ##############################################
 
 export LESS='-R'
 export LESSOPEN='| /usr/local/Cellar/source-highlight/3.1.8_5/bin/src-hilite-lesspipe.sh %s'
-
 
 ##############################################
 # GCP gcloud
@@ -99,7 +94,6 @@ if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
-
 
 ##############################################
 # Git
@@ -155,17 +149,6 @@ gla() {
     git switch $dest_branch
 }
 
-
-##############################################
-#  anyenvセットアップ
-##############################################
-eval "$(anyenv init -)"
-
-
-##############################################
-# Gitのtmp保存/復元ショートカット
-##############################################
-
 rom() {
     git add .
     git cm -m "tmp"
@@ -176,12 +159,15 @@ back() {
     git restore --staged .
 }
 
+##############################################
+#  anyenvセットアップ
+##############################################
+eval "$(anyenv init -)"
 
 ##############################################
 # Bun completions
 ##############################################
 [ -s "/Users/yyh-gl/.bun/_bun" ] && source "/Users/yyh-gl/.bun/_bun"
-
 
 ##############################################
 #  追加機能（シェルスクリプト）
@@ -191,7 +177,6 @@ back() {
 alias mksh='make-shortcut.sh'
 # シンボリックリンク作成プログラム
 alias mksl='make-symbolic-link.sh'
-
 ##############################################
 # エイリアス
 ##############################################
