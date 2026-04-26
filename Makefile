@@ -9,6 +9,15 @@ help: # Help me
 init: # Initialize the environment
 	./bin/init.sh
 
+.PHONY: apply
+apply: # Apply config files to HOME
+	./bin/base.sh
+	./bin/link.sh
+
+.PHONY: snapshot
+snapshot: # Snapshot config files from HOME back to dotfiles
+	./bin/snapshot.sh
+
 .PHONY: build
 build: # Setup my macOS
 	@echo "Setup mode: ${MODE}"
@@ -21,7 +30,6 @@ build: # Setup my macOS
 	make build-go
 	make build-jvm
 	./bin/manual.sh
-
 
 .PHONY: build-go
 build-go: # Setup for Go
