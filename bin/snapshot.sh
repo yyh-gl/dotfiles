@@ -20,7 +20,7 @@ cp -f "$HOME"/.zshenv     "$DOTFILES"/.zshenv
 cp -f "$HOME"/.zshrc      "$DOTFILES"/.zshrc
 
 ## SSH (private)
-cp -rf "$HOME"/.ssh "$PRIVATE_DOTFILES"/
+cp -rf "$HOME"/.ssh/. "$PRIVATE_DOTFILES"/.ssh/
 
 ## Emacs (tracked files only)
 cp -f  "$HOME"/.emacs.d/init.el "$DOTFILES"/.emacs.d/init.el
@@ -29,9 +29,9 @@ cp -rf "$HOME"/.emacs.d/lang    "$DOTFILES"/.emacs.d/
 # --- Counterpart of bin/link.sh ---
 
 ## .config
-cp -rf "$HOME"/.config/karabiner     "$DOTFILES"/.karabiner
+cp -rf "$HOME"/.config/karabiner/* "$DOTFILES"/.karabiner/
 cp -f  "$HOME"/.config/gh/config.yml "$DOTFILES"/.gh-config.yml
-cp -rf "$HOME"/.config/git           "$DOTFILES"/.git-config
+cp -rf "$HOME"/.config/git/* "$DOTFILES"/.git-config/
 cp -f  "$HOME"/.config/ghostty/config "$DOTFILES"/ghostty-config
 
 ## Claude
@@ -47,7 +47,7 @@ cp -rf "$HOME"/.claude/hooks   "$DOTFILES"/.claude/
 cp -f "$HOME"/.kube/config "$PRIVATE_DOTFILES"/.kube-config
 
 ## AWS (private)
-cp -rf "$HOME"/.aws "$PRIVATE_DOTFILES"/
+cp -rf "$HOME"/.aws/. "$PRIVATE_DOTFILES"/.aws/
 
 ## k1LoW/deck (private)
 cp -f "$HOME"/.local/share/deck/credentials.json "$PRIVATE_DOTFILES"/.deck/credentials.json
