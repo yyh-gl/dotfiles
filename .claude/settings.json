@@ -100,7 +100,10 @@
         "registry.yarnpkg.com",
         "pypi.org"
       ]
-    }
+    },
+    "excludedCommands": [
+      "git commit *"
+    ]
   },
   "effortLevel": "xhigh",
   "plansDirectory": "docs/plans"
