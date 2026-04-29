@@ -22,7 +22,7 @@
     ],
     "deny": [
       "Bash(curl:*)",
-      "Bash(git push *)",
+      "Bash(git push*)",
       "Bash(chmod *)",
       "Read(./.env)",
       "Read(./.env.*)",
@@ -30,6 +30,9 @@
       "Read(./credentials/**)",
       "Read(**/*.pem)",
       "Read(**/*.key)"
+    ],
+    "ask": [
+      "Bash(git commit*)"
     ],
     "disableBypassPermissionsMode": "disable"
   },
@@ -102,7 +105,7 @@
       ]
     },
     "excludedCommands": [
-      "git commit *"
+      "git commit*"
     ]
   },
   "effortLevel": "xhigh",
