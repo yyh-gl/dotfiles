@@ -109,5 +109,6 @@
     ]
   },
   "effortLevel": "xhigh",
-  "plansDirectory": "docs/plans"
+  "plansDirectory": "docs/plans",
+  "agentPushNotifEnabled": true
 }
