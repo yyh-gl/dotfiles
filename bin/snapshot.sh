@@ -23,16 +23,16 @@ cp -f "$HOME"/.zshrc "$DOTFILES"/.zshrc
 cp -rf "$HOME"/.ssh/. "$PRIVATE_DOTFILES"/.ssh/
 
 ## Emacs (tracked files only)
-cp -f  "$HOME"/.emacs.d/init.el "$DOTFILES"/.emacs.d/init.el
+cp -f "$HOME"/.emacs.d/init.el "$DOTFILES"/.emacs.d/init.el
 cp -rf "$HOME"/.emacs.d/lang "$DOTFILES"/.emacs.d/
 
 # --- Counterpart of bin/link.sh ---
 
 ## .config
 cp -rf "$HOME"/.config/karabiner/* "$DOTFILES"/.karabiner/
-cp -f  "$HOME"/.config/gh/config.yml "$DOTFILES"/.gh-config.yml
+cp -f "$HOME"/.config/gh/config.yml "$DOTFILES"/.gh-config.yml
 cp -rf "$HOME"/.config/git/* "$DOTFILES"/.git-config/
-cp -f  "$HOME"/.config/ghostty/config "$DOTFILES"/ghostty-config
+cp -f "$HOME"/.config/ghostty/config "$DOTFILES"/ghostty-config
 
 ## Claude
 cp -f "$HOME"/.claude/CLAUDE.md "$DOTFILES"/.claude/CLAUDE.md
