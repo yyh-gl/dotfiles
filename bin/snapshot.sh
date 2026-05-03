@@ -35,9 +35,10 @@ cp -rf "$HOME"/.config/git/* "$DOTFILES"/.git-config/
 cp -f  "$HOME"/.config/ghostty/config "$DOTFILES"/ghostty-config
 
 ## Claude
-cp -f  "$HOME"/.claude/settings.json "$DOTFILES"/.claude/settings.json
-cp -f  "$HOME"/.claude/statusline.sh "$DOTFILES"/.claude/statusline.sh
-cp -f  "$HOME"/.claude/keybindings.json "$DOTFILES"/.claude/keybindings.json
+cp -f "$HOME"/.claude/CLAUDE.md "$DOTFILES"/.claude/CLAUDE.md
+cp -f "$HOME"/.claude/settings.json "$DOTFILES"/.claude/settings.json
+cp -f "$HOME"/.claude/statusline.sh "$DOTFILES"/.claude/statusline.sh
+cp -f "$HOME"/.claude/keybindings.json "$DOTFILES"/.claude/keybindings.json
 cp -rf "$HOME"/.claude/rules "$DOTFILES"/.claude/
 cp -rf "$HOME"/.claude/agents "$DOTFILES"/.claude/
 cp -rf "$HOME"/.claude/skills "$DOTFILES"/.claude/
