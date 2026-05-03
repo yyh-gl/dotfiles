@@ -18,6 +18,7 @@ cp -f "$DOTFILES"/ghostty-config "$HOME"/.config/ghostty/config
 
 ## Claude
 mkdir -p "$HOME"/.claude
+cp -f "$DOTFILES"/.claude/CLAUDE.md "$HOME"/.claude/CLAUDE.md
 cp -f "$DOTFILES"/.claude/settings.json "$HOME"/.claude/settings.json
 cp -f "$DOTFILES"/.claude/statusline.sh "$HOME"/.claude/statusline.sh
 cp -f "$DOTFILES"/.claude/keybindings.json "$HOME"/.claude/keybindings.json
