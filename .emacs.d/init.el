@@ -52,6 +52,11 @@
   :ensure t
   :config (load-theme 'ayu-dark t))
 
+;; Extend Selection
+(use-package expand-region
+  :ensure t
+  :bind ("C-M-w" . er/expand-region))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Key Bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
