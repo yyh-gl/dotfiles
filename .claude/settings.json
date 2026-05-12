@@ -95,6 +95,16 @@
   "sandbox": {
     "enabled": true,
     "allowUnsandboxedCommands": false,
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "raw.githubusercontent.com",
+        "objects.githubusercontent.com",
+        "registry.npmjs.org",
+        "proxy.golang.org",
+        "sum.golang.org"
+      ]
+    },
     "excludedCommands": [
       "git commit*"
     ]
