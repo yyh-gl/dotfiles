@@ -95,15 +95,6 @@
   "sandbox": {
     "enabled": true,
     "allowUnsandboxedCommands": false,
-    "network": {
-      "allowedDomains": [
-        "github.com",
-        "*.githubusercontent.com",
-        "*.npmjs.org",
-        "registry.yarnpkg.com",
-        "pypi.org"
-      ]
-    },
     "excludedCommands": [
       "git commit*"
     ]
