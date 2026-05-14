@@ -25,7 +25,7 @@ make build-jvm  # Install JVM (version from .env.public)
 ### Setup Flow
 
 `bin/init.sh` → `make build` → runs these scripts in order:
-1. `bin/base.sh` — Edit `.env.public`, link Zsh configs, setup SSH via anyenv/Emacs symlinks
+1. `bin/base.sh` — Edit `.env.public`, link Zsh configs, setup SSH via Emacs symlinks
 2. `bin/brew.sh` — Install Homebrew packages from `.brewfile-base` (and `.brewfile-hobby` if `MODE=hobby`)
 3. `bin/gh.sh` — GitHub CLI setup
 4. `bin/link.sh` — Create all symlinks (tool configs, Claude settings, k8s, AWS, Google Drive)
