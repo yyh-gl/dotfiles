@@ -177,13 +177,15 @@ alias mksl='make-symbolic-link.sh'
 # エイリアス
 ##############################################
 
-alias fix='e $HOME/workspaces/github.com/yyh-gl/dotfiles/.zshrc'
+alias fix='e $HOME/.zshrc'
 alias load='exec $SHELL -l'
 
 ## 開発関連
+alias ll='ls -l'
+alias la='ls -al'
 alias e='emacs'
-alias fixe='e $HOME/workspaces/github.com/yyh-gl/dotfiles/.emacs.d/init.el'
-alias fixs='e $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/.ssh/config'
+alias fixe='e $HOME/.emacs.d/init.el'
+alias fixs='e $HOME/.ssh/config'
 alias xcode='open -a Xcode'
 alias tf='terraform'
 alias k='kubectl'
