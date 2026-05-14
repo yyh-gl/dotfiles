@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-macOS dotfiles repository. Manages shell configs, tool settings, and setup scripts via symlinks to `$HOME`.
+macOS dotfiles repository. Manages shell configs, tool settings, and setup scripts via file copies to `$HOME`.
 
 ## Key Commands
 
@@ -18,6 +18,12 @@ make build      # Run all setup scripts sequentially
 # Partial builds
 make build-go   # Install Go (version from .env.public)
 make build-jvm  # Install JVM (version from .env.public)
+
+# Apply config files to $HOME (without full build)
+make apply      # Run base.sh + link.sh only
+
+# Sync $HOME configs back to dotfiles
+make snapshot   # Reverse of apply — copy $HOME configs back for git diff/commit
 ```
 
 ## Architecture
@@ -25,24 +31,36 @@ make build-jvm  # Install JVM (version from .env.public)
 ### Setup Flow
 
 `bin/init.sh` → `make build` → runs these scripts in order:
-1. `bin/base.sh` — Edit `.env.public`, link Zsh configs, setup SSH via Emacs symlinks
+1. `bin/base.sh` — Edit `.env.public`, copy Zsh configs, setup SSH, copy Emacs configs
 2. `bin/brew.sh` — Install Homebrew packages from `.brewfile-base` (and `.brewfile-hobby` if `MODE=hobby`)
 3. `bin/gh.sh` — GitHub CLI setup
-4. `bin/link.sh` — Create all symlinks (tool configs, Claude settings, k8s, AWS, Google Drive)
+4. `bin/link.sh` — Copy all tool configs (Claude settings, karabiner, k8s, AWS, Google Drive)
 5. `bin/defaults.sh` — Apply macOS system defaults from `.defaults/`
 6. `bin/mas.sh` — Install Mac App Store apps
 7. `bin/go.sh` / `bin/jvm.sh` — Install language runtimes
 8. `bin/manual.sh` — Final manual steps
 
-### Symlink Strategy
+### Config Copy Strategy
 
-All config files live here and are symlinked into `$HOME` or `$HOME/.config/`. Key links created by `bin/link.sh`:
-- `.zshrc`, `.zshenv`, `.zprofile`, etc. → `$HOME/`
-- `.claude/settings.json`, `.claude/rules`, `.claude/agents`, `.claude/skills`, `.claude/hooks` → `$HOME/.claude/`
-- `.karabiner` → `$HOME/.config/karabiner`
+All config files live here and are **copied** (`cp`) into `$HOME` or `$HOME/.config/` by `bin/base.sh` and `bin/link.sh`. Only Google Drive directories use actual symlinks (`ln -sf`).
+
+Key copies performed by `bin/base.sh`:
+- `.zlogin`, `.zlogout`, `.zpreztorc`, `.zprofile`, `.zshenv`, `.zshrc` → `$HOME/`
+- `depended-repositories/prezto/` → `$HOME/.zprezto/`
+- `depended-repositories/dotfiles-private/.ssh/` → `$HOME/.ssh/`
+- `.emacs.d/` → `$HOME/.emacs.d/`
+
+Key copies performed by `bin/link.sh`:
+- `.karabiner/` → `$HOME/.config/karabiner/`
 - `.gh-config.yml` → `$HOME/.config/gh/config.yml`
-- `.git-config` → `$HOME/.config/git`
+- `.git-config/` → `$HOME/.config/git/`
 - `ghostty-config` → `$HOME/.config/ghostty/config`
+- `.claude/CLAUDE.md`, `.claude/settings.json`, `.claude/statusline.sh`, `.claude/keybindings.json` → `$HOME/.claude/`
+- `.claude/rules`, `.claude/agents`, `.claude/skills`, `.claude/hooks` → `$HOME/.claude/`
+- `depended-repositories/dotfiles-private/.kube-config` → `$HOME/.kube/config`
+- `depended-repositories/dotfiles-private/.aws/` → `$HOME/.aws/`
+
+To sync changes made directly in `$HOME` back to this repo, run `make snapshot`.
 
 ### Submodules (`depended-repositories/`)
 
@@ -56,5 +74,5 @@ All config files live here and are symlinked into `$HOME` or `$HOME/.config/`. K
 ### Build Mode
 
 `MODE` env var (set in `.env.public`) controls conditional logic in scripts:
-- `hobby` — Links personal Google Drive directories
-- `work` — Links work-specific directories
+- `hobby` — Links personal Google Drive directories to `$HOME/Desktop/hobby` and `$HOME/Pictures`
+- `work` — Creates `$HOME/Desktop/work` directory
