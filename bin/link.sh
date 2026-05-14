@@ -15,7 +15,7 @@ mkdir -p "$HOME"/.config/git
 cp -rf "$DOTFILES"/.git-config/. "$HOME"/.config/git
 mkdir -p "$HOME"/.config/ghostty
 cp -f "$DOTFILES"/ghostty-config "$HOME"/.config/ghostty/config
-cp -f "$DOTFILES"/starship.toml "$HOME"/.config/starship.toml
+cp -f "$DOTFILES"/starship.toml "$HOME"/.config/
 
 ## Claude
 mkdir -p "$HOME"/.claude
