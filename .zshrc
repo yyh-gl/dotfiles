@@ -8,10 +8,10 @@
 #   Yusuke Honda <https://github.com/yyh-gl>
 #
 
-# Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
+##############################################
+# Prompt Styling
+##############################################
+eval "$(starship init zsh)"
 
 ##############################################
 # PATH
@@ -172,6 +172,7 @@ back() {
 alias mksh='make-shortcut.sh'
 # シンボリックリンク作成プログラム
 alias mksl='make-symbolic-link.sh'
+
 ##############################################
 # エイリアス
 ##############################################
