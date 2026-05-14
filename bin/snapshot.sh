@@ -33,6 +33,7 @@ cp -rf "$HOME"/.config/karabiner/* "$DOTFILES"/.karabiner/
 cp -f "$HOME"/.config/gh/config.yml "$DOTFILES"/.gh-config.yml
 cp -rf "$HOME"/.config/git/* "$DOTFILES"/.git-config/
 cp -f "$HOME"/.config/ghostty/config "$DOTFILES"/ghostty-config
+cp -f "$HOME"/.config/starship.toml "$DOTFILES"/starship.toml
 
 ## Claude
 cp -f "$HOME"/.claude/CLAUDE.md "$DOTFILES"/.claude/CLAUDE.md
