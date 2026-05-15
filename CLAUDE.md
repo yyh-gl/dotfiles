@@ -80,8 +80,9 @@ To sync changes made directly in `$HOME` back to this repo, run `make snapshot`.
 `nix/` ディレクトリで nix-darwin + home-manager による宣言的管理を段階的に導入中。
 
 ```
+flake.nix              # entrypoint (nixpkgs-unstable + nix-darwin + home-manager)
+flake.lock             # 依存ロックファイル
 nix/
-├── flake.nix          # entrypoint (nixpkgs-unstable + nix-darwin + home-manager)
 ├── darwin/
 │   └── default.nix    # nix-darwin設定 (system.defaults, Homebrew管理など)
 └── home/
@@ -98,15 +99,15 @@ nix/
 sudo rm /etc/zshrc /etc/bashrc
 
 # 3. シェルを再起動後、初回ビルド (nix-darwin未インストールの場合)
-git add nix/   # Nixはgit追跡ファイルのみ読み込む
-sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake ./nix#yyh-gl-mac
+git add nix/ flake.nix flake.lock   # Nixはgit追跡ファイルのみ読み込む
+sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#yyh-gl-mac
 
 # 4. 以降は make nix-switch で適用
 make nix-switch
 ```
 
 **注意事項:**
-- `nix/` 配下のファイルを変更したら `git add` してから `make nix-switch` を実行する（未追跡ファイルはNixに読み込まれない）
+- ファイルを変更したら `git add` してから `make nix-switch` を実行する（未追跡ファイルはNixに読み込まれない）
 - `darwin-rebuild switch` はシステム設定変更のため `sudo` が必要
 - `services.nix-daemon.enable` は最新nix-darwinで廃止済み（`nix.enable` が自動管理）
 
