@@ -1,7 +1,4 @@
-{ pkgs, ... }:
-let
-  dotfiles = /Users/yyh-gl/workspaces/github.com/yyh-gl/dotfiles;
-in {
+{ pkgs, dotfiles, ... }: {
   home.username = "yyh-gl";
   home.homeDirectory = "/Users/yyh-gl";
   home.stateVersion = "26.05";
@@ -48,7 +45,7 @@ in {
       eval $(/opt/homebrew/bin/brew shellenv)
     '';
 
-    initExtra = ''
+    initContent = ''
       # Prezto
       if [[ -s "''${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
         source "''${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
