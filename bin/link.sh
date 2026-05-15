@@ -11,11 +11,6 @@ mkdir -p "$HOME"/workspaces
 cp -rf "$DOTFILES"/.karabiner/. "$HOME"/.config/karabiner
 mkdir -p "$HOME"/.config/gh
 cp -f "$DOTFILES"/.gh-config.yml "$HOME"/.config/gh/config.yml
-mkdir -p "$HOME"/.config/git
-cp -rf "$DOTFILES"/.git-config/. "$HOME"/.config/git
-mkdir -p "$HOME"/.config/ghostty
-cp -f "$DOTFILES"/ghostty-config "$HOME"/.config/ghostty/config
-cp -f "$DOTFILES"/starship.toml "$HOME"/.config/
 
 ## Claude
 mkdir -p "$HOME"/.claude
