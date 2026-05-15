@@ -66,6 +66,18 @@ git log --oneline -5
 - `ui` … 画面・コンポーネント
 - `config` … 設定ファイル
 
+**固有名詞・ツール名は正式名称（公式の大文字小文字）を使うこと:**
+
+- `Zsh`（`zsh` NG）
+- `Nix`（`nix` NG）
+- `Homebrew`（`homebrew` NG）
+- `Git`（`git` NG）
+- `GitHub`（`github` NG）
+- `Emacs`（`emacs` NG）
+- `Starship`（`starship` NG）
+
+ツール名・プロダクト名・フレームワーク名など固有名詞が含まれる場合は、必ず公式サイトや公式リポジトリの表記に従う。
+
 変更が複数の無関係なドメインにまたがり、1語で表現できない場合のみスコープを省略する:
 `feat: implement X`
 

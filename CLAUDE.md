@@ -10,7 +10,7 @@ macOS dotfiles repository. Manages shell configs, tool settings, and setup scrip
 
 ```sh
 # Initial setup (run once on a fresh machine)
-make init       # Install Homebrew, Git, Xcode, clone repo
+make init       # Install Homebrew, Git, Xcode, clone repo, install Nix
 
 # Full setup
 make build      # Run all setup scripts sequentially
@@ -24,6 +24,10 @@ make apply      # Run base.sh + link.sh only
 
 # Sync $HOME configs back to dotfiles
 make snapshot   # Reverse of apply — copy $HOME configs back for git diff/commit
+
+# Nix
+make nix-switch # Apply Nix configuration (darwin-rebuild switch)
+make nix-update # Update flake.lock to latest inputs
 ```
 
 ## Architecture
@@ -70,6 +74,42 @@ To sync changes made directly in `$HOME` back to this repo, run `make snapshot`.
 | `go-installer` | Go version installer script |
 | `prezto` | Zsh framework |
 | `scripts` | Utility scripts |
+
+### Nix Setup
+
+`nix/` ディレクトリで nix-darwin + home-manager による宣言的管理を段階的に導入中。
+
+```
+flake.nix              # entrypoint (nixpkgs-unstable + nix-darwin + home-manager)
+flake.lock             # 依存ロックファイル
+nix/
+├── darwin/
+│   └── default.nix    # nix-darwin設定 (system.defaults, Homebrew管理など)
+└── home/
+    └── default.nix    # home-manager設定 (dotfile管理, programs.zshなど)
+```
+
+**初回セットアップ手順:**
+
+```sh
+# 1. Nixをインストール (make init に含まれているが、単独実行も可)
+./bin/install-nix.sh
+
+# 2. /etc/zshrc と /etc/bashrc を削除 (nix-darwinが管理するため)
+sudo rm /etc/zshrc /etc/bashrc
+
+# 3. シェルを再起動後、初回ビルド (nix-darwin未インストールの場合)
+git add nix/ flake.nix flake.lock   # Nixはgit追跡ファイルのみ読み込む
+sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#yyh-gl-mac
+
+# 4. 以降は make nix-switch で適用
+make nix-switch
+```
+
+**注意事項:**
+- ファイルを変更したら `git add` してから `make nix-switch` を実行する（未追跡ファイルはNixに読み込まれない）
+- `darwin-rebuild switch` はシステム設定変更のため `sudo` が必要
+- `services.nix-daemon.enable` は最新nix-darwinで廃止済み（`nix.enable` が自動管理）
 
 ### Build Mode
 
