@@ -22,6 +22,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "bak";
           home-manager.extraSpecialArgs = { dotfiles = self; };
           home-manager.users.yyh-gl = import ./nix/home/default.nix;
         }
