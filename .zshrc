@@ -181,8 +181,9 @@ alias fix='e $HOME/.zshrc'
 alias load='exec $SHELL -l'
 
 ## 開発関連
-alias ll='ls -l'
-alias la='ls -al'
+alias ls='ls -GF'
+alias ll='ls -lGF'
+alias la='ls -alGF'
 alias e='emacs'
 alias fixe='e $HOME/.emacs.d/init.el'
 alias fixs='e $HOME/.ssh/config'
