@@ -8,6 +8,7 @@ help: # Help me
 .PHONY: init
 init: # Initialize the environment
 	./bin/init.sh
+	./bin/install-nix.sh
 
 .PHONY: apply
 apply: # Apply config files to HOME
@@ -38,3 +39,11 @@ build-go: # Setup for Go
 .PHONY: build-jvm
 build-jvm: # Setup for JVM
 	JVM_VERSION=${JVM_VERSION} ./bin/jvm.sh
+
+.PHONY: nix-switch
+nix-switch: # Apply Nix configuration
+	sudo darwin-rebuild switch --flake .#yyh-gl-mac
+
+.PHONY: nix-update
+nix-update: # Update Nix flake inputs
+	nix flake update
