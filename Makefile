@@ -42,7 +42,7 @@ build-jvm: # Setup for JVM
 
 .PHONY: nix-switch
 nix-switch: # Apply Nix configuration
-	darwin-rebuild switch --flake ./nix#yyh-gl-mac
+	sudo darwin-rebuild switch --flake ./nix#yyh-gl-mac
 
 .PHONY: nix-update
 nix-update: # Update Nix flake inputs
