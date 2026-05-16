@@ -26,7 +26,6 @@ build: # Setup my macOS
 	./bin/brew.sh
 	./bin/gh.sh
 	./bin/link.sh
-	./bin/defaults.sh
 	./bin/mas.sh
 	make build-go
 	make build-jvm
