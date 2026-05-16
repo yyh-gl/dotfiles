@@ -9,5 +9,6 @@
     ./dotfiles.nix
     ./zsh.nix
     ./vscode.nix
+    ./emacs.nix
   ];
 }

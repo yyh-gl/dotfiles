@@ -14,10 +14,6 @@ PRIVATE_DOTFILES="$DOTFILES/depended-repositories/dotfiles-private"
 ## SSH (private)
 cp -rf "$HOME"/.ssh/. "$PRIVATE_DOTFILES"/.ssh/
 
-## Emacs (tracked files only)
-cp -f "$HOME"/.emacs.d/init.el "$DOTFILES"/.emacs.d/init.el
-cp -rf "$HOME"/.emacs.d/lang "$DOTFILES"/.emacs.d/
-
 # --- Counterpart of bin/link.sh ---
 
 ## .config

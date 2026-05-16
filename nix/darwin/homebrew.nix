@@ -19,7 +19,6 @@
       "awscli"
       "deck"
       "deno"
-      "emacs"
       "figlet"
       "pango"
       "fontforge"
