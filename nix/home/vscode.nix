@@ -1,0 +1,50 @@
+{ pkgs, vscode-extensions, ... }: {
+  programs.vscode = {
+    enable = true;
+    extensions = with vscode-extensions.vscode-marketplace; [
+      anthropic.claude-code
+      atsushieno.language-review
+      bierner.markdown-mermaid
+      darkriszty.markdown-table-prettify
+      dbaeumer.vscode-eslint
+      denoland.vscode-deno
+      dineug.vuerd-vscode
+      esbenp.prettier-vscode
+      github.copilot
+      github.copilot-chat
+      github.vscode-github-actions
+      github.vscode-pull-request-github
+      golang.go
+      grapecity.gc-excelviewer
+      jebbs.plantuml
+      jetbrains.jetbrains-ai-assistant
+      mathiasfrohlich.kotlin
+      maximilionus.dark-shell
+      ms-azuretools.vscode-containers
+      ms-azuretools.vscode-docker
+      ms-kubernetes-tools.vscode-kubernetes-tools
+      ms-vscode.vscode-typescript-next
+      ms-vsliveshare.vsliveshare
+      pkief.material-icon-theme
+      redhat.java
+      redhat.vscode-yaml
+      rokoroku.vscode-theme-darcula
+      romanpeshkov.vscode-text-tables
+      rooveterinaryinc.roo-cline
+      saoudrizwan.claude-dev
+      tuttieee.emacs-mcx
+      usernamehw.errorlens
+      vmware.vscode-boot-dev-pack
+      vmware.vscode-spring-boot
+      vscjava.vscode-gradle
+      vscjava.vscode-java-debug
+      vscjava.vscode-java-dependency
+      vscjava.vscode-java-pack
+      vscjava.vscode-java-test
+      vscjava.vscode-maven
+      vscjava.vscode-spring-boot-dashboard
+      vscjava.vscode-spring-initializr
+      vue.volar
+    ];
+  };
+}
