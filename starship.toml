@@ -7,6 +7,7 @@ format = """
 $directory\
 [](fg:#769ff0 bg:#394260)\
 $git_branch\
+$git_state\
 $git_status\
 [](fg:#394260 bg:#212736)\
 $nodejs\
@@ -36,9 +37,14 @@ symbol = ""
 style = "bg:#394260"
 format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
 
+[git_state]
+style = "bg:#394260"
+format = '[[ $state( $progress_current/$progress_total) ](fg:#f5a623 bg:#394260)]($style)'
+
 [git_status]
 style = "bg:#394260"
 format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
+conflicted = "⚡${count} "
 
 [nodejs]
 symbol = ""
