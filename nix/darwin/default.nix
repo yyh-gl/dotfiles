@@ -1,5 +1,8 @@
 { pkgs, ... }: {
-  imports = [ ./homebrew.nix ];
+  imports = [
+    ./homebrew.nix
+    ./defaults.nix
+  ];
 
   system.stateVersion = 6;
   system.primaryUser = "yyh-gl";
