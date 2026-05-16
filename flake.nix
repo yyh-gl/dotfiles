@@ -11,9 +11,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-vscode-extensions = {
+      url = "github:nix-community/nix-vscode-extensions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, ... }: {
+  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-vscode-extensions, ... }: {
     darwinConfigurations."yyh-gl-mac" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       modules = [
@@ -22,7 +26,10 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { dotfiles = self; };
+          home-manager.extraSpecialArgs = {
+            dotfiles = self;
+            vscode-extensions = nix-vscode-extensions.extensions."aarch64-darwin";
+          };
           home-manager.users.yyh-gl = import ./nix/home/default.nix;
         }
       ];
