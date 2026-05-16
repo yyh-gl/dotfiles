@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin = {
-      url = "github:LnL7/nix-darwin";
+      url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
@@ -22,7 +22,6 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "bak";
           home-manager.extraSpecialArgs = { dotfiles = self; };
           home-manager.users.yyh-gl = import ./nix/home/default.nix;
         }
