@@ -1,7 +1,7 @@
-{ pkgs, vscode-extensions, ... }: {
+{ pkgs, ... }: {
   programs.vscode = {
     enable = true;
-    extensions = with vscode-extensions.vscode-marketplace; [
+    profiles.default.extensions = with pkgs.vscode-marketplace; [
       anthropic.claude-code
       atsushieno.language-review
       bierner.markdown-mermaid

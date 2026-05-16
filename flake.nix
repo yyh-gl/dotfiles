@@ -21,15 +21,13 @@
     darwinConfigurations."yyh-gl-mac" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       modules = [
+        { nixpkgs.overlays = [ nix-vscode-extensions.overlays.default ]; }
         ./nix/darwin/default.nix
         home-manager.darwinModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = {
-            dotfiles = self;
-            vscode-extensions = nix-vscode-extensions.extensions."aarch64-darwin";
-          };
+          home-manager.extraSpecialArgs = { dotfiles = self; };
           home-manager.users.yyh-gl = import ./nix/home/default.nix;
         }
       ];
