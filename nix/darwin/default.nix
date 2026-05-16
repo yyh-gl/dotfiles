@@ -1,4 +1,6 @@
 { pkgs, ... }: {
+  imports = [ ./homebrew.nix ];
+
   system.stateVersion = 6;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
