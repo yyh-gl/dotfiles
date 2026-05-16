@@ -36,7 +36,7 @@ make nix-update # Update flake.lock to latest inputs
 
 `bin/init.sh` → `make build` → runs these scripts in order:
 1. `bin/base.sh` — Edit `.env.public`, copy Zsh configs, setup SSH, copy Emacs configs
-2. `bin/brew.sh` — Install Homebrew packages from `.brewfile-base` (and `.brewfile-hobby` if `MODE=hobby`)
+2. `bin/brew.sh` — Install Homebrew packages from `.brewfile-hobby` (hobby mode only). taps/brews/casks are managed by nix-darwin; VSCode extensions and gopls are managed by home-manager.
 3. `bin/gh.sh` — GitHub CLI setup
 4. `bin/link.sh` — Copy all tool configs (Claude settings, karabiner, k8s, AWS, Google Drive)
 5. `bin/defaults.sh` — Apply macOS system defaults from `.defaults/`
