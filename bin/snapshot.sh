@@ -11,14 +11,6 @@ PRIVATE_DOTFILES="$DOTFILES/depended-repositories/dotfiles-private"
 
 # --- Counterpart of bin/base.sh ---
 
-## Zsh configs
-cp -f "$HOME"/.zlogin "$DOTFILES"/.zlogin
-cp -f "$HOME"/.zlogout "$DOTFILES"/.zlogout
-cp -f "$HOME"/.zpreztorc "$DOTFILES"/.zpreztorc
-cp -f "$HOME"/.zprofile "$DOTFILES"/.zprofile
-cp -f "$HOME"/.zshenv "$DOTFILES"/.zshenv
-cp -f "$HOME"/.zshrc "$DOTFILES"/.zshrc
-
 ## SSH (private)
 cp -rf "$HOME"/.ssh/. "$PRIVATE_DOTFILES"/.ssh/
 
