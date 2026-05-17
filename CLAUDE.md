@@ -54,8 +54,8 @@ Key copies performed by `bin/link.sh`:
 - `.gh-config.yml` → `$HOME/.config/gh/config.yml`
 - `.git-config/` → `$HOME/.config/git/`
 - `ghostty-config` → `$HOME/.config/ghostty/config`
-- `.claude/CLAUDE.md`, `.claude/settings.json`, `.claude/statusline.sh`, `.claude/keybindings.json` → `$HOME/.claude/`
-- `.claude/rules`, `.claude/agents`, `.claude/skills`, `.claude/hooks` → `$HOME/.claude/`
+- `claude/CLAUDE.md`, `claude/settings.json`, `claude/statusline.sh`, `claude/keybindings.json` → `$HOME/.claude/`
+- `claude/rules`, `claude/agents`, `claude/skills`, `claude/hooks` → `$HOME/.claude/`
 - `depended-repositories/dotfiles-private/.kube-config` → `$HOME/.kube/config`
 - `depended-repositories/dotfiles-private/.aws/` → `$HOME/.aws/`
 
