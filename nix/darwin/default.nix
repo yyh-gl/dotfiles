@@ -13,8 +13,8 @@
   system.keyboard.remapCapsLockToControl = true;
   system.keyboard.userKeyMapping = [
     {
-      HIDKeyboardModifierMappingSrc = 0x7000000E5;
-      HIDKeyboardModifierMappingDst = 0x7000000E6;
+      HIDKeyboardModifierMappingSrc = 30064771301; # Right Shift (0x7000000E5)
+      HIDKeyboardModifierMappingDst = 30064771302; # Right Option (0x7000000E6)
     }
   ];
 
