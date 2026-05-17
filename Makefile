@@ -27,17 +27,7 @@ build: # Setup my macOS
 	./bin/gh.sh
 	./bin/link.sh
 	./bin/mas.sh
-	make build-go
-	make build-jvm
 	./bin/manual.sh
-
-.PHONY: build-go
-build-go: # Setup for Go
-	GO_VERSION=${GO_VERSION} ./bin/go.sh
-
-.PHONY: build-jvm
-build-jvm: # Setup for JVM
-	JVM_VERSION=${JVM_VERSION} ./bin/jvm.sh
 
 .PHONY: nix-switch
 nix-switch: # Apply Nix configuration

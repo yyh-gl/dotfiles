@@ -15,10 +15,6 @@ make init       # Install Homebrew, Git, Xcode, clone repo, install Nix
 # Full setup
 make build      # Run all setup scripts sequentially
 
-# Partial builds
-make build-go   # Install Go (version from .env.public)
-make build-jvm  # Install JVM (version from .env.public)
-
 # Apply config files to $HOME (without full build)
 make apply      # Run base.sh + link.sh only
 
@@ -41,8 +37,7 @@ make nix-update # Update flake.lock to latest inputs
 4. `bin/link.sh` — Copy all tool configs (Claude settings, karabiner, k8s, AWS, Google Drive)
 5. `bin/defaults.sh` — Apply macOS system defaults from `.defaults/`
 6. `bin/mas.sh` — Install Mac App Store apps
-7. `bin/go.sh` / `bin/jvm.sh` — Install language runtimes
-8. `bin/manual.sh` — Final manual steps
+7. `bin/manual.sh` — Final manual steps
 
 ### Config Copy Strategy
 
@@ -71,7 +66,6 @@ To sync changes made directly in `$HOME` back to this repo, run `make snapshot`.
 | Submodule | Purpose |
 |-----------|---------|
 | `dotfiles-private` | Private configs (SSH, AWS, kubeconfig, credentials) |
-| `go-installer` | Go version installer script |
 | `prezto` | Zsh framework |
 | `scripts` | Utility scripts |
 
