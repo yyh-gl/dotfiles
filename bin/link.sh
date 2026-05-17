@@ -11,17 +11,6 @@ mkdir -p "$HOME"/workspaces
 mkdir -p "$HOME"/.config/gh
 cp -f "$DOTFILES"/.gh-config.yml "$HOME"/.config/gh/config.yml
 
-## Claude
-mkdir -p "$HOME"/.claude
-cp -f "$DOTFILES"/claude/CLAUDE.md "$HOME"/.claude/CLAUDE.md
-cp -f "$DOTFILES"/claude/settings.json "$HOME"/.claude/settings.json
-cp -f "$DOTFILES"/claude/statusline.sh "$HOME"/.claude/statusline.sh
-cp -f "$DOTFILES"/claude/keybindings.json "$HOME"/.claude/keybindings.json
-cp -rf "$DOTFILES"/claude/rules "$HOME"/.claude/
-cp -rf "$DOTFILES"/claude/agents "$HOME"/.claude/
-cp -rf "$DOTFILES"/claude/skills "$HOME"/.claude/
-cp -rf "$DOTFILES"/claude/hooks "$HOME"/.claude/
-
 ## k8s
 mkdir -p "$HOME"/.kube
 cp -f "$DOTFILES"/depended-repositories/dotfiles-private/.kube-config "$HOME"/.kube/config
