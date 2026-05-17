@@ -22,5 +22,6 @@
     ./zsh.nix
     ./vscode.nix
     ./emacs.nix
+    ./claude.nix
   ];
 }
