@@ -8,7 +8,6 @@ DOTFILES="$HOME/workspaces/github.com/yyh-gl/dotfiles"
 ## .config
 mkdir -p "$HOME"/.config
 mkdir -p "$HOME"/workspaces
-cp -rf "$DOTFILES"/.karabiner/. "$HOME"/.config/karabiner
 mkdir -p "$HOME"/.config/gh
 cp -f "$DOTFILES"/.gh-config.yml "$HOME"/.config/gh/config.yml
 
