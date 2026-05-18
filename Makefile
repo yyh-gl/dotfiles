@@ -20,7 +20,6 @@ snapshot: # Snapshot config files from HOME back to dotfiles
 .PHONY: build
 build: # Setup my macOS
 	./bin/base.sh
-	./bin/brew.sh
 	./bin/gh.sh
 	./bin/link.sh
 	./bin/mas.sh
