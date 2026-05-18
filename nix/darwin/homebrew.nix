@@ -79,7 +79,7 @@
       "discord"
       "1password"
       "1password-cli"
-      "tailscale"
+      "tailscale-app"
     ];
     masApps = lib.optionalAttrs (mode == "hobby") {
       "1Password for Safari" = 1569813296;
