@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, mode, ... }: {
   homebrew = {
     enable = true;
     onActivation = {
@@ -77,6 +77,17 @@
       "switchhosts"
       "tableplus"
       "zoom"
+    ] ++ lib.optionals (mode == "hobby") [
+      "1password"
+      "1password-cli"
+      "tailscale"
     ];
+    masApps = lib.optionalAttrs (mode == "hobby") {
+      "1Password for Safari" = 1569813296;
+      "Kindle"               = 302584613;
+      "LINE"                 = 539883307;
+      "Skitch"               = 425955336;
+      "Tailscale"            = 1475387142;
+    };
   };
 }

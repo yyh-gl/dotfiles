@@ -1,5 +1,3 @@
-include .env.public
-
 .DEFAULT_GOAL := help
 .PHONY: help
 help: # Help me
@@ -21,7 +19,6 @@ snapshot: # Snapshot config files from HOME back to dotfiles
 
 .PHONY: build
 build: # Setup my macOS
-	@echo "Setup mode: ${MODE}"
 	./bin/base.sh
 	./bin/brew.sh
 	./bin/gh.sh
@@ -29,9 +26,13 @@ build: # Setup my macOS
 	./bin/mas.sh
 	./bin/manual.sh
 
-.PHONY: nix-switch
-nix-switch: # Apply Nix configuration
-	sudo darwin-rebuild switch --flake .#yyh-gl-mac
+.PHONY: nix-switch-hobby
+nix-switch-hobby: # Apply Nix configuration (hobby mode)
+	sudo darwin-rebuild switch --flake .#yyh-gl-mac-hobby
+
+.PHONY: nix-switch-work
+nix-switch-work: # Apply Nix configuration (work mode)
+	sudo darwin-rebuild switch --flake .#yyh-gl-mac-work
 
 .PHONY: nix-update
 nix-update: # Update Nix flake inputs
