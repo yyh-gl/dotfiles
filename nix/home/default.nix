@@ -1,9 +1,18 @@
-{ pkgs, ... }: {
-  home.username = "yyh-gl";
-  home.homeDirectory = "/Users/yyh-gl";
+{ pkgs, username, homeDirectory, ... }: {
+  home.username = username;
+  home.homeDirectory = homeDirectory;
   home.stateVersion = "26.05";
 
-  home.packages = [ pkgs.gopls ];
+  home.packages = [
+    pkgs.delta
+    pkgs.fzf
+    pkgs.gopls
+    pkgs.jq
+    pkgs.nkf
+    pkgs.nmap
+    pkgs.starship
+    pkgs.tree
+  ];
 
   programs.go = {
     enable = true;

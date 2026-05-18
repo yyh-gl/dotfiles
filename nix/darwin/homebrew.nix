@@ -1,4 +1,4 @@
-{ pkgs, lib, mode, ... }: {
+{ lib, mode, ... }: {
   homebrew = {
     enable = true;
     onActivation = {
@@ -22,7 +22,6 @@
       "figlet"
       "pango"
       "fontforge"
-      "fzf"
       "ghostscript"
       "gibo"
       "git"
@@ -31,15 +30,12 @@
       "helmfile"
       "hub"
       "hugo"
-      "jq"
       "kubernetes-cli"
       "kubectx"
       "libheif"
       "libraw"
       "libxmlsec1"
       "nghttp2"
-      "nkf"
-      "nmap"
       "node"
       "oath-toolkit"
       "okteto"
@@ -48,13 +44,10 @@
       "silicon"
       "tcl-tk"
       "tig"
-      "tree"
       "hashicorp/tap/terraform"
       "mas-cli/tap/mas"
       "songmu/tap/laminate"
-      "starship"
       "weaveworks/tap/eksctl"
-      "git-delta"
     ];
     casks = [
       "codex"
