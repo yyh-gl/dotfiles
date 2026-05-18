@@ -4,12 +4,27 @@
   home.stateVersion = "26.05";
 
   home.packages = [
+    pkgs.awscli2
     pkgs.delta
+    pkgs.deno
+    pkgs.figlet
     pkgs.fzf
+    pkgs.gibo
+    pkgs.git
     pkgs.gopls
+    pkgs.gradle
+    pkgs.helmfile
+    pkgs.hub
+    pkgs.hugo
     pkgs.jq
+    pkgs.kubectl
+    pkgs.kubectx
+    pkgs.kubernetes-helm
     pkgs.nkf
     pkgs.nmap
+    pkgs.nodejs
+    pkgs.pnpm
+    pkgs.silicon
     pkgs.starship
     pkgs.tree
   ];
