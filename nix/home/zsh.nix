@@ -64,6 +64,11 @@
       export OPENAI_API_KEY="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/openai-api-key.txt)"
       export AI_AGENTS_SLACK_WEBHOOK_URL="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/ai-agents-slack-webhook-url.txt)"
 
+      # Completion
+      zmodload zsh/complist
+      zstyle ':completion:*' menu select
+      zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
+
       # cd → ls
       cdls() { \cd "$@" && ls }
 
