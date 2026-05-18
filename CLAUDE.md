@@ -32,13 +32,12 @@ make nix-update       # Update flake.lock to latest inputs
 ### Setup Flow
 
 `bin/init.sh` → `make build` → runs these scripts in order:
-1. `bin/base.sh` — Edit `.env.public`, copy Zsh configs, setup SSH, copy Emacs configs
-2. `bin/brew.sh` — taps/brews/casks are managed by nix-darwin (including mode-specific packages); VSCode extensions and gopls are managed by home-manager.
-3. `bin/gh.sh` — GitHub CLI setup
-4. `bin/link.sh` — Copy all tool configs (Claude settings, karabiner, k8s, AWS)
-5. `bin/defaults.sh` — Apply macOS system defaults from `.defaults/`
-6. `bin/mas.sh` — Install Mac App Store apps
-7. `bin/manual.sh` — Final manual steps
+1. `bin/base.sh` — Copy Zsh configs, setup SSH, copy Emacs configs
+2. `bin/gh.sh` — GitHub CLI setup
+3. `bin/link.sh` — Copy all tool configs (Claude settings, karabiner, k8s, AWS)
+4. `bin/defaults.sh` — Apply macOS system defaults from `.defaults/`
+5. `bin/mas.sh` — Install Mac App Store apps
+6. `bin/manual.sh` — Final manual steps
 
 ### Config Copy Strategy
 
