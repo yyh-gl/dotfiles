@@ -23,14 +23,16 @@ build: # Setup my macOS
 	./bin/link.sh
 	./bin/manual.sh
 
-.PHONY: nix-switch-hobby
-nix-switch-hobby: # Apply Nix configuration (hobby mode)
+.PHONY: nix-apply-hobby
+nix-apply-hobby: # Apply Nix configuration (hobby mode)
+	nix flake update
 	sudo darwin-rebuild switch --flake .#yyh-gl-mac-hobby
 
-.PHONY: nix-switch-work
-nix-switch-work: # Apply Nix configuration (work mode)
+.PHONY: nix-apply-work
+nix-apply-work: # Apply Nix configuration (work mode)
+	nix flake update
 	sudo darwin-rebuild switch --flake .#yyh-gl-mac-work
 
-.PHONY: nix-update
-nix-update: # Update Nix flake inputs
-	nix flake update
+.PHONY: nix-cleanup
+nix-cleanup: # Cleanup Nix
+	sudo nix-collect-garbage -d
