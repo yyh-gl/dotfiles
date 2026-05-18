@@ -17,9 +17,11 @@
     };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-vscode-extensions, ... }: {
-    darwinConfigurations."yyh-gl-mac" = nix-darwin.lib.darwinSystem {
+  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-vscode-extensions, ... }:
+  let
+    makeDarwinSystem = mode: nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
+      specialArgs = { inherit mode; };
       modules = [
         { nixpkgs.overlays = [ nix-vscode-extensions.overlays.default ]; }
         ./nix/darwin/default.nix
@@ -27,10 +29,15 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { dotfiles = self; };
+          home-manager.extraSpecialArgs = { dotfiles = self; inherit mode; };
           home-manager.users.yyh-gl = import ./nix/home/default.nix;
         }
       ];
+    };
+  in {
+    darwinConfigurations = {
+      "yyh-gl-mac-hobby" = makeDarwinSystem "hobby";
+      "yyh-gl-mac-work"  = makeDarwinSystem "work";
     };
   };
 }

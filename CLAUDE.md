@@ -22,8 +22,9 @@ make apply      # Run base.sh + link.sh only
 make snapshot   # Reverse of apply — copy $HOME configs back for git diff/commit
 
 # Nix
-make nix-switch # Apply Nix configuration (darwin-rebuild switch)
-make nix-update # Update flake.lock to latest inputs
+make nix-switch-hobby # Apply Nix configuration (hobby mode)
+make nix-switch-work  # Apply Nix configuration (work mode)
+make nix-update       # Update flake.lock to latest inputs
 ```
 
 ## Architecture
@@ -32,9 +33,9 @@ make nix-update # Update flake.lock to latest inputs
 
 `bin/init.sh` → `make build` → runs these scripts in order:
 1. `bin/base.sh` — Edit `.env.public`, copy Zsh configs, setup SSH, copy Emacs configs
-2. `bin/brew.sh` — Install Homebrew packages from `.brewfile-hobby` (hobby mode only). taps/brews/casks are managed by nix-darwin; VSCode extensions and gopls are managed by home-manager.
+2. `bin/brew.sh` — taps/brews/casks are managed by nix-darwin (including mode-specific packages); VSCode extensions and gopls are managed by home-manager.
 3. `bin/gh.sh` — GitHub CLI setup
-4. `bin/link.sh` — Copy all tool configs (Claude settings, karabiner, k8s, AWS, Google Drive)
+4. `bin/link.sh` — Copy all tool configs (Claude settings, karabiner, k8s, AWS)
 5. `bin/defaults.sh` — Apply macOS system defaults from `.defaults/`
 6. `bin/mas.sh` — Install Mac App Store apps
 7. `bin/manual.sh` — Final manual steps
@@ -93,19 +94,20 @@ sudo rm /etc/zshrc /etc/bashrc
 
 # 3. シェルを再起動後、初回ビルド (nix-darwin未インストールの場合)
 git add nix/ flake.nix flake.lock   # Nixはgit追跡ファイルのみ読み込む
-sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#yyh-gl-mac
+sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#yyh-gl-mac-hobby
+# または .#yyh-gl-mac-work
 
-# 4. 以降は make nix-switch で適用
-make nix-switch
+# 4. 以降は make nix-switch-hobby または make nix-switch-work で適用
+make nix-switch-hobby
 ```
 
 **注意事項:**
-- ファイルを変更したら `git add` してから `make nix-switch` を実行する（未追跡ファイルはNixに読み込まれない）
+- ファイルを変更したら `git add` してから `make nix-switch-hobby` / `make nix-switch-work` を実行する（未追跡ファイルはNixに読み込まれない）
 - `darwin-rebuild switch` はシステム設定変更のため `sudo` が必要
 - `services.nix-daemon.enable` は最新nix-darwinで廃止済み（`nix.enable` が自動管理）
 
 ### Build Mode
 
-`MODE` env var (set in `.env.public`) controls conditional logic in scripts:
-- `hobby` — Links personal Google Drive directories to `$HOME/Desktop/hobby` and `$HOME/Pictures`
-- `work` — Creates `$HOME/Desktop/work` directory
+Nixのflake設定名でモードを指定する（`.env.public`でのMODE指定は廃止済み）:
+- `yyh-gl-mac-hobby` (`make nix-switch-hobby`) — 1password/tailscaleをインストール、Google DriveへのSymlinkを`$HOME/Desktop/hobby`と`$HOME/Pictures`に作成
+- `yyh-gl-mac-work` (`make nix-switch-work`) — `$HOME/Desktop/work`ディレクトリを作成
