@@ -58,11 +58,17 @@
       typeset -U path cdpath fpath manpath
 
       # Secrets
-      export GITHUB_PAT="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/github-pat.txt)"
-      export CLAUDE_CODE_API_KEY="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/claude-code-api-key.txt)"
-      export CODEX_API_KEY="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/codex-api-key.txt)"
-      export OPENAI_API_KEY="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/openai-api-key.txt)"
-      export AI_AGENTS_SLACK_WEBHOOK_URL="$(cat $HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private/ai-agents-slack-webhook-url.txt)"
+      load_secret_env() {
+        local name="$1"
+        local path="$2"
+        [[ -r "$path" ]] && export "$name=$(cat "$path")"
+      }
+      local _priv="$HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private"
+      load_secret_env GITHUB_PAT                  "$_priv/github-pat.txt"
+      load_secret_env CLAUDE_CODE_API_KEY         "$_priv/claude-code-api-key.txt"
+      load_secret_env CODEX_API_KEY               "$_priv/codex-api-key.txt"
+      load_secret_env OPENAI_API_KEY              "$_priv/openai-api-key.txt"
+      load_secret_env AI_AGENTS_SLACK_WEBHOOK_URL "$_priv/ai-agents-slack-webhook-url.txt"
 
       # Completion
       zmodload zsh/complist
