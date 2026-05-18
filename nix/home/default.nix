@@ -23,5 +23,6 @@
     ./vscode.nix
     ./emacs.nix
     ./claude.nix
+    ./gh.nix
   ];
 }
