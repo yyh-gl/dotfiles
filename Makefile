@@ -21,7 +21,6 @@ snapshot: # Snapshot config files from HOME back to dotfiles
 build: # Setup my macOS
 	./bin/base.sh
 	./bin/link.sh
-	./bin/mas.sh
 	./bin/manual.sh
 
 .PHONY: nix-switch-hobby

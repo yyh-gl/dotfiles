@@ -35,7 +35,6 @@ The repository includes several scripts and a Makefile to help with installation
 - `bin/brew.sh`: Installs packages using Homebrew from `.Brewfile-base` and optionally
   `.Brewfile-hobby`
 - `bin/defaults.sh`: Configures macOS system defaults like keyboard and trackpad settings
-- `bin/mas.sh`: Installs Mac App Store applications using mas-cli
 - `bin/go.sh`: Installs Go with the specified version
 - `bin/jvm.sh`: Installs JVM with the specified version
 - `bin/manual.sh`: Final setup steps including manual setup
