@@ -57,6 +57,7 @@
       "git-delta"
     ];
     casks = [
+      "codex"
       "docker-desktop"
       "figma"
       "ghostty"
