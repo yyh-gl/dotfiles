@@ -4,7 +4,7 @@
     onActivation = {
       autoUpdate = true;
       upgrade = true;
-      cleanup = "none";
+      cleanup = "zap";
     };
     taps = [
       "adoptopenjdk/openjdk"
