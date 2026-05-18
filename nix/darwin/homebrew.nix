@@ -58,8 +58,6 @@
       "git-delta"
     ];
     casks = [
-      "adobe-acrobat-reader"
-      "discord"
       "docker-desktop"
       "figma"
       "ghostty"
@@ -78,6 +76,8 @@
       "tableplus"
       "zoom"
     ] ++ lib.optionals (mode == "hobby") [
+      "adobe-acrobat-reader"
+      "discord"
       "1password"
       "1password-cli"
       "tailscale"
