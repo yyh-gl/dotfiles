@@ -34,8 +34,7 @@ make nix-update       # Update flake.lock to latest inputs
 `bin/init.sh` → `make build` → runs these scripts in order:
 1. `bin/base.sh` — Copy Zsh configs, setup SSH, copy Emacs configs
 2. `bin/link.sh` — Copy all tool configs (Claude settings, karabiner, k8s, AWS)
-3. `bin/mas.sh` — Install Mac App Store apps
-4. `bin/manual.sh` — Final manual steps
+3. `bin/manual.sh` — Final manual steps
 
 ### Config Copy Strategy
 
