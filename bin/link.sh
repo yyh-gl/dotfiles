@@ -8,9 +8,6 @@ DOTFILES="$HOME/workspaces/github.com/yyh-gl/dotfiles"
 ## .config
 mkdir -p "$HOME"/.config
 mkdir -p "$HOME"/workspaces
-mkdir -p "$HOME"/.config/gh
-cp -f "$DOTFILES"/.gh-config.yml "$HOME"/.config/gh/config.yml
-
 ## k8s
 mkdir -p "$HOME"/.kube
 cp -f "$DOTFILES"/depended-repositories/dotfiles-private/.kube-config "$HOME"/.kube/config

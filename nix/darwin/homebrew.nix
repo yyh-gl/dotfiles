@@ -23,7 +23,6 @@
       "pango"
       "fontforge"
       "fzf"
-      "gh"
       "ghostscript"
       "gibo"
       "git"
