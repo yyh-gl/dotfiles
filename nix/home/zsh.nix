@@ -57,18 +57,13 @@
       export PATH="$HOME/.local/bin:$PATH"
       typeset -U path cdpath fpath manpath
 
-      # Secrets
-      load_secret_env() {
-        local name="$1"
-        local path="$2"
-        [[ -r "$path" ]] && export "$name=$(cat "$path")"
-      }
-      local _priv="$HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/dotfiles-private"
-      load_secret_env GITHUB_PAT                  "$_priv/github-pat.txt"
-      load_secret_env CLAUDE_CODE_API_KEY         "$_priv/claude-code-api-key.txt"
-      load_secret_env CODEX_API_KEY               "$_priv/codex-api-key.txt"
-      load_secret_env OPENAI_API_KEY              "$_priv/openai-api-key.txt"
-      load_secret_env AI_AGENTS_SLACK_WEBHOOK_URL "$_priv/ai-agents-slack-webhook-url.txt"
+      # Environment variables
+      local _dotenv="$HOME/workspaces/github.com/yyh-gl/dotfiles/.env"
+      if [[ -r "$_dotenv" ]]; then
+        set -a
+        source "$_dotenv"
+        set +a
+      fi
 
       # Completion
       zmodload zsh/complist
