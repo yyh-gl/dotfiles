@@ -19,21 +19,25 @@
 
   outputs = { self, nixpkgs, nix-darwin, home-manager, nix-vscode-extensions, ... }:
   let
-    makeDarwinSystem = mode: nix-darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      specialArgs = { inherit mode; };
-      modules = [
-        { nixpkgs.overlays = [ nix-vscode-extensions.overlays.default ]; }
-        ./nix/darwin/default.nix
-        home-manager.darwinModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { dotfiles = self; inherit mode; };
-          home-manager.users.yyh-gl = import ./nix/home/default.nix;
-        }
-      ];
-    };
+    username = "yyh-gl";
+    homeDirectory = "/Users/${username}";
+    makeDarwinSystem = mode:
+      assert nixpkgs.lib.elem mode [ "hobby" "work" ];
+      nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = { inherit mode username homeDirectory; };
+        modules = [
+          { nixpkgs.overlays = [ nix-vscode-extensions.overlays.default ]; }
+          ./nix/darwin/default.nix
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { dotfiles = self; inherit mode username homeDirectory; };
+            home-manager.users.${username} = import ./nix/home/default.nix;
+          }
+        ];
+      };
   in {
     darwinConfigurations = {
       "yyh-gl-mac-hobby" = makeDarwinSystem "hobby";

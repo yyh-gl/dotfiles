@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ homeDirectory, ... }: {
   system.defaults = {
     NSGlobalDomain = {
       KeyRepeat = 2;
@@ -22,7 +22,7 @@
     defaults import com.knollsoft.Rectangle ${toString ./../../.defaults/com.knollsoft.Rectangle.plist}
 
     # [Key shortcut] 「入力メニューの次のソースを選択」を無効化（ID 60, 61）
-    HOTKEY_PLIST="/Users/yyh-gl/Library/Preferences/com.apple.symbolichotkeys.plist"
+    HOTKEY_PLIST="${homeDirectory}/Library/Preferences/com.apple.symbolichotkeys.plist"
     for id in 60 61; do
       /usr/libexec/PlistBuddy \
         -c "Set :AppleSymbolicHotKeys:''${id}:enabled false" \
