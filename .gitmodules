@@ -1,6 +1,3 @@
 [submodule "depended-repositories/dotfiles-private"]
 	path = depended-repositories/dotfiles-private
 	url = git@github.com:yyh-gl/dotfiles-private.git
-[submodule "depended-repositories/scripts"]
-	path = depended-repositories/scripts
-	url = git@github.com:yyh-gl/scripts.git
