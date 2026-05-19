@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 .PHONY: help
 help: # Help me
-	@echo "Let's 'make build'"
+	@echo "Let's 'make build-hobby' or 'make build-work'"
 
 .PHONY: init
 init: # Initialize the environment
@@ -10,26 +10,13 @@ init: # Initialize the environment
 
 .PHONY: build-hobby
 build-hobby: # Setup my macOS (hobby mode)
-	./bin/base.sh
-	./bin/link.sh
 	./bin/manual.sh
 	$(MAKE) nix-apply-hobby
 
 .PHONY: build-work
 build-work: # Setup my macOS (work mode)
-	./bin/base.sh
-	./bin/link.sh
 	./bin/manual.sh
 	$(MAKE) nix-apply-work
-
-.PHONY: apply
-apply: # Apply config files to HOME
-	./bin/base.sh
-	./bin/link.sh
-
-.PHONY: snapshot
-snapshot: # Snapshot config files from HOME back to dotfiles
-	./bin/snapshot.sh
 
 .PHONY: nix-apply-hobby
 nix-apply-hobby: # Apply Nix configuration (hobby mode)
