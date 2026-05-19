@@ -184,26 +184,29 @@
       fixe     = "e $HOME/.emacs.d/init.el";
       fixs     = "e $HOME/.ssh/config";
       xcode    = "open -a Xcode";
-      tf       = "terraform";
       k        = "kubectl";
       kc       = "kubectx";
       kn       = "kubens";
-      tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
-      ts       = "tailscale";
       dsh      = ''docker exec -it $(docker ps | fzf | cut -f 1 -d " ") /bin/bash'';
       ksh      = ''kubectl exec -it $(kubectl get po | fzf | cut -f 1 -d " ") -- /bin/bash'';
-      supabase = "npx supabase";
-      sb       = "supabase";
       mksh     = "make-shortcut.sh";
       mksl     = "make-symbolic-link.sh";
+      dot      = "cd $HOME/workspaces/github.com/yyh-gl/dotfiles";
+      my       = "cd $HOME/workspaces/github.com/yyh-gl/my-agent-teams";
+    } // (if mode == "hobby" then {
+      supabase = "npx supabase";
+      sb       = "supabase";
+      tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
+      ts       = "tailscale";
+      tf       = "terraform";
+      play     = "cd $HOME/workspaces/github.com/yyh-gl/go-playground/";
       anti     = "cd $HOME/workspaces/github.com/Anti-Pattern-Inc/";
       blog     = "cd $HOME/workspaces/github.com/yyh-gl/tech-blog/";
       api      = "cd $HOME/workspaces/github.com/yyh-gl/hobigon-golang-api-server/";
-      play     = "cd $HOME/workspaces/github.com/yyh-gl/go-playground/";
-      hobigon  = "cd $HOME/workspaces/github.com/yyh-gl/hobigon/";
-      dot      = "cd $HOME/workspaces/github.com/yyh-gl/dotfiles";
       ur       = "cd $HOME/workspaces/github.com/yyh-gl/urLogs";
-      my       = "cd $HOME/workspaces/github.com/yyh-gl/my-agent-teams";
-    };
+      hobigon  = "cd $HOME/workspaces/github.com/yyh-gl/hobigon/";
+    } else if mode == "work" then {
+      # Add aliases for work
+    } else {});
   };
 }
