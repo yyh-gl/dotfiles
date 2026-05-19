@@ -183,8 +183,6 @@
       kn       = "kubens";
       dsh      = ''docker exec -it $(docker ps | fzf | cut -f 1 -d " ") /bin/bash'';
       ksh      = ''kubectl exec -it $(kubectl get po | fzf | cut -f 1 -d " ") -- /bin/bash'';
-      mksh     = "make-shortcut.sh";
-      mksl     = "make-symbolic-link.sh";
       dot      = "cd $HOME/workspaces/github.com/yyh-gl/dotfiles";
       my       = "cd $HOME/workspaces/github.com/yyh-gl/my-agent-teams";
     } // (if mode == "hobby" then {
