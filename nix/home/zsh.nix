@@ -15,8 +15,6 @@
         export BROWSER='open'
       fi
 
-      export EDITOR='nano'
-      export VISUAL='nano'
       export PAGER='less'
 
       if [[ -z "$LANG" ]]; then
