@@ -1,4 +1,4 @@
-{ ... }: {
+{ mode, ... }: {
   programs.zsh = {
     enable = true;
 
@@ -58,12 +58,14 @@
       typeset -U path cdpath fpath manpath
 
       # Environment variables
+      ${if mode == "hobby" then ''
       local _dotenv="$HOME/workspaces/github.com/yyh-gl/dotfiles/.env"
       if [[ -r "$_dotenv" ]]; then
         set -a
         source "$_dotenv"
         set +a
       fi
+      '' else ""}
 
       # Completion
       zmodload zsh/complist

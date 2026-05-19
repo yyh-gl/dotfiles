@@ -1,4 +1,4 @@
-{ pkgs, username, homeDirectory, ... }: {
+{ pkgs, username, homeDirectory, mode, ... }: {
   home.username = username;
   home.homeDirectory = homeDirectory;
   home.stateVersion = "26.05";
@@ -40,6 +40,8 @@
     enable = true;
     package = pkgs.jdk25;
   };
+
+  _module.args = { inherit mode; };
 
   imports = [
     ./dotfiles.nix
