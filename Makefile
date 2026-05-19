@@ -8,6 +8,20 @@ init: # Initialize the environment
 	./bin/init.sh
 	./bin/install-nix.sh
 
+.PHONY: build-hobby
+build-hobby: # Setup my macOS (hobby mode)
+	./bin/base.sh
+	./bin/link.sh
+	./bin/manual.sh
+	$(MAKE) nix-apply-hobby
+
+.PHONY: build-work
+build-work: # Setup my macOS (work mode)
+	./bin/base.sh
+	./bin/link.sh
+	./bin/manual.sh
+	$(MAKE) nix-apply-work
+
 .PHONY: apply
 apply: # Apply config files to HOME
 	./bin/base.sh
@@ -16,12 +30,6 @@ apply: # Apply config files to HOME
 .PHONY: snapshot
 snapshot: # Snapshot config files from HOME back to dotfiles
 	./bin/snapshot.sh
-
-.PHONY: build
-build: # Setup my macOS
-	./bin/base.sh
-	./bin/link.sh
-	./bin/manual.sh
 
 .PHONY: nix-apply-hobby
 nix-apply-hobby: # Apply Nix configuration (hobby mode)
