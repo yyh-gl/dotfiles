@@ -5,6 +5,7 @@
 
   home.packages = [
     pkgs.awscli2
+    pkgs.bun
     pkgs.delta
     pkgs.deno
     pkgs.figlet
