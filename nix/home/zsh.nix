@@ -48,7 +48,7 @@
       export EDITOR=emacs VISUAL=emacs
 
       export PATH=$PATH:$HOME/go/bin
-      export PATH=$HOME/workspaces/github.com/yyh-gl/dotfiles/depended-repositories/scripts:$PATH
+      export PATH=$HOME/workspaces/github.com/yyh-gl/dotfiles/scripts:$PATH
       export BUN_INSTALL="$HOME/.bun"
       export PATH="$BUN_INSTALL/bin:$PATH"
       export PATH="/opt/homebrew/bin:$PATH"
