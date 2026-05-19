@@ -35,7 +35,6 @@
       "adobe-acrobat-reader"
       "discord"
       "1password"
-      "1password-cli"
       "tailscale-app"
     ];
     masApps = lib.optionalAttrs (mode == "hobby") {

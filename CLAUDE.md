@@ -32,37 +32,63 @@ make nix-update       # Update flake.lock to latest inputs
 ### Setup Flow
 
 `bin/init.sh` → `make build` → runs these scripts in order:
-1. `bin/base.sh` — Copy Zsh configs, setup SSH, copy Emacs configs
-2. `bin/link.sh` — Copy all tool configs (Claude settings, karabiner, k8s, AWS)
+
+1. `bin/base.sh` — Copy Zsh configs, copy Emacs configs
+2. `bin/link.sh` — Copy tool configs (Claude settings, karabiner)
 3. `bin/manual.sh` — Final manual steps
+
+Secrets and SSH configs are managed separately via Nix + 1Password (see below).
 
 ### Config Copy Strategy
 
 All config files live here and are **copied** (`cp`) into `$HOME` or `$HOME/.config/` by `bin/base.sh` and `bin/link.sh`. Only Google Drive directories use actual symlinks (`ln -sf`).
 
 Key copies performed by `bin/base.sh`:
+
 - `.zlogin`, `.zlogout`, `.zpreztorc`, `.zprofile`, `.zshenv`, `.zshrc` → `$HOME/`
 - `depended-repositories/prezto/` → `$HOME/.zprezto/`
-- `depended-repositories/dotfiles-private/.ssh/` → `$HOME/.ssh/`
 - `.emacs.d/` → `$HOME/.emacs.d/`
 
-Key copies performed by `bin/link.sh`:
-- `.karabiner/` → `$HOME/.config/karabiner/`
-- `.git-config/` → `$HOME/.config/git/`
+Key configs managed by Nix home-manager (`nix/home/dotfiles.nix`):
+
 - `ghostty-config` → `$HOME/.config/ghostty/config`
-- `claude/` → `$HOME/.claude/` (Nix home-manager manages via `nix/home/claude.nix`)
-- `depended-repositories/dotfiles-private/.kube-config` → `$HOME/.kube/config`
-- `depended-repositories/dotfiles-private/.aws/` → `$HOME/.aws/`
+- `.git-config/` → `$HOME/.config/git/`
+- `aws/config` → `$HOME/.aws/config`
+- `.dictionary.txt` → `$HOME/.dictionary.txt`
+- `karabiner.json` → `$HOME/.config/karabiner/karabiner.json`
+
+Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
+
+- `op-templates/ssh-config.tpl` → `$HOME/.ssh/config`
+- `op-templates/aws-credentials.tpl` → `$HOME/.aws/credentials`
+- `op-templates/kube-config.tpl` → `$HOME/.kube/config`
+- `op-templates/deck-credentials.json.tpl` → `$HOME/.local/share/deck/credentials.json`
 
 To sync changes made directly in `$HOME` back to this repo, run `make snapshot`.
 
+### 1Password Secrets Management
+
+機密ファイルは`op inject`で1Passwordから展開する。`make nix-switch-hobby/work`実行時に自動適用される。
+
+1Passwordに以下のアイテムを作成する（vault: `Personal`）:
+
+| Item名              | カテゴリ           | フィールド                                |
+|--------------------|----------------|--------------------------------------|
+| `ssh-config`       | Secure Note    | notesPlain（`~/.ssh/config`の全内容）      |
+| `aws-credentials`  | API Credential | `access_key_id`, `secret_access_key` |
+| `k8s-config`       | Secure Note    | notesPlain（`~/.kube/config`の全内容）     |
+| `deck-credentials` | Secure Note    | notesPlain（credentials.jsonの全内容）     |
+
+テンプレートファイルは`op-templates/`ディレクトリに配置。`op://Vault/Item/Field`形式で参照。
+
 ### Submodules (`depended-repositories/`)
 
-| Submodule | Purpose |
-|-----------|---------|
-| `dotfiles-private` | Private configs (SSH, AWS, kubeconfig, credentials) |
-| `prezto` | Zsh framework |
+| Submodule | Purpose         |
+|-----------|-----------------|
+| `prezto`  | Zsh framework   |
 | `scripts` | Utility scripts |
+
+`dotfiles-private`サブモジュールは1Password移行により削除済み。
 
 ### Nix Setup
 
@@ -97,6 +123,7 @@ make nix-switch-hobby
 ```
 
 **注意事項:**
+
 - ファイルを変更したら `git add` してから `make nix-switch-hobby` / `make nix-switch-work` を実行する（未追跡ファイルはNixに読み込まれない）
 - `darwin-rebuild switch` はシステム設定変更のため `sudo` が必要
 - `services.nix-daemon.enable` は最新nix-darwinで廃止済み（`nix.enable` が自動管理）
@@ -104,5 +131,6 @@ make nix-switch-hobby
 ### Build Mode
 
 Nixのflake設定名でモードを指定する（`.env.public`でのMODE指定は廃止済み）:
+
 - `yyh-gl-mac-hobby` (`make nix-switch-hobby`) — 1password/tailscaleをインストール、Google DriveへのSymlinkを`$HOME/Desktop/hobby`と`$HOME/Pictures`に作成
 - `yyh-gl-mac-work` (`make nix-switch-work`) — `$HOME/Desktop/work`ディレクトリを作成
