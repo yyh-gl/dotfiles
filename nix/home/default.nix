@@ -5,9 +5,7 @@
 
   home.packages = [
     pkgs.awscli2
-    pkgs.bun
     pkgs.delta
-    pkgs.deno
     pkgs.figlet
     pkgs.fzf
     pkgs.gibo
@@ -26,6 +24,9 @@
     pkgs.silicon
     pkgs.starship
     pkgs.tree
+  ] ++ pkgs.lib.optionals (mode == "hobby") [
+    pkgs.bun
+    pkgs.deno
   ];
 
   programs.go = {
