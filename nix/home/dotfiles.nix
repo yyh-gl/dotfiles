@@ -20,6 +20,8 @@ in {
   home.file.".config/git/ignore".source = "${dotfiles}/.git-config/ignore";
   home.file.".config/karabiner/karabiner.json".source = "${dotfiles}/karabiner.json";
 
+  home.file.".aws/config".source = "${dotfiles}/aws/config";
+
   home.activation.desktopSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${lib.optionalString (mode == "hobby") (''
       mkdir -p "${hd}/Desktop/hobby"

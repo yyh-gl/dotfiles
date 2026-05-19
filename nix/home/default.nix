@@ -45,6 +45,7 @@
 
   imports = [
     ./dotfiles.nix
+    ./secrets.nix
     ./zsh.nix
     ./vscode.nix
     ./emacs.nix
