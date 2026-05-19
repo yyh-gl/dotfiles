@@ -21,8 +21,6 @@
     pkgs.kubectl
     pkgs.kubectx
     pkgs.kubernetes-helm
-    pkgs.nkf
-    pkgs.nmap
     pkgs.nodejs
     pkgs.pnpm
     pkgs.silicon
