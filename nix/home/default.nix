@@ -45,11 +45,10 @@
 
   imports = [
     ./dotfiles.nix
-    ./secrets.nix
     ./zsh.nix
     ./vscode.nix
     ./emacs.nix
     ./claude.nix
     ./gh.nix
-  ];
+  ] ++ (if mode == "hobby" then [ ./secrets.nix ] else []);
 }
