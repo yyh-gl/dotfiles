@@ -12,7 +12,7 @@ in {
     cp -f "${dotfiles}/.ssh/keys/hobigon-k8s-master.pub" "${hd}/.ssh/keys/hobigon-k8s-master.pub"
     cp -f "${dotfiles}/.ssh/keys/hobigon-k8s-worker.pub" "${hd}/.ssh/keys/hobigon-k8s-worker.pub"
     cp -f "${dotfiles}/.ssh/keys/hobigon-wsl.pub"        "${hd}/.ssh/keys/hobigon-wsl.pub"
-    chmod 600 "${hd}/.ssh/keys/hobigon-k8s-master.pub" "${hd}/.ssh/keys/hobigon-k8s-worker.pub" "${hd}/.ssh/keys/hobigon-wsl.pub"
+    chmod 644 "${hd}/.ssh/keys/hobigon-k8s-master.pub" "${hd}/.ssh/keys/hobigon-k8s-worker.pub" "${hd}/.ssh/keys/hobigon-wsl.pub"
   '';
 
   # Inject secrets from 1Password via op inject.
