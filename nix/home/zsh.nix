@@ -22,7 +22,6 @@
       fi
 
       typeset -gU cdpath fpath mailpath path
-      path=(/usr/local/{bin,sbin} $path)
 
       export LESS='-F -g -i -M -R -S -w -X -z-4'
 
@@ -43,10 +42,11 @@
       # Prompt
       eval "$(starship init zsh)"
 
-      # PATH
+      # Locale (override profileExtra default with system AppleLocale)
       export LANG="$(defaults read -g AppleLocale | sed 's/@.*$//g').UTF-8"
       export EDITOR=emacs VISUAL=emacs
 
+      # PATH
       export PATH=$PATH:$HOME/go/bin
       export PATH=$HOME/workspaces/github.com/yyh-gl/dotfiles/scripts:$PATH
       export PATH="/opt/homebrew/bin:$PATH"
@@ -71,10 +71,6 @@
 
       # cd → ls
       cdls() { \cd "$@" && ls }
-
-      # less color
-      export LESS='-R'
-      export LESSOPEN='| /usr/local/Cellar/source-highlight/3.1.8_5/bin/src-hilite-lesspipe.sh %s'
 
       # GCP gcloud
       if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/path.zsh.inc"; fi
