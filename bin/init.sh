@@ -36,4 +36,4 @@ fi
 mkdir -p "$HOME"/workspaces/github.com/yyh-gl/config
 git clone git@github.com:yyh-gl/dotfiles.git "$HOME"/workspaces/github.com/yyh-gl/dotfiles
 
-echo "Go to cloned dotfiles directory and run 'make build'."
+echo "Go to cloned dotfiles directory and run 'make build-hobby' or 'make build-work'."

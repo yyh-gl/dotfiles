@@ -40,32 +40,38 @@ All config files live here and are managed by **Nix home-manager** (`nix/home/do
 Key configs managed by Nix home-manager (`nix/home/dotfiles.nix`):
 
 - `ghostty-config` → `$HOME/.config/ghostty/config`
-- `.git-config/` → `$HOME/.config/git/`
-- `aws/config` → `$HOME/.aws/config`
-- `.dictionary.txt` → `$HOME/.dictionary.txt`
+- `starship.toml` → `$HOME/.config/starship.toml`
+- `.git-config/config` → `$HOME/.config/git/config`
+- `.git-config/ignore` → `$HOME/.config/git/ignore`
 - `karabiner.json` → `$HOME/.config/karabiner/karabiner.json`
+- `aws/config` → `$HOME/.aws/config`
 
-Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
+Other configs deployed by separate home-manager modules:
+
+- `.emacs.d/` → `$HOME/.emacs.d/` (`nix/home/emacs.nix`)
+- `claude/` → `$HOME/.claude/` (`nix/home/claude.nix`)
+
+Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`, hobby mode only):
 
 - `op-templates/ssh-config.tpl` → `$HOME/.ssh/config`
 - `op-templates/aws-credentials.tpl` → `$HOME/.aws/credentials`
 - `op-templates/kube-config.tpl` → `$HOME/.kube/config`
-- `op-templates/deck-credentials.json.tpl` → `$HOME/.local/share/deck/credentials.json`
+- `op-templates/deck-credentials.tpl` → `$HOME/.local/share/deck/credentials.json`
 
 ### 1Password Secrets Management
 
-機密ファイルは`op inject`で1Passwordから展開する。`make nix-apply-hobby/work`実行時に自動適用される。
+機密ファイルは`op inject`で1Passwordから展開する。`make nix-apply-hobby`実行時に自動適用される（`secrets.nix`はhobbyモードでのみロードされる）。
 
-1Passwordに以下のアイテムを作成する（vault: `Personal`）:
+1Passwordに以下のアイテムを作成する（vault: `PC`）:
 
-| Item名              | カテゴリ           | フィールド                                |
-|--------------------|----------------|--------------------------------------|
-| `ssh-config`       | Secure Note    | notesPlain（`~/.ssh/config`の全内容）      |
-| `aws-credentials`  | API Credential | `access_key_id`, `secret_access_key` |
-| `k8s-config`       | Secure Note    | notesPlain（`~/.kube/config`の全内容）     |
-| `deck-credentials` | Secure Note    | notesPlain（credentials.jsonの全内容）     |
+| Item名              | カテゴリ        | フィールド                                |
+|--------------------|-------------|--------------------------------------|
+| `ssh-config`       | Secure Note | notesPlain（`~/.ssh/config`の全内容）      |
+| `aws-credentials`  | Secure Note | notesPlain（`~/.aws/credentials`の全内容） |
+| `k8s-config`       | Secure Note | notesPlain（`~/.kube/config`の全内容）     |
+| `deck-credentials` | Secure Note | notesPlain（credentials.jsonの全内容）     |
 
-テンプレートファイルは`op-templates/`ディレクトリに配置。`op://Vault/Item/Field`形式で参照。
+テンプレートファイルは`op-templates/`ディレクトリに配置。`op://PC/<Item>/notesPlain`形式で参照。
 
 ### Nix Setup
 

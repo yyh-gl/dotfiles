@@ -12,29 +12,23 @@ make build-hobby  # or make build-work
 
 ## Repository Structure
 
-- `.brewfile-base`, `.brewfile-hobby`: Homebrew package lists for installing software
-- `.defaults`: macOS system defaults configuration
-- `.git-config`: Git configuration files
-- `.karabiner`: Karabiner Elements keyboard customization settings
-- `.rectangle-config.json`: Rectangle window manager configuration
-- `.iterm2-profiles.json`: iTerm2 terminal emulator profiles
-- `.zshrc`, `.zshenv`, `.zprofile`, `.zpreztorc`, etc.: Zsh shell configuration files
-- `bin/`: Directory containing utility scripts for setup and initialization
-- `nix/`: Nix configuration (nix-darwin + home-manager)
-- `scripts/`: Utility shell scripts (added to PATH)
+- `bin/`: Setup scripts (`init.sh`, `install-nix.sh`, `manual.sh`)
+- `nix/`: nix-darwin + home-manager configurations
+  - `darwin/`: nix-darwin system settings (Homebrew, macOS defaults)
+  - `home/`: home-manager configurations (zsh, dotfile deploy, packages, secrets)
+- `claude/`: Claude Code configuration (settings, agents, skills, hooks)
+- `op-templates/`: 1Password secret templates expanded by `op inject`
+- `scripts/`: Utility shell scripts (added to `$PATH` via zsh)
+- `aws/`, `.git-config/`, `.ssh/keys/`, `.defaults/`, `.emacs.d/`: Tool-specific configs deployed by home-manager
+- `ghostty-config`, `karabiner.json`, `starship.toml`: Standalone tool configs deployed by home-manager
 
 ## Installation and Setup
 
-The repository includes several scripts and a Makefile to help with installation:
+- `bin/init.sh`: Initial setup script for installing base tools (Homebrew, 1Password, Git, Xcode) and cloning this repository
+- `bin/install-nix.sh`: Installs the Nix package manager
+- `bin/manual.sh`: Lists remaining manual steps (iTerm2 import, JetBrains login, etc.)
 
-- `bin/init.sh`: Initial setup script for installing base tools (Homebrew, Git, Xcode, 1Password) and cloning repositories
-- `bin/install-nix.sh`: Installs Nix package manager
-- `bin/manual.sh`: Final setup steps including manual setup
-- `bin/brew.sh`: Installs packages using Homebrew from `.Brewfile-base` and optionally `.Brewfile-hobby`
-- `bin/defaults.sh`: Configures macOS system defaults like keyboard and trackpad settings
-
-To set up the dotfiles, you can use the Makefile which provides various targets for installation and
-configuration.
+Refer to [`CLAUDE.md`](./CLAUDE.md) for details on the Nix setup, 1Password secrets management, and build modes.
 
 ## Usage
 

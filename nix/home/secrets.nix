@@ -17,11 +17,11 @@ in {
 
   # Inject secrets from 1Password via op inject.
   # On macOS with 1Password 8+, biometric auth via the desktop app is used automatically.
-  # 1Password items needed (vault: PC):
-  #   - "SSH Config"        : Secure Note
-  #   - "AWS"               : Secure Note
-  #   - "Kubernetes Config" : Secure Note
-  #   - "Deck Credentials"  : Secure Note
+  # 1Password items needed (vault: PC, all Secure Note with notesPlain):
+  #   - ssh-config
+  #   - aws-credentials
+  #   - k8s-config
+  #   - deck-credentials
   home.activation.injectSecrets = lib.hm.dag.entryAfter [ "writeBoundary" "sshSetup" ] ''
     ${op} inject -i "${dotfiles}/op-templates/ssh-config.tpl" \
                -o "${hd}/.ssh/config" --force
