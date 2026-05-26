@@ -21,13 +21,15 @@ build-work: # Setup my macOS (work mode)
 
 .PHONY: nix-apply-hobby
 nix-apply-hobby: # Apply Nix configuration (hobby mode)
-	nix flake update
 	sudo darwin-rebuild switch --flake .#yyh-gl-mac-hobby
 
 .PHONY: nix-apply-work
 nix-apply-work: # Apply Nix configuration (work mode)
-	nix flake update
 	sudo darwin-rebuild switch --flake .#yyh-gl-mac-work
+
+.PHONY: nix-update
+nix-update: # Update tools on Nix
+	nix flake update
 
 .PHONY: nix-cleanup
 nix-cleanup: # Cleanup Nix
