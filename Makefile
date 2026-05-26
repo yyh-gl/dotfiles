@@ -7,16 +7,17 @@ help: # Help me
 init: # Initialize the environment
 	./bin/init.sh
 	./bin/install-nix.sh
+	sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#yyh-gl-mac-hobby
 
 .PHONY: build-hobby
 build-hobby: # Setup my macOS (hobby mode)
-	./bin/manual.sh
 	$(MAKE) nix-apply-hobby
+	./bin/manual.sh
 
 .PHONY: build-work
 build-work: # Setup my macOS (work mode)
-	./bin/manual.sh
 	$(MAKE) nix-apply-work
+	./bin/manual.sh
 
 .PHONY: nix-apply-hobby
 nix-apply-hobby: # Apply Nix configuration (hobby mode)
