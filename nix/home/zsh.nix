@@ -70,7 +70,7 @@
       zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
       # cd → ls
-      cdls() { \cd "$@" && ls }
+      cdls() { \cd "$@" && ls -GF }
 
       # less color
       export LESS='-R'
