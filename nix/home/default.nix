@@ -20,6 +20,7 @@
     pkgs.kubectx
     pkgs.kubernetes-helm
     pkgs.nodejs
+    pkgs.typescript-language-server
     pkgs.pnpm
     pkgs.silicon
     pkgs.starship
