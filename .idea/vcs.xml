@@ -2,7 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/depended-repositories/dotfiles-private" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/depended-repositories/scripts" vcs="Git" />
   </component>
 </project>
