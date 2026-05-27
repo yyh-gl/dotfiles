@@ -30,10 +30,11 @@
 
 (use-package yasnippet
   :ensure t
-  :config (yas-global-mode 1))
+  :defer t)
 
 (use-package yasnippet-snippets
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Test
