@@ -2,7 +2,7 @@
 ;; ▼ Language Config: TypeScript / JavaScript / React
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; typescript-mode がflyspell-generic-progmode-verify を参照するため先にロード
+;; typescript-modeがflyspell-generic-progmode-verifyを参照するため先にロード
 (require 'flyspell nil t)
 
 (use-package typescript-mode
