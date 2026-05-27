@@ -45,6 +45,8 @@
 ;; Project Management
 (use-package projectile
   :ensure t
+  :defer t
+  :bind ("C-x f" . projectile-find-file)
   :config (projectile-mode +1))
 
 ;; Theme
@@ -119,7 +121,6 @@
             xref-find-references))
 (keyboard-translate ?\C-h ?\C-?)
 (global-set-key (kbd "M-g")   #'goto-line)
-(global-set-key (kbd "C-x f") #'projectile-find-file)
 (global-set-key (kbd "C-v")
                 (lambda ()
                   (interactive)
