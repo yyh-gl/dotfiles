@@ -28,6 +28,7 @@
   ] ++ pkgs.lib.optionals (mode == "hobby") [
     pkgs.bun
     pkgs.deno
+    pkgs.python3Packages.markitdown
   ];
 
   programs.go = {
