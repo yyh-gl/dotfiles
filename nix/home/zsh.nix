@@ -197,7 +197,7 @@
       api      = "cd $HOME/workspaces/github.com/yyh-gl/hobigon-golang-api-server/";
       ur       = "cd $HOME/workspaces/github.com/yyh-gl/urLogs";
       hobigon  = "cd $HOME/workspaces/github.com/yyh-gl/hobigon/";
-      br       = "cd $HOME/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/main";
+      br       = "cd $HOME/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/main";
     } else if mode == "work" then {
       # Add aliases for work
     } else {});
