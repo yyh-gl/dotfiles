@@ -168,36 +168,36 @@
     '';
 
     shellAliases = {
-      cd       = "cdls";
-      fix      = "e $HOME/.zshrc";
-      load     = "exec $SHELL -l";
-      ls       = "ls -GF";
-      ll       = "ls -lGF";
-      la       = "ls -alGF";
-      e        = "emacs";
-      fixe     = "e $HOME/.emacs.d/init.el";
-      fixs     = "e $HOME/.ssh/config";
-      xcode    = "open -a Xcode";
-      k        = "kubectl";
-      kc       = "kubectx";
-      kn       = "kubens";
-      dsh      = ''docker exec -it $(docker ps | fzf | cut -f 1 -d " ") /bin/bash'';
-      ksh      = ''kubectl exec -it $(kubectl get po | fzf | cut -f 1 -d " ") -- /bin/bash'';
-      dot      = "cd $HOME/workspaces/github.com/yyh-gl/dotfiles";
-      my       = "cd $HOME/workspaces/github.com/yyh-gl/my-agent-teams";
+      cd = "cdls";
+      fix = "e $HOME/.zshrc";
+      load = "exec $SHELL -l";
+      ls = "ls -GF";
+      ll = "ls -lGF";
+      la = "ls -alGF";
+      e = "emacs";
+      fixe = "e $HOME/.emacs.d/init.el";
+      fixs = "e $HOME/.ssh/config";
+      xcode = "open -a Xcode";
+      k = "kubectl";
+      kc = "kubectx";
+      kn = "kubens";
+      dsh = ''docker exec -it $(docker ps | fzf | cut -f 1 -d " ") /bin/bash'';
+      ksh = ''kubectl exec -it $(kubectl get po | fzf | cut -f 1 -d " ") -- /bin/bash'';
+      dot = "cd $HOME/workspaces/github.com/yyh-gl/dotfiles";
+      my = "cd $HOME/workspaces/github.com/yyh-gl/my-agent-teams";
     } // (if mode == "hobby" then {
       supabase = "npx supabase";
-      sb       = "supabase";
+      sb = "supabase";
       tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
-      ts       = "tailscale";
-      tf       = "terraform";
-      play     = "cd $HOME/workspaces/github.com/yyh-gl/go-playground/";
-      anti     = "cd $HOME/workspaces/github.com/Anti-Pattern-Inc/";
-      blog     = "cd $HOME/workspaces/github.com/yyh-gl/tech-blog/";
-      api      = "cd $HOME/workspaces/github.com/yyh-gl/hobigon-golang-api-server/";
-      ur       = "cd $HOME/workspaces/github.com/yyh-gl/urLogs";
-      hobigon  = "cd $HOME/workspaces/github.com/yyh-gl/hobigon/";
-      br       = "cd $HOME/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/main";
+      ts = "tailscale";
+      tf = "terraform";
+      play = "cd $HOME/workspaces/github.com/yyh-gl/go-playground/";
+      anti = "cd $HOME/workspaces/github.com/Anti-Pattern-Inc/";
+      blog = "cd $HOME/workspaces/github.com/yyh-gl/tech-blog/";
+      api = "cd $HOME/workspaces/github.com/yyh-gl/hobigon-golang-api-server/";
+      ur = "cd $HOME/workspaces/github.com/yyh-gl/urLogs";
+      hobigon = "cd $HOME/workspaces/github.com/yyh-gl/hobigon/";
+      br = "cd $HOME/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/main";
     } else if mode == "work" then {
       # Add aliases for work
     } else {});
