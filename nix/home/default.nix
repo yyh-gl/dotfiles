@@ -34,8 +34,8 @@
   programs.go = {
     enable = true;
     package = pkgs.go_1_26;
-    env.GOPATH = "$HOME/go";
-    env.GOBIN  = "$HOME/go/bin";
+    env.GOPATH = "${homeDirectory}/go";
+    env.GOBIN  = "${homeDirectory}/go/bin";
   };
 
   programs.java = {
