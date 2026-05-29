@@ -11,6 +11,8 @@
   :config
   (setq go-ts-mode-indent-offset 4))
 
+(add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
+
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
                '(go-ts-mode . ("gopls"))))
