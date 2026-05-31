@@ -22,6 +22,9 @@ in {
 
   home.file.".aws/config".source = "${dotfiles}/aws/config";
 
+  home.file.".config/zed/settings.json".source = "${dotfiles}/zed/settings.json";
+  home.file.".config/zed/keymap.json".source = "${dotfiles}/zed/keymap.json";
+
   home.activation.desktopSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${lib.optionalString (mode == "hobby") (''
       mkdir -p "${hd}/Desktop/hobby"
