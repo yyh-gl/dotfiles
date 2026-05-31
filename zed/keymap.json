@@ -1,0 +1,140 @@
+// Zed keymap
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see all of Zed's default key bindings, run `zed: open default key bindings`
+// from the command palette.
+[
+  {
+    "context": "Editor",
+    "bindings": {
+      // Command palette (GotoAction in IntelliJ)
+      "alt-x": "command_palette::Toggle",
+
+      // Navigation
+      "ctrl-'": "editor::GoToDefinition",
+      "alt-'": "editor::GoToImplementation",
+      "ctrl-alt-;": "editor::GoToImplementation",
+      "ctrl-g": "editor::Cancel",
+      "alt-g": "go_to_line::Toggle",
+
+      // Search
+      "ctrl-s": "buffer_search::Deploy",
+      "ctrl-alt-5": "buffer_search::DeployReplace",
+      "ctrl-shift-f": "pane::DeploySearch",
+
+      // Edit
+      "ctrl-alt-/": "editor::Redo",
+      "alt-r": "editor::Rename",
+      "ctrl-alt-i": "editor::AutoIndent",
+      "ctrl-m": "editor::Newline",
+      "ctrl-o": [
+        "action::Sequence",
+        [
+          ["editor::NewlineBelow", 0],
+          ["editor::MoveUp", 0],
+        ],
+      ],
+      "ctrl-u": "editor::DeleteToBeginningOfLine",
+      "alt-w": [
+        "action::Sequence",
+        [
+          ["editor::Copy", 0],
+          ["editor::Cancel", 0],
+        ],
+      ],
+      "ctrl-y": "editor::Paste",
+      "alt-y": "editor::Paste",
+      "ctrl-alt-w": "editor::SelectLargerSyntaxNode",
+      "ctrl-[": "editor::MoveToStartOfLargerSyntaxNode",
+
+      // Tab navigation
+      "cmd-[": "pane::ActivatePreviousItem",
+      "cmd-]": "pane::ActivateNextItem",
+      "ctrl-enter": null,
+
+      // Breakpoint / Debug
+      "cmd-d": "editor::ToggleBreakpoint",
+    },
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      // Tool windows
+      "cmd-backslash": "workspace::ToggleLeftDock",
+      "alt-t": "terminal_panel::Toggle",
+      "ctrl-t": "terminal_panel::Toggle",
+      "ctrl-alt-a": "agent::ToggleFocus",
+      "cmd-1": "project_panel::Toggle",
+      "cmd-2": "git_panel::Toggle",
+      // Run / Debug
+      "shift-f9": "debugger::Start",
+      "cmd-r": "task::Rerun",
+      "ctrl-r": "task::Rerun",
+
+      // New file / AI Assistant
+      "shift-ctrl-n": "workspace::NewFile",
+      "cmd-n": "agent::NewThread",
+
+      // Git
+      "shift-ctrl-c": "git::Commit",
+    },
+  },
+  {
+    "context": "GitPanel",
+    "bindings": {
+      "cmd-1": "project_panel::Toggle",
+      "cmd-2": "git_panel::Toggle",
+    },
+  },
+  {
+    "context": "DiffEditor",
+    "bindings": {
+      "ctrl-9": "editor::GoToHunk",
+      "ctrl-0": "editor::GoToHunk",
+      "ctrl-8": "git::ToggleStaged",
+    },
+  },
+  {
+    "context": "Editor && multibuffer",
+    "bindings": {
+      "ctrl-enter": "editor::OpenExcerpts",
+    },
+  },
+  {
+    "context": "Pane",
+    "bindings": {
+      // Tab navigation
+      "cmd-]": "pane::ActivateNextItem",
+      "cmd-[": "pane::ActivatePreviousItem",
+
+      // Tab navigation (chord)
+      "ctrl-x ctrl-n": "pane::ActivateNextItem",
+      "ctrl-x ctrl-p": "pane::ActivatePreviousItem",
+
+      // Close tab
+      "ctrl-f4": "pane::CloseActiveItem",
+      "ctrl-x k": "pane::CloseActiveItem",
+      "ctrl-x ctrl-c": "pane::CloseActiveItem",
+    },
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-]": "editor::MoveToEnclosingBracket"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-[": "editor::MoveToEnclosingBracket"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-t": "terminal_panel::Toggle"
+    }
+  }
+]
