@@ -9,13 +9,17 @@ init: # Initialize the environment
 	./bin/install-nix.sh
 	sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#yyh-gl-mac-hobby
 
+.PHONY: setup-hooks
+setup-hooks: # Set up local git hooks for this repo
+	git config core.hooksPath hooks
+
 .PHONY: build-hobby
-build-hobby: # Setup my macOS (hobby mode)
+build-hobby: setup-hooks # Setup my macOS (hobby mode)
 	$(MAKE) nix-apply-hobby
 	./bin/manual.sh
 
 .PHONY: build-work
-build-work: # Setup my macOS (work mode)
+build-work: setup-hooks # Setup my macOS (work mode)
 	$(MAKE) nix-apply-work
 	./bin/manual.sh
 
@@ -34,3 +38,11 @@ nix-update: # Update tools on Nix
 .PHONY: nix-cleanup
 nix-cleanup: # Cleanup Nix
 	sudo nix-collect-garbage -d
+
+.PHONY: gitleaks-detect
+gitleaks-all: # Scan git history for secrets
+	gitleaks detect -v --redact
+
+.PHONY: gitleaks-protect
+gitleaks-staged: # Scan staged changes for secrets
+	gitleaks protect -v --redact --staged

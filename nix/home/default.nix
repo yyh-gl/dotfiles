@@ -23,6 +23,7 @@
     pkgs.typescript-language-server
     pkgs.pnpm
     pkgs.silicon
+    pkgs.gitleaks
     pkgs.starship
     pkgs.tree
   ] ++ pkgs.lib.optionals (mode == "hobby") [
