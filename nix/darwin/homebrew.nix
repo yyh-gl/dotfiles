@@ -17,7 +17,7 @@
       "codex"
       "docker-desktop"
       "figma"
-      "ghostty"
+      "ghostty@tip"
       "google-chrome"
       "google-drive"
       "google-japanese-ime"
