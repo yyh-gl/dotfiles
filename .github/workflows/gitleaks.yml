@@ -1,0 +1,20 @@
+name: gitleaks
+
+on:
+  push:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        with:
+          log-opts: >-
+            ${{ github.event.before != '0000000000000000000000000000000000000000'
+              && format('{0}..{1}', github.event.before, github.sha)
+              || '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
