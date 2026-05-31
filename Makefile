@@ -38,3 +38,11 @@ nix-update: # Update tools on Nix
 .PHONY: nix-cleanup
 nix-cleanup: # Cleanup Nix
 	sudo nix-collect-garbage -d
+
+.PHONY: gitleaks-detect
+gitleaks-all: # Scan git history for secrets
+	gitleaks detect -v --redact
+
+.PHONY: gitleaks-protect
+gitleaks-staged: # Scan staged changes for secrets
+	gitleaks protect -v --redact --staged
