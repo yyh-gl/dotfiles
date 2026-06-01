@@ -32,7 +32,8 @@
       "Read(**/*.key)"
     ],
     "ask": [
-      "Bash(git commit*)"
+      "Bash(git commit*)",
+      "Bash(gh*)"
     ],
     "disableBypassPermissionsMode": "disable"
   },
@@ -106,7 +107,8 @@
       ]
     },
     "excludedCommands": [
-      "git commit*"
+      "git commit*",
+      "gh*"
     ]
   },
   "effortLevel": "xhigh",
