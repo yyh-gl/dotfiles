@@ -17,7 +17,6 @@
       "codex"
       "docker-desktop"
       "figma"
-      "ghostty@tip"
       "google-chrome"
       "google-drive"
       "google-japanese-ime"
@@ -30,6 +29,7 @@
       "rectangle"
       "slack"
       "switchhosts"
+      "wezterm"
       "zoom"
     ] ++ lib.optionals (mode == "hobby") [
       "adobe-acrobat-reader"
