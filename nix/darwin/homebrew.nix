@@ -4,7 +4,7 @@
     onActivation = {
       autoUpdate = true;
       upgrade = true;
-      cleanup = "zap";
+      cleanup = "none";
     };
     taps = [
       "songmu/tap"
