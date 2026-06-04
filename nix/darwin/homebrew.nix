@@ -29,6 +29,7 @@
       "rectangle"
       "slack"
       "switchhosts"
+      "ghostty@tip"
       "wezterm"
       "zoom"
     ] ++ lib.optionals (mode == "hobby") [
