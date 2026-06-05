@@ -23,7 +23,7 @@ config.window_background_opacity = 0.7
 -- font
 ---------------------------------
 config.font = wezterm.font_with_fallback({
-	"HackGen Console NF",
+	"JetBrains Mono",
 	"Apple Color Emoji",
 })
 config.font_size = 14

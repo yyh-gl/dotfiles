@@ -1,4 +1,4 @@
-{ pkgs, username, homeDirectory, ... }: {
+{ username, homeDirectory, ... }: {
   imports = [
     ./homebrew.nix
     ./defaults.nix
@@ -19,10 +19,6 @@
   ];
 
   nixpkgs.config.allowUnfree = true;
-
-  fonts.packages = [
-    pkgs.hackgen-nf-font
-  ];
 
   security.pam.services.sudo_local.touchIdAuth = true;
 
