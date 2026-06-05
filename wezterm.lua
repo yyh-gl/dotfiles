@@ -18,6 +18,7 @@ config.colors = {
 	split = "#5f6527",
 }
 config.window_background_opacity = 0.7
+config.macos_window_background_blur = 10
 
 ---------------------------------
 -- font
