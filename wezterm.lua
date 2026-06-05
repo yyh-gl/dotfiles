@@ -82,7 +82,7 @@ end)
 -- font
 ---------------------------------
 config.font = wezterm.font_with_fallback({
-	"Ricty Diminished",
+	"HackGen Console NF",
 	"Apple Color Emoji",
 })
 config.font_size = 14.5

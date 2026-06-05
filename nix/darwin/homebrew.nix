@@ -17,6 +17,7 @@
     ];
     casks = [
       "codex"
+      "font-hackgen-nerd"
       "font-ricty-diminished"
       "docker-desktop"
       "figma"
