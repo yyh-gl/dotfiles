@@ -40,7 +40,6 @@ config.default_cwd = wezterm.home_dir
 -- keybind
 ---------------------------------
 config.keys = {
-	{ key = "m", mods = "CTRL", action = act.SendString("\r") },
 	{ key = "[", mods = "SUPER", action = act.ActivatePaneDirection("Prev") },
 	{ key = "]", mods = "SUPER", action = act.ActivatePaneDirection("Next") },
 	{ key = "d", mods = "SUPER", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
