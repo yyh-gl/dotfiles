@@ -4,7 +4,9 @@
     onActivation = {
       autoUpdate = true;
       upgrade = true;
-      cleanup = "zap";
+      # TODO: brew bundle cleanupが管理外のMac App Storeアプリを巻き込んで削除する不具合が修正されたらzapに戻す
+      #       -> homebrew/brew#22450
+      cleanup = "none";
     };
     taps = [
       "songmu/tap"
@@ -17,7 +19,6 @@
       "codex"
       "docker-desktop"
       "figma"
-      "ghostty@tip"
       "google-chrome"
       "google-drive"
       "google-japanese-ime"
@@ -30,6 +31,7 @@
       "rectangle"
       "slack"
       "switchhosts"
+      "wezterm"
       "zoom"
     ] ++ lib.optionals (mode == "hobby") [
       "adobe-acrobat-reader"

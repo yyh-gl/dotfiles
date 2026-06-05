@@ -39,7 +39,7 @@ All config files live here and are managed by **Nix home-manager** (`nix/home/do
 
 Key configs managed by Nix home-manager (`nix/home/dotfiles.nix`):
 
-- `ghostty-config` → `$HOME/.config/ghostty/config`
+- `wezterm.lua` → `$HOME/.config/wezterm/wezterm.lua`
 - `.git-config/` → `$HOME/.config/git/`
 - `aws/config` → `$HOME/.aws/config`
 - `.dictionary.txt` → `$HOME/.dictionary.txt`
