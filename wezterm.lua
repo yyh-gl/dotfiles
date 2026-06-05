@@ -26,6 +26,10 @@ config.colors = {
 		active_tab = { bg_color = "#121212", fg_color = "#FCE8C3" },
 	},
 }
+config.inactive_pane_hsb = {
+	saturation = 0.3,
+	brightness = 0.3,
+}
 config.window_background_opacity = 0.7
 config.macos_window_background_blur = 10
 config.window_decorations = "RESIZE"
