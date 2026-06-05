@@ -24,7 +24,23 @@ config.window_frame = {
 	active_titlebar_bg = "#000000",
 	inactive_titlebar_bg = "#111111",
 }
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+    local background = "#000000"
+    local foreground = "#FFFFFF"
 
+    if tab.is_active then
+        background = "#769ff0"
+        foreground = "#FFFFFF"
+    end
+
+    local title = "   " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "   "
+
+    return {
+        { Background = { Color = background } },
+        { Foreground = { Color = foreground } },
+        { Text = title },
+    }
+end)
 ---------------------------------
 -- font
 ---------------------------------
