@@ -32,7 +32,7 @@ config.font = wezterm.font_with_fallback({
 	"JetBrains Mono",
 	"Apple Color Emoji",
 })
-config.font_size = 14
+config.font_size = 13.5
 
 ---------------------------------
 -- behavior
