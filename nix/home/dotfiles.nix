@@ -14,7 +14,7 @@ let
     { src = "${gd}/01_CasualLife/99_Pictures/99_Others";     dst = "${hd}/Pictures/99_Others"; }
   ];
 in {
-  home.file.".config/ghostty/config".source = "${dotfiles}/ghostty-config";
+  home.file.".config/wezterm/wezterm.lua".source = "${dotfiles}/wezterm.lua";
   home.file.".config/starship.toml".source = "${dotfiles}/starship.toml";
   home.file.".config/git/config".source = "${dotfiles}/.git-config/config";
   home.file.".config/git/ignore".source = "${dotfiles}/.git-config/ignore";
