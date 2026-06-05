@@ -4,6 +4,8 @@
     onActivation = {
       autoUpdate = true;
       upgrade = true;
+      # TODO: brew bundle cleanupが管理外のMac App Storeアプリを巻き込んで削除する不具合が修正されたらzapに戻す
+      #       -> homebrew/brew#22450
       cleanup = "none";
     };
     taps = [
