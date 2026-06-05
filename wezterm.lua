@@ -19,6 +19,11 @@ config.colors = {
 }
 config.window_background_opacity = 0.7
 config.macos_window_background_blur = 10
+config.window_decorations = "RESIZE"
+config.window_frame = {
+	active_titlebar_bg = "#000000",
+	inactive_titlebar_bg = "#111111",
+}
 
 ---------------------------------
 -- font
