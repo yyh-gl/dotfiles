@@ -34,6 +34,7 @@
 (require 'vue)
 (require 'json2)
 (require 'yaml)
+(require 'nix)
 
 ;; Auto Complete
 (use-package company
