@@ -19,7 +19,7 @@
     pkgs.kubectl
     pkgs.kubectx
     pkgs.kubernetes-helm
-    pkgs.nodejs
+    pkgs.nodejs_22
     pkgs.typescript-language-server
     pkgs.pnpm
     pkgs.silicon
