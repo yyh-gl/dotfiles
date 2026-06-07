@@ -2,18 +2,19 @@
 ;; ▼ Language Config: Vue
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; vue-mode is unavailable on MELPA; use web-mode for .vue files
+;; vue-mode is unavailable on MELPA; use web-mode for .vue files.
+;; web-mode is used only for .vue here (tsx/jsx live in the tree-sitter modes).
 (use-package web-mode
   :ensure t
-  :mode "\\.vue\\'")
+  :mode "\\.vue\\'"
+  :config
+  (setq web-mode-markup-indent-offset 2
+        web-mode-css-indent-offset    2
+        web-mode-code-indent-offset   2))
 
 (with-eval-after-load 'eglot
-  ;; Pick LSP server based on file extension (vue vs jsx/tsx)
   (add-to-list 'eglot-server-programs
-               `(web-mode . ,(lambda (&rest _)
-                               (if (string-suffix-p ".vue" (or buffer-file-name ""))
-                                   '("vue-language-server" "--stdio")
-                                 '("typescript-language-server" "--stdio"))))))
+               '(web-mode . ("vue-language-server" "--stdio"))))
 
 (provide 'vue)
 ;;; lang/vue.el ends here

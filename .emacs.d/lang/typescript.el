@@ -1,36 +1,27 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ▼ Language Config: TypeScript / JavaScript / React
+;; ▼ Language Config: TypeScript / JavaScript / React (tree-sitter)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; typescript-modeがflyspell-generic-progmode-verifyを参照するため先にロード
-(require 'flyspell nil t)
+;; Tree-sitter grammars (typescript / tsx) are provided declaratively via Nix
+;; and symlinked into ~/.emacs.d/tree-sitter/ (see nix/home/emacs.nix).
 
-(use-package typescript-mode
-  :ensure t
-  :mode "\\.ts\\'"
-  :hook (typescript-mode . eglot-ensure))
-
-;; JSX / TSX (React)
-(use-package web-mode
-  :ensure t
-  :mode ("\\.jsx\\'" "\\.tsx\\'")
-  :hook (web-mode . eglot-ensure)
+;; .ts -> typescript-ts-mode, .tsx/.jsx -> tsx-ts-mode (both built-in)
+(use-package typescript-ts-mode
+  :ensure nil
+  :mode (("\\.ts\\'"  . typescript-ts-mode)
+         ("\\.tsx\\'" . tsx-ts-mode)
+         ("\\.jsx\\'" . tsx-ts-mode))
+  :hook ((typescript-ts-mode . eglot-ensure)
+         (tsx-ts-mode        . eglot-ensure))
   :config
-  (setq web-mode-markup-indent-offset 2
-        web-mode-css-indent-offset    2
-        web-mode-code-indent-offset   2)
-  ;; web-mode-part-args-beginning is missing in web-mode 17.x (upstream bug).
-  ;; The JS-equivalent function covers both block-side and part-side contexts.
-  (unless (fboundp 'web-mode-part-args-beginning)
-    (defalias 'web-mode-part-args-beginning 'web-mode-javascript-args-beginning)))
+  (setq typescript-ts-mode-indent-offset 2))
 
 ;; js-mode is built-in
 (add-hook 'js-mode-hook #'eglot-ensure)
 
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
-               '(typescript-mode . ("typescript-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs
-               '(js-mode . ("typescript-language-server" "--stdio"))))
+               '((typescript-ts-mode tsx-ts-mode js-mode)
+                 . ("typescript-language-server" "--stdio"))))
 
 (provide 'typescript)

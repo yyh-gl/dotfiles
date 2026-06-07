@@ -6,6 +6,10 @@
 
   home.file.".emacs.d/tree-sitter/libtree-sitter-go.dylib".source =
     "${pkgs.tree-sitter-grammars.tree-sitter-go}/parser";
+  home.file.".emacs.d/tree-sitter/libtree-sitter-typescript.dylib".source =
+    "${pkgs.tree-sitter-grammars.tree-sitter-typescript}/parser";
+  home.file.".emacs.d/tree-sitter/libtree-sitter-tsx.dylib".source =
+    "${pkgs.tree-sitter-grammars.tree-sitter-tsx}/parser";
 
   home.file.".emacs.d/early-init.el".source = "${dotfiles}/.emacs.d/early-init.el";
   home.file.".emacs.d/init.el".source = "${dotfiles}/.emacs.d/init.el";
