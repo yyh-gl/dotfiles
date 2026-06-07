@@ -18,7 +18,11 @@
   :config
   (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset    2
-        web-mode-code-indent-offset   2))
+        web-mode-code-indent-offset   2)
+  ;; web-mode-part-args-beginning is missing in web-mode 17.x (upstream bug).
+  ;; The JS-equivalent function covers both block-side and part-side contexts.
+  (unless (fboundp 'web-mode-part-args-beginning)
+    (defalias 'web-mode-part-args-beginning 'web-mode-javascript-args-beginning)))
 
 ;; js-mode is built-in
 (add-hook 'js-mode-hook #'eglot-ensure)
