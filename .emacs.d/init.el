@@ -53,11 +53,6 @@
   :bind ("C-x f" . projectile-find-file)
   :config (projectile-mode +1))
 
-;; Theme
-(use-package ayu-theme
-  :ensure t
-  :config (load-theme 'ayu-dark t))
-
 ;; Extend Selection
 (use-package expand-region
   :ensure t
