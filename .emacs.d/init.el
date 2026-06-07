@@ -137,6 +137,22 @@
                   (condition-case nil
                       (scroll-down-command)
                     (beginning-of-buffer (goto-char (point-min))))))
+;; Surround active region with the typed character, otherwise self-insert
+(defun my-surround-or-self-insert (n)
+  (interactive "p")
+  (if (use-region-p)
+      (let ((char (char-to-string last-command-event))
+            (beg (region-beginning))
+            (end (region-end)))
+        (goto-char end)
+        (insert char)
+        (goto-char beg)
+        (insert char)
+        (set-mark (1+ beg))
+        (goto-char (1+ end)))
+    (self-insert-command n)))
+(global-set-key (kbd "\"") #'my-surround-or-self-insert)
+(global-set-key (kbd "'")  #'my-surround-or-self-insert)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Hooks
