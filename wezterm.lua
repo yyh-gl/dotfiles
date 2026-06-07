@@ -96,6 +96,22 @@ config.send_composed_key_when_right_alt_is_pressed = false
 config.default_cwd = wezterm.home_dir
 
 ---------------------------------
+-- mouse
+---------------------------------
+config.mouse_bindings = {
+	{
+		event = { Up = { streak = 1, button = "Left" } },
+		mods = "SUPER",
+		action = act.OpenLinkAtMouseCursor,
+	},
+	{
+		event = { Up = { streak = 1, button = "Left" } },
+		mods = "NONE",
+		action = act.CompleteSelection("ClipboardAndPrimarySelection"),
+	},
+}
+
+---------------------------------
 -- keybind
 ---------------------------------
 config.keys = {
