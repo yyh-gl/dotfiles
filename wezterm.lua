@@ -115,12 +115,119 @@ config.mouse_bindings = {
 }
 
 ---------------------------------
+-- pane
+---------------------------------
+-- 同じleft座標のペインは同一カラム（縦に積まれたペイン）として扱う
+local function get_columns(tab)
+	local columns = {}
+	local seen = {}
+	for _, p in ipairs(tab:panes_with_info()) do
+		if not seen[p.left] then
+			seen[p.left] = true
+			table.insert(columns, p)
+		end
+	end
+	table.sort(columns, function(a, b)
+		return a.left < b.left
+	end)
+	return columns
+end
+
+-- タブ内の全カラムの幅を均一にする。
+-- AdjustPaneSizeは「アクティブペインから分割木を遡って最初に見つかる横分割の境界」を
+-- Left/Rightの方向へ動かす仕様（mux/src/tab.rs adjust_pane_size）。どの境界が動くかは
+-- 木の形に依存するため、境界ごとに左右どちらのカラムから動かすかを試しつつ、
+-- 毎回実測して目標位置に収束させる。
+local function balance_pane_widths(window)
+	local tab = window:active_tab()
+	if tab == nil then
+		return
+	end
+
+	local columns = get_columns(tab)
+	local n = #columns
+	if n < 2 then
+		return
+	end
+
+	local total_width = 0
+	for _, c in ipairs(columns) do
+		total_width = total_width + c.width
+	end
+	local left0 = columns[1].left
+	local target = math.floor(total_width / n)
+
+	local original_pane = window:active_pane()
+	local tried = {}
+	for i = 1, n - 1 do
+		tried[i] = 0
+	end
+
+	local steps = 0
+	local function step()
+		steps = steps + 1
+		if steps > 30 then
+			original_pane:activate()
+			return
+		end
+
+		columns = get_columns(tab)
+		if #columns ~= n then
+			original_pane:activate()
+			return
+		end
+
+		-- 目標位置からずれている最初の境界を1つ調整し、反映後に次のstepで再計測する
+		for i = 1, n - 1 do
+			local desired = left0 + i * target + (i - 1)
+			local actual = columns[i].left + columns[i].width
+			local delta = desired - actual
+			if delta ~= 0 and tried[i] < 4 then
+				-- 偶数回目は左カラム、奇数回目は右カラムのペインを基準に動かす
+				local p = (tried[i] % 2 == 0) and columns[i].pane or columns[i + 1].pane
+				tried[i] = tried[i] + 1
+				p:activate()
+				if delta > 0 then
+					window:perform_action(act.AdjustPaneSize({ "Right", delta }), p)
+				else
+					window:perform_action(act.AdjustPaneSize({ "Left", -delta }), p)
+				end
+				wezterm.time.call_after(0.03, step)
+				return
+			end
+		end
+
+		original_pane:activate()
+	end
+
+	step()
+end
+
+---------------------------------
 -- keybind
 ---------------------------------
 config.keys = {
 	{ key = "[", mods = "SUPER", action = act.ActivatePaneDirection("Prev") },
 	{ key = "]", mods = "SUPER", action = act.ActivatePaneDirection("Next") },
-	{ key = "d", mods = "SUPER", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+	{
+		key = "d",
+		mods = "SUPER",
+		action = wezterm.action_callback(function(window, pane)
+			local before = #window:active_tab():panes()
+			window:perform_action(act.SplitHorizontal({ domain = "CurrentPaneDomain" }), pane)
+			-- 分割のmuxへの反映は非同期のため、ペイン数の増加を待ってから均等化する
+			local attempts = 0
+			local function try_balance()
+				attempts = attempts + 1
+				if #window:active_tab():panes() > before then
+					balance_pane_widths(window)
+				elseif attempts < 20 then
+					wezterm.time.call_after(0.05, try_balance)
+				end
+			end
+			wezterm.time.call_after(0.05, try_balance)
+		end),
+	},
 	{ key = "d", mods = "SUPER|SHIFT", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
 	{ key = "w", mods = "SUPER", action = act.CloseCurrentPane({ confirm = true }) },
 }
