@@ -220,10 +220,11 @@ local function balance_pane_widths(window)
 	step()
 end
 
--- ペイン数が変化するまで待ってから幅を均等化する。
--- 分割・クローズのmuxへの反映は非同期で、クローズは確認ダイアログも挟むため、
--- 呼び出し時点のペイン数を記録し、変化を検知するまでポーリングする（最大約10秒）。
-local function balance_after_pane_count_change(window)
+-- ペインが閉じられるのを待ってから幅を均等化する。
+-- クローズは確認ダイアログを挟みmuxへの反映タイミングが読めないため、
+-- 呼び出し時点のペイン数を記録し、減少を検知するまでポーリングする
+-- （キャンセル時は最大約10秒で自然終了）。
+local function balance_after_pane_close(window)
 	local tab = window:active_tab()
 	if tab == nil then
 		return
@@ -236,7 +237,7 @@ local function balance_after_pane_count_change(window)
 		if t == nil or t:tab_id() ~= tab_id then
 			return
 		end
-		if #t:panes() ~= before then
+		if #t:panes() < before then
 			balance_pane_widths(window)
 			return
 		end
@@ -258,8 +259,10 @@ config.keys = {
 		key = "d",
 		mods = "SUPER",
 		action = wezterm.action_callback(function(window, pane)
-			balance_after_pane_count_change(window)
-			window:perform_action(act.SplitHorizontal({ domain = "CurrentPaneDomain" }), pane)
+			-- pane:split()は同期APIで、新ペイン作成後すぐに均等化できる
+			local new_pane = pane:split({ direction = "Right" })
+			new_pane:activate()
+			balance_pane_widths(window)
 		end),
 	},
 	{ key = "d", mods = "SUPER|SHIFT", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
@@ -267,7 +270,7 @@ config.keys = {
 		key = "w",
 		mods = "SUPER",
 		action = wezterm.action_callback(function(window, pane)
-			balance_after_pane_count_change(window)
+			balance_after_pane_close(window)
 			window:perform_action(act.CloseCurrentPane({ confirm = true }), pane)
 		end),
 	},
