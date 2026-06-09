@@ -203,6 +203,34 @@ local function balance_pane_widths(window)
 	step()
 end
 
+-- ペイン数が変化するまで待ってから幅を均等化する。
+-- 分割・クローズのmuxへの反映は非同期で、クローズは確認ダイアログも挟むため、
+-- 呼び出し時点のペイン数を記録し、変化を検知するまでポーリングする（最大約10秒）。
+local function balance_after_pane_count_change(window)
+	local tab = window:active_tab()
+	if tab == nil then
+		return
+	end
+	local tab_id = tab:tab_id()
+	local before = #tab:panes()
+	local attempts = 0
+	local function try_balance()
+		local t = window:active_tab()
+		if t == nil or t:tab_id() ~= tab_id then
+			return
+		end
+		if #t:panes() ~= before then
+			balance_pane_widths(window)
+			return
+		end
+		attempts = attempts + 1
+		if attempts < 100 then
+			wezterm.time.call_after(0.1, try_balance)
+		end
+	end
+	wezterm.time.call_after(0.05, try_balance)
+end
+
 ---------------------------------
 -- keybind
 ---------------------------------
@@ -213,23 +241,19 @@ config.keys = {
 		key = "d",
 		mods = "SUPER",
 		action = wezterm.action_callback(function(window, pane)
-			local before = #window:active_tab():panes()
+			balance_after_pane_count_change(window)
 			window:perform_action(act.SplitHorizontal({ domain = "CurrentPaneDomain" }), pane)
-			-- 分割のmuxへの反映は非同期のため、ペイン数の増加を待ってから均等化する
-			local attempts = 0
-			local function try_balance()
-				attempts = attempts + 1
-				if #window:active_tab():panes() > before then
-					balance_pane_widths(window)
-				elseif attempts < 20 then
-					wezterm.time.call_after(0.05, try_balance)
-				end
-			end
-			wezterm.time.call_after(0.05, try_balance)
 		end),
 	},
 	{ key = "d", mods = "SUPER|SHIFT", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
-	{ key = "w", mods = "SUPER", action = act.CloseCurrentPane({ confirm = true }) },
+	{
+		key = "w",
+		mods = "SUPER",
+		action = wezterm.action_callback(function(window, pane)
+			balance_after_pane_count_change(window)
+			window:perform_action(act.CloseCurrentPane({ confirm = true }), pane)
+		end),
+	},
 }
 
 return config
