@@ -21,8 +21,10 @@ seven_d="${fields[5]}"
 seven_reset="${fields[6]}"
 cost_usd="${fields[7]}"
 
-CYAN="\033[36m"
+RED="\033[31m"
+GREEN="\033[32m"
 YELLOW="\033[33m"
+CYAN="\033[36m"
 DIM="\033[2m"
 RESET="\033[0m"
 
@@ -31,11 +33,11 @@ rate_color() {
   local val
   val=$(printf "%.0f" "$1")
   if [ "$val" -ge 90 ]; then
-    echo "\033[31m"
+    echo "$RED"
   elif [ "$val" -ge 70 ]; then
-    echo "\033[33m"
+    echo "$YELLOW"
   else
-    echo "\033[32m"
+    echo "$GREEN"
   fi
 }
 
