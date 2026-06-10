@@ -83,7 +83,7 @@ model_seg="🤖${CYAN}${model}${RESET}"
 
 ctx_seg=""
 if [ -n "$ctx_used" ]; then
-  ctx_seg="📈$(rate_color "$ctx_used")$(printf '%.0f' "$ctx_used")%${RESET}"
+  ctx_seg="📝$(rate_color "$ctx_used")$(printf '%.0f' "$ctx_used")%${RESET}"
 fi
 
 five_seg=""
