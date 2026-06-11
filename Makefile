@@ -7,6 +7,8 @@ help: # Help me
 init: # Initialize the environment
 	./bin/init.sh
 	./bin/install-nix.sh
+	brew tap songmu/tap
+	brew trust songmu/tap
 	sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#yyh-gl-mac-hobby
 
 .PHONY: setup-hooks
