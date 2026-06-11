@@ -25,6 +25,7 @@ RED="\033[31m"
 GREEN="\033[32m"
 YELLOW="\033[33m"
 CYAN="\033[36m"
+PRIMARY_COLOR="\033[38;2;118;159;240m"
 DIM="\033[2m"
 RESET="\033[0m"
 
@@ -73,7 +74,7 @@ join_segments() {
 dir_seg=""
 branch_seg=""
 if [ -n "$current_dir" ]; then
-  dir_seg="📁${CYAN}$(basename "$current_dir")${RESET}"
+  dir_seg="📁${PRIMARY_COLOR}$(basename "$current_dir")${RESET}"
   branch=$(git -C "$current_dir" branch --show-current 2>/dev/null)
   [ -n "$branch" ] && branch_seg="${YELLOW}⎇ ${branch}${RESET}"
 fi
