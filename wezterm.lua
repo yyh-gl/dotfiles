@@ -18,10 +18,10 @@ end)
 
 config.colors = {
 	background = "#000000",
-	split = "#5f6527",
-	cursor_bg = "#769ff0",
+	split = "#5F6527",
+	cursor_bg = "#769FF0",
 	cursor_fg = "#000000",
-	cursor_border = "#769ff0",
+	cursor_border = "#769FF0",
 	tab_bar = {
 		background = "#121212",
 		new_tab = { bg_color = "#121212", fg_color = "#FCE8C3", intensity = "Bold" },
