@@ -5,8 +5,39 @@
       InitialKeyRepeat = 15;
       "com.apple.trackpad.scaling" = 3.0;
       AppleInterfaceStyle = "Dark";
+      NSAutomaticCapitalizationEnabled = false;
+      NSAutomaticSpellingCorrectionEnabled = false;
+      NSAutomaticQuoteSubstitutionEnabled = false;
+      NSAutomaticDashSubstitutionEnabled = false;
+      NSNavPanelExpandedStateForSaveMode = true;
+      NSNavPanelExpandedStateForSaveMode2 = true;
+      NSDocumentSaveNewDocumentsToCloud = false;
+      AppleShowScrollBars = "Always";
     };
+
     trackpad.Clicking = true;
+
+    dock = {
+      show-recents = false;
+      mru-spaces = false;
+      showhidden = true;
+    };
+
+    finder = {
+      AppleShowAllExtensions = true;
+      ShowPathbar = true;
+      ShowStatusBar = true;
+      FXPreferredViewStyle = "clmv";
+      _FXSortFoldersFirst = true;
+      FXDefaultSearchScope = "SCcf";
+      FXEnableExtensionChangeWarning = false;
+      NewWindowTarget = "Home";
+    };
+
+    screencapture = {
+      type = "png";
+      disable-shadow = true;
+    };
   };
 
   # nix-darwinが対応していない設定をactivationScriptsで対応
