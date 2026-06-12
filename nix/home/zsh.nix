@@ -48,7 +48,6 @@
       export EDITOR=emacs VISUAL=emacs
 
       export PATH=$PATH:$HOME/go/bin
-      export PATH=$HOME/workspaces/github.com/yyh-gl/dotfiles/scripts:$PATH
       export PATH="/opt/homebrew/bin:$PATH"
       export PATH="$HOME/.local/bin:$PATH"
       typeset -U path cdpath fpath manpath
