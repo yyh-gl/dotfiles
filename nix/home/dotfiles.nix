@@ -30,6 +30,11 @@ in {
     executable = true;
   };
 
+  home.activation.rectangleConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    mkdir -p "${hd}/Library/Application Support/Rectangle"
+    install -m 644 "${dotfiles}/RectangleConfig.json" "${hd}/Library/Application Support/Rectangle/RectangleConfig.json"
+  '';
+
   home.activation.desktopSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${lib.optionalString (mode == "hobby") (''
       mkdir -p "${hd}/Desktop/hobby"
