@@ -49,9 +49,6 @@
     # [Menu bar] バッテリー残量をパーセントで表示（ByHost設定のため -currentHost が必要）
     defaults -currentHost write com.apple.controlcenter BatteryShowPercentage -bool true
 
-    # [Rectangle] 設定インポート
-    defaults import com.knollsoft.Rectangle ${toString ./../../.defaults/com.knollsoft.Rectangle.plist}
-
     # [Key shortcut] 「入力メニューの次のソースを選択」を無効化（ID 60, 61）
     HOTKEY_PLIST="${homeDirectory}/Library/Preferences/com.apple.symbolichotkeys.plist"
     for id in 60 61; do
