@@ -44,6 +44,7 @@ Key configs managed by Nix home-manager (`nix/home/dotfiles.nix`):
 - `aws/config` → `$HOME/.aws/config`
 - `.dictionary.txt` → `$HOME/.dictionary.txt`
 - `karabiner.json` → `$HOME/.config/karabiner/karabiner.json`
+- `RectangleConfig.json` → `$HOME/Library/Application Support/Rectangle/RectangleConfig.json`（Rectangle起動時に自動インポートされる。Rectangleはsymlinkを拒否するため`home.file`ではなくactivation scriptで実ファイルとしてコピーしている）
 
 Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 
