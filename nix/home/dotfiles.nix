@@ -25,6 +25,11 @@ in {
   home.file.".config/zed/settings.json".source = "${dotfiles}/zed/settings.json";
   home.file.".config/zed/keymap.json".source = "${dotfiles}/zed/keymap.json";
 
+  home.file.".local/bin/celebrate-anniversary.sh" = {
+    source = "${dotfiles}/scripts/celebrate-anniversary.sh";
+    executable = true;
+  };
+
   home.activation.desktopSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${lib.optionalString (mode == "hobby") (''
       mkdir -p "${hd}/Desktop/hobby"
