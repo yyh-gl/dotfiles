@@ -7,6 +7,21 @@ description: devチームを起動するスキル。Lead・Planner・Implementer
 
 このスキルはチーム全メンバーが読み込む共通ルール。
 
+## 実装方法論: Canon TDD
+
+本チームの実装は**Canon TDD**（Kent Beck 原典、t-wada 解説準拠）に従う。方法論の詳細は `claude/skills/tdd/SKILL.md` を参照（各agentは再記述せずここを読む）。
+
+- **Tester** がテストリスト（自然言語の箇条書き）を作成する
+- **Implementer** が red-green-refactor サイクルを**1サイクル1テスト**で一気通貫に回す（テストとプロダクションコードの両方を書く）。実装着手時に tdd スキルを読み込むこと
+- **Tester** が全サイクル完了後にテスト品質を監査し、不足エッジケースを追加する
+- **Reviewer** が品質・セキュリティをレビューする
+
+TDD の鉄則（全員が遵守）:
+
+- テストを書いたら**必ず実行して Red（失敗）を自分の目で確認**してから実装する
+- 1サイクルで扱うテストは常に1つだけ。気づいた追加ケースはテストリストに追記して後回し
+- Green の後に Refactor の余地を探す（任意。全テスト緑を保ったまま進める）
+
 ## チーム起動手順（Leadが実行）
 
 ### Step 1: チームを作成する
@@ -30,7 +45,7 @@ Agent ツールで各メンバーを起動する。**`team_name: "dev-team"` と
 - Reviewer: `subagent_type: "reviewer"`, `name: "Reviewer"`, `team_name: "dev-team"`
 - Planner（Largeタスクのみ）: `subagent_type: "planner"`, `name: "Planner"`, `team_name: "dev-team"`
 
-複雑度に応じた判断は `teams/dev/agents/lead.md` のワークフローを参照。
+複雑度に応じた判断は `claude/agents/lead.md` のワークフローを参照。
 
 ### Step 4: タスクを割り当てる
 
@@ -68,12 +83,14 @@ TaskUpdate で `owner` をメンバー名に設定してタスクのオーナー
 
 ## ファイル所有権
 
-ファイル競合を防ぐため、各agentは担当領域のみ変更する:
+ファイル競合を防ぐため、各agentは担当領域のみ変更する。
+
+TDD では Implementer がサイクル中にテストを書くため、`tests/` は Implementer と Tester が**逐次所有**する（同時編集は禁止）。Implementer の TDD サイクルが完了してから Tester が監査・追記に入ること。
 
 - **Lead**: ファイル変更なし。タスク管理とメッセージングのみ。Bashは読み取り専用コマンド（`git log`, `git status`, `ls` 等）にのみ使用
 - **Planner**: ファイル変更なし。コード調査と実装プラン作成のみ。Bashは読み取り専用コマンドにのみ使用
-- **Implementer**: テストディレクトリとインフラ設定以外のすべてのファイル。具体的には `tests/`, `test/`, `__tests__/`, `*.test.*`, `*.spec.*`, `.github/`, `.claude/` 以外
-- **Tester**: テストコードとテスト設定のみ（`tests/`, `test/`, `__tests__/`, `*.test.*`, `*.spec.*`, テスト設定ファイル `jest.config.*`, `vitest.config.*` 等）
+- **Implementer**: インフラ設定（`.github/`, `.claude/`）以外のすべてのファイル。TDD サイクル中はプロダクションコードと `tests/`（`*.test.*`, `*.spec.*` 等）の両方を書く
+- **Tester**: テストコードとテスト設定のみ（`tests/`, `test/`, `__tests__/`, `*.test.*`, `*.spec.*`, テスト設定ファイル `jest.config.*`, `vitest.config.*` 等）。**Implementer のサイクル完了後**に品質監査・エッジケース追加を行う
 - **Reviewer**: ファイル変更なし。`git diff` とコード読解のみ。Bashは読み取り専用コマンドにのみ使用
 
 ## コミュニケーション規約
@@ -121,8 +138,8 @@ TaskUpdate で `owner` をメンバー名に設定してタスクのオーナー
 - 1コミット = 1論理変更（bisect commit原則）
 - コミットメッセージは変更内容を簡潔に記述
 - 複数の変更を1コミットにまとめない
-- **Implementer**: プロダクションコードの変更をコミット
-- **Tester**: テストコードの変更をコミット
+- **Implementer**: TDD サイクルの red-green ペア（失敗テスト + それを通す最小実装）を1論理変更としてコミットしてよい。リファクタリングは別コミットに分ける
+- **Tester**: テストリストおよび監査で追加・修正したテストをコミット
 - **Lead / Reviewer**: コミットしない
 
 ## プロジェクト情報
@@ -132,7 +149,8 @@ TaskUpdate で `owner` をメンバー名に設定してタスクのオーナー
 ## 品質基準
 
 - すべてのコードはビルド・lintを通過すること
-- テストカバレッジ90%以上を目標
+- TDD 準拠で実装すること（Red を必ず確認、1サイクル1テスト、テスト先行）
+- テストカバレッジ90%以上を目標（ただし数値は TDD の結果として検証する指標であり、各サイクルでテストを書く動機は振る舞いの駆動にある）
 - セキュリティ上のCRITICAL issueがある場合はマージしない
 
 ## チーム構成
@@ -141,16 +159,16 @@ TaskUpdate で `owner` をメンバー名に設定してタスクのオーナー
 |-------|------|------------|--------|
 | Lead | オーケストレーター | なし（読み取り専用） | opus |
 | Planner | 実装計画作成（Large タスク向け） | なし（読み取り専用） | opus |
-| Implementer | プロダクションコード実装 | プロダクションコード | sonnet |
-| Tester | テスト作成・実行 | テストコードのみ | sonnet |
+| Implementer | TDD ドライバー（テスト+実装をサイクルで記述） | プロダクションコード + `tests/` | sonnet |
+| Tester | テストリスト作成・サイクル後のテスト品質監査 | テストコードのみ | sonnet |
 | Reviewer | 品質・セキュリティレビュー | なし（読み取り専用） | sonnet |
 
 ## Agent定義ファイル
 
 各agentの詳細なワークフロー・指示は以下を参照:
 
-- `teams/dev/agents/lead.md` — Leadエージェント定義
-- `teams/dev/agents/planner.md` — Plannerエージェント定義
-- `teams/dev/agents/implementer.md` — Implementerエージェント定義
-- `teams/dev/agents/tester.md` — Testerエージェント定義
-- `teams/dev/agents/reviewer.md` — Reviewerエージェント定義
+- `claude/agents/lead.md` — Leadエージェント定義
+- `claude/agents/planner.md` — Plannerエージェント定義
+- `claude/agents/implementer.md` — Implementerエージェント定義
+- `claude/agents/tester.md` — Testerエージェント定義
+- `claude/agents/reviewer.md` — Reviewerエージェント定義
