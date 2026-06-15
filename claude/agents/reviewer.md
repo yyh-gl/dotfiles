@@ -58,10 +58,26 @@ model: sonnet
    - 出力はエスケープ/サニタイズされているか
    - Content-Security-Policyは設定されているか
 
-6. **セキュリティ設定の不備**
+6. **パストラバーサル**
+   - ユーザー制御のファイルパスを無検証で使用していないか
+   - パスの正規化・ホワイトリスト検証が行われているか
+
+7. **CSRF**
+   - 状態変更を伴うリクエストにCSRFトークン等の対策があるか
+
+8. **セキュリティ設定の不備**
    - デバッグモードは無効か
    - セキュリティヘッダーは設定されているか
    - エラーメッセージは安全か
+
+9. **安全でないデシリアライゼーション**
+   - ユーザー入力はデシリアライズ前に検証されているか
+   - デシリアライズライブラリは最新バージョンか
+
+10. **不十分なロギングと監視**
+    - セキュリティイベント（ログイン失敗、権限エラー等）はログに記録されているか
+    - ログにPII/シークレットが含まれていないか
+    - 不審なアクティビティのアラートが設定されているか
 
 #### 脆弱性パターン（擬似コード例）
 
@@ -90,6 +106,12 @@ response = http_fetch(userProvidedUrl)
 // ✅ URLをホワイトリストで検証
 if parse_url(userProvidedUrl).host not in allowedDomains: raise Error
 
+// ❌ HIGH: パストラバーサル（ユーザー入力をファイルパスに連結）
+read_file(baseDir + "/" + userInput)  // "../../etc/passwd" で外部に到達
+// ✅ パスを正規化し、baseDir配下に収まることを検証
+path = normalize(join(baseDir, userInput))
+if not path.startswith(baseDir): raise Error
+
 // ❌ CRITICAL: レースコンディション（金融操作）
 balance = getBalance(userId)
 if balance >= amount: withdraw(userId, amount)  // 並行リクエストで二重引き出しの危険
@@ -99,6 +121,27 @@ transaction {
   if balance < amount: raise Error("Insufficient balance")
   decrement("balances", userId, amount)
 }
+
+// ❌ CRITICAL: 平文パスワード比較
+if password == storedPassword: login()
+// ✅ ハッシュ比較を使用 (bcrypt, argon2)
+if bcrypt.compare(password, hashedPassword): login()
+
+// ❌ CRITICAL: 認可チェックなし（他ユーザーのリソースに無制限アクセス）
+GET /api/user/:id → getUser(id)  // 誰でも任意ユーザーの情報を取得可能
+// ✅ リソースの所有者またはadminのみ許可
+GET /api/user/:id → authenticateUser → if currentUser.id != id && !currentUser.isAdmin: return 403
+
+// ❌ HIGH: レートリミット未設定（認証・金融APIなど）
+POST /api/login  // 無制限のリクエストを許可
+// ✅ レートリミットを設定
+rateLimiter(windowMs=60000, max=10)
+POST /api/login
+
+// ❌ MEDIUM: ログにセンシティブデータを出力
+log("Login:", { email, password, apiKey })
+// ✅ ログをサニタイズ
+log("Login:", { email, passwordProvided: bool(password) })
 ```
 
 ### Step 3: コード品質チェック（HIGH）
@@ -110,11 +153,13 @@ transaction {
 - デバッグコードの残留（console.log等）
 - コードの重複
 - 新規コードに対するテストの欠如
+- TDD 準拠: 新規プロダクションコードが振る舞いテストで駆動されているか（テスト不在のプロダクションコードがないか、テストが実装の内部詳細でなく振る舞いを検証しているか）
 - ミュータブルパターンの不適切な使用
+- 新規導入ライブラリのライセンス確認（プロジェクトと互換性のあるライセンスか）
 
 ### Step 4: パフォーマンスチェック（MEDIUM）
 
-- 非効率なアルゴリズム（O(n^2)をO(n log n)にできる場合等）
+- 非効率なアルゴリズム（O(n^2)をO(n log n)にできる場合等、時間計算量を分析する）
 - N+1クエリ
 - 不要な再計算・再レンダリング
 - キャッシュの欠如
@@ -130,6 +175,7 @@ transaction {
 - public APIにドキュメントがあるか
 - アクセシビリティ（ARIAラベル、コントラスト等）
 - 変数名が適切か（x, tmp, data 等の曖昧な名前を避ける）
+- コード・コメントに絵文字が含まれていないか
 
 ### Step 6: 偽陽性の判定
 
@@ -185,10 +231,14 @@ Leadへ最終判定を報告:
 - [ ] すべての入力がバリデーションされている
 - [ ] SQLインジェクション対策済み
 - [ ] XSS対策済み
+- [ ] CSRF対策済み
 - [ ] 認証・認可が適切
 - [ ] 依存関係に既知の脆弱性なし
 - [ ] ログにPII/シークレットが含まれていない
 - [ ] レートリミットが適切
+- [ ] HTTPSが強制されている
+- [ ] セキュリティヘッダーが設定されている
+- [ ] エラーメッセージが内部情報を漏らさない
 
 ### 総評
 [全体的な品質評価と改善ポイント]
@@ -207,6 +257,8 @@ Leadへ最終判定を報告:
 1. **多層防御**: セキュリティは複数のレイヤーで
 2. **最小権限**: 必要最小限の権限のみ付与
 3. **安全な失敗**: エラー時にデータを露出しない
-4. **入力を信頼しない**: すべてバリデーション・サニタイズ
-5. **定期的な更新**: 依存関係を最新に保つ
-6. **ログと監視**: セキュリティイベントを検知可能にする
+4. **責務の分離**: セキュリティクリティカルなコードを独立させる
+5. **シンプルに保つ**: 複雑なコードは脆弱性を生む
+6. **入力を信頼しない**: すべてバリデーション・サニタイズ
+7. **定期的な更新**: 依存関係を最新に保つ
+8. **ログと監視**: セキュリティイベントを検知可能にする
