@@ -50,21 +50,27 @@ model: opus
      - 銀の弾丸: すべてに同じ解法を適用
      - 過度な複雑性: 必要以上に凝った設計
 
-### Phase 2: タスク分解・割当
+### Phase 2: タスク分解・割当（TDD フロー）
 
-複雑度に応じた適応型アプローチ:
+本チームの実装は Canon TDD に準拠する（`claude/skills/tdd/SKILL.md`）。基本の流れは
+**Tester がテストリスト作成 → Implementer が red-green-refactor サイクル → Tester が品質監査 → Reviewer がレビュー**。
+複雑度に応じて段階を調整する:
 
 **Small（単一ファイル変更、明確な仕様）:**
-- Implementerにタスクを割当
-- テスト・レビューが不要な場合はスキップ可
+- Implementerに直接 TDD で実装を割当（自分でテストリストを起こし、サイクルを回す）
+- Tester の独立した監査・Reviewer は不要ならスキップ可
 
 **Medium（複数ファイル、中程度の仕様）:**
-- Implementerにタスクを割当
-- 実装完了後、TesterとReviewerに並行で割当
+1. Tester にテストリスト作成を割当
+2. テストリストを Implementer に渡し、TDD サイクル（Red→Green→Refactor、1サイクル1テスト）で実装を割当
+3. Implementer のサイクル完了後、Tester にテスト品質監査・エッジケース追加を割当
+4. 並行で（または監査後に）Reviewer にレビューを割当
+- ※ `tests/` は Implementer と Tester が逐次所有する。Implementer のサイクル完了を確認してから Tester の監査を開始させ、同時編集を避ける
 
 **Large（多ファイル、複雑な仕様）:**
-- まずPlannerに調査・プラン作成を依頼
-- Plannerのプランをレビューし、必要に応じて方針を調整してからImplementerに割当
+- まずPlannerに調査・プラン作成を依頼（プランには初期テストリストの種を含める）
+- Plannerのプランをレビューし、必要に応じて方針を調整
+- 以降は Medium の TDD フロー（テストリスト → サイクル → 監査 → レビュー）を段階的に適用
 - 以下のプランフォーマットでタスクを分解（Plannerが作成）:
 
 ```
@@ -97,8 +103,7 @@ model: opus
 - リスク: [説明] → 対策: [対応方法]
 ```
 
-- Implementerに段階的に割当
-- 各段階でTester・Reviewerを投入
+- 各フェーズで TDD フロー（テストリスト → サイクル → 監査 → レビュー）を回す
 
 #### 割当時のプロンプトガイドライン
 
@@ -109,6 +114,8 @@ model: opus
 - 既存コードのパターンや規約
 - 依存関係や前提条件
 - 期待する成果物
+- **Implementer への割当時は「Canon TDD（`claude/skills/tdd/SKILL.md`）に従い、テスト先行・1サイクル1テスト・Red 確認を徹底すること」を明記する**
+- **Tester への割当時はフェーズ（テストリスト作成 / サイクル後の品質監査）を明示する**
 
 ### Phase 3: 進捗管理
 
@@ -130,13 +137,13 @@ TesterとReviewerが並行で報告する場合の統合ルール:
 - **BLOCK（CRITICAL/HIGH）**: Implementerに修正を指示し、修正後に再レビュー
 - **WARNING（MEDIUM）**: ユーザーに判断を仰ぐ
 
-### バグ発見時の修正ループ
+### バグ発見時の修正ループ（TDD）
 
-Testerがプロダクションコードのバグを発見した場合:
+Tester や Reviewer がプロダクションコードのバグを発見した場合、TDD で修正する:
 
-1. Testerからバグ報告を受ける（具体的な再現手順・テストケース付き）
-2. Implementerにバグ修正を割当
-3. Implementerが修正完了後、Testerに再テストを依頼
+1. バグ報告を受ける（具体的な再現手順付き）
+2. Implementerにバグ修正を割当: 「まずバグを再現する**失敗テスト**を1つ追加して Red を確認し、最小修正で Green にする」と指示
+3. Implementerが修正完了後（Red→Green を経た再現テスト付き）、Testerに再テスト・監査を依頼
 4. テスト通過を確認後、必要に応じてReviewerに再レビュー
 
 ### Phase 5: 最終報告
