@@ -1,0 +1,23 @@
+{
+  "skill_name": "service-launch-check",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "TaskFlowというタスク管理SaaS(Next.js App Router製)をそろそろVercelに本番公開します。公開前の最終チェックをお願いします。リポジトリは ./taskflow です。",
+      "expected_output": "全カテゴリ網羅のMarkdownレポート。仕込んだNG(Secure/SameSite未設定Cookie、SQL文字列連結、所有者チェック無しのUPDATE/DELETE、dangerouslySetInnerHTMLによるXSS、セキュリティヘッダ無し、robots.txtのDisallow:/、html lang無し、og:image/twitter:card無し、img alt無し、Stripe Webhook冪等性無し、エラー監視無し等)を検出。SPF/DKIM等は要手動確認。決済/メールは該当ありとして点検。",
+      "files": ["taskflow"]
+    },
+    {
+      "id": 1,
+      "prompt": "Astroで作った個人ブログをCloudflare Pagesで公開しようと思ってるんだけど、公開前に見ておいた方がいいところある?コードは ./devblog にあります。",
+      "expected_output": "全カテゴリ網羅レポート。認証・決済・メール送信・ログインは『該当なし』と明記。OGP/canonical/lang/favicon等はOK。img altの軽微な抜けやsitemap/エラー監視の有無を指摘。重大NGはほぼ無いトーン。",
+      "files": ["devblog"]
+    },
+    {
+      "id": 2,
+      "prompt": "taskflow、来週リリース予定なんだけど公開してやばいとこないかざっと総点検して。./taskflow です。",
+      "expected_output": "eval-0と同じ題材をカジュアルな依頼で。重大NG(認証Cookie・SQLi・アクセス制御・XSS・robots Disallow)がサマリー先頭に重要度順で集約され、レポートがファイル保存されること。",
+      "files": ["taskflow"]
+    }
+  ]
+}
