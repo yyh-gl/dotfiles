@@ -107,6 +107,12 @@ config.mouse_bindings = {
 		mods = "SUPER",
 		action = act.OpenLinkAtMouseCursor,
 	},
+	-- TUIアプリのマウスキャプチャより優先してWezTermの選択モードを使う
+	{
+		event = { Drag = { streak = 1, button = "Left" } },
+		mods = "NONE",
+		action = act.SelectTextAtMouseCursor("Cell"),
+	},
 	{
 		event = { Up = { streak = 1, button = "Left" } },
 		mods = "NONE",
