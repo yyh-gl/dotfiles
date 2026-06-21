@@ -8,6 +8,12 @@ TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
 MESSAGE="${1}"
 
+STDIN_DATA=$(cat)
+if command -v jq &>/dev/null; then
+  AGENT_NAME=$(echo "$STDIN_DATA" | jq -r '.agent_name // empty' 2>/dev/null)
+fi
+AGENT_NAME="${AGENT_NAME:-main}"
+
 curl -X POST -H 'Content-type: application/json' \
   --data "{
     \"text\": \"${MESSAGE}\",
@@ -22,6 +28,10 @@ curl -X POST -H 'Content-type: application/json' \
       {
         \"type\": \"section\",
         \"fields\": [
+          {
+            \"type\": \"mrkdwn\",
+            \"text\": \"*Agent:*\n\`${AGENT_NAME}\`\"
+          },
           {
             \"type\": \"mrkdwn\",
             \"text\": \"*Project:*\n\`${PROJECT_NAME}\`\"
