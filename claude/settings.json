@@ -18,7 +18,8 @@
       "Bash(pnpm run test:*)",
       "Read(~/.zshrc)",
       "Read(./.env.example)",
-      "Read(~/.claude/skills/dev-team)"
+      "Read(~/.claude/skills/dev-team)",
+      "Read(~/.claude/skills/small-dev-team)"
     ],
     "deny": [
       "Bash(curl:*)",
