@@ -135,8 +135,8 @@ TDD では Implementer がサイクル中にテストを書くため、`tests/` 
 
 ## コミット規約
 
+- コミットは必ず**smart-commitスキル**（`claude/skills/smart-commit/SKILL.md`）を使用する
 - 1コミット = 1論理変更（bisect commit原則）
-- コミットメッセージは変更内容を簡潔に記述
 - 複数の変更を1コミットにまとめない
 - **Implementer**: TDD サイクルの red-green ペア（失敗テスト + それを通す最小実装）を1論理変更としてコミットしてよい。リファクタリングは別コミットに分ける
 - **Tester**: テストリストおよび監査で追加・修正したテストをコミット
