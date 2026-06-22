@@ -39,7 +39,9 @@ in {
     ${lib.optionalString (mode == "hobby") (''
       mkdir -p "${hd}/Desktop/hobby"
     '' + lib.concatMapStrings (sl: ''
-      ln -sf "${sl.src}" "${sl.dst}"
+      if [ "$(readlink "${sl.dst}" 2>/dev/null)" != "${sl.src}" ]; then
+        ln -sfn "${sl.src}" "${sl.dst}"
+      fi
     '') hobbySymlinks)}
     ${lib.optionalString (mode == "work") ''
       mkdir -p "${hd}/Desktop/work"
