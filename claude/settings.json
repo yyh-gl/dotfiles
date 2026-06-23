@@ -126,5 +126,6 @@
   },
   "effortLevel": "xhigh",
   "plansDirectory": "docs/plans",
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "tui": "fullscreen"
 }
