@@ -7,12 +7,7 @@ HOSTNAME=$(hostname)
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
 MESSAGE="${1}"
-
-STDIN_DATA=$(cat)
-if command -v jq &>/dev/null; then
-  AGENT_NAME=$(echo "$STDIN_DATA" | jq -r '.agent_name // empty' 2>/dev/null)
-fi
-AGENT_NAME="${AGENT_NAME:-main}"
+AGENT_NAME="${2:-main}"
 
 curl -X POST -H 'Content-type: application/json' \
   --data "{
