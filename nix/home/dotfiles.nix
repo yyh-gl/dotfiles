@@ -9,7 +9,6 @@ let
     { src = "${gd}/01_CasualLife/99_Pictures/01_Wallpapers"; dst = "${hd}/Pictures/01_Wallpapers"; }
     { src = "${gd}/01_CasualLife/99_Pictures/02_Geeks";      dst = "${hd}/Pictures/02_Geeks"; }
     { src = "${gd}/01_CasualLife/99_Pictures/03_IconsForMac"; dst = "${hd}/Pictures/03_IconsForMac"; }
-    { src = "${gd}/01_CasualLife/99_Pictures/04_SlackStamps"; dst = "${hd}/Pictures/04_SlackStamps"; }
     { src = "${gd}/01_CasualLife/99_Pictures/05_Works";      dst = "${hd}/Pictures/05_Works"; }
     { src = "${gd}/01_CasualLife/99_Pictures/99_Others";     dst = "${hd}/Pictures/99_Others"; }
   ];
