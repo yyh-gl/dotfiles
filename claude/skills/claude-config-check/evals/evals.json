@@ -1,0 +1,23 @@
+{
+  "skill_name": "claude-config-check",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "このプロジェクトのClaude Codeの設定、ちゃんと効率よく使えてるか見てもらえる？CLAUDE.mdとか.claudeの中身が適切か知りたい",
+      "expected_output": "全7機構＋拡張観点を横断監査したMarkdownレポートを生成し、会話には総評・件数・最優先の修正提案を要約で返す。存在しない機構は➖該当なしとして全機構を載せる。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "うちのCLAUDE.md、デプロイ手順とかリリースのチェックリストを全部書いてて400行くらいある。これってベストプラクティス的にどうなの？.claude配下も含めて診断して",
+      "expected_output": "CLAUDE.mdの肥大化(A1)と手続きのCLAUDE.md混入(A2)を❌で検出し、skill化・rules分割・インデックス化を修正提案として提示する。レポート＋会話要約。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": ".claude/rules にルールをたくさん置いてるんだけど、トークン効率的に問題ないかチェックしてほしい。あとsettings.local.jsonにいろいろ書いてる",
+      "expected_output": "rulesのpaths:スコープ(B1)を点検し未スコープを指摘、settings.local.jsonの秘密情報直書き(H1)とgit追跡(G2)を点検する。断定できないものは⚠️。",
+      "files": []
+    }
+  ]
+}
