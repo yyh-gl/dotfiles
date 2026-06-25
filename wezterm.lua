@@ -111,7 +111,7 @@ config.mouse_bindings = {
 	{
 		event = { Drag = { streak = 1, button = "Left" } },
 		mods = "NONE",
-		action = act.SelectTextAtMouseCursor("Cell"),
+		action = act.ExtendSelectionToMouseCursor("Cell"),
 	},
 	{
 		event = { Up = { streak = 1, button = "Left" } },
