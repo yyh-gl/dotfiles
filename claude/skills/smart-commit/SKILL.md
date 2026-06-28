@@ -162,6 +162,7 @@ style(ui): fix inconsistent button spacing
 - 1ファイルに2つの異なる変更がある場合は `git add -p` で分割する
 - ユーザーへの確認は不要 — 全グループを自動的にコミットする
 - `git push` は絶対に実行しない
+- コミットメッセージに `Claude-Session` や `Co-Authored-By: Claude` などのメタデータトレーラーを付けない
 - 全コミット完了後、セキュリティチェック結果と作成したコミットを以下の形式で表示する
 
   ```
