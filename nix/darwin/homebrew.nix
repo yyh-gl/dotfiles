@@ -33,7 +33,7 @@
       "rectangle"
       "slack"
       "switchhosts"
-      "wezterm@nightly"
+      "wezterm"
       "zoom"
     ] ++ lib.optionals (mode == "hobby") [
       "adobe-acrobat-reader"
