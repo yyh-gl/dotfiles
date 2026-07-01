@@ -107,6 +107,13 @@ config.mouse_bindings = {
 		mods = "SUPER",
 		action = act.OpenLinkAtMouseCursor,
 	},
+	-- Claude CodeなどのTUIアプリがマウスキャプチャ中でもCMD+クリックでリンクを開く
+	{
+		event = { Up = { streak = 1, button = "Left" } },
+		mods = "SUPER",
+		mouse_reporting = true,
+		action = act.OpenLinkAtMouseCursor,
+	},
 	-- TUIアプリのマウスキャプチャより優先してWezTermの選択モードを使う
 	{
 		event = { Drag = { streak = 1, button = "Left" } },
