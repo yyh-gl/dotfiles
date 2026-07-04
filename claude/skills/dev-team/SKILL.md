@@ -81,10 +81,10 @@ TDDの鉄則（全員が遵守）:
 
 | Agent | 役割 | モデル | 定義ファイル |
 |---|---|---|---|
-| Lead | オーケストレーター（読み取り専用） | opus | `claude/agents/lead.md` |
-| Planner | 実装計画作成（Largeタスクのみ） | opus | `claude/agents/planner.md` |
+| Lead | オーケストレーター（読み取り専用） | fable | `claude/agents/lead.md` |
+| Planner | 実装計画作成（Largeタスクのみ） | fable | `claude/agents/planner.md` |
 | Implementer | TDDドライバー（テスト+実装） | sonnet | `claude/agents/implementer.md` |
 | Tester | テストリスト作成・品質監査 | sonnet | `claude/agents/tester.md` |
-| Reviewer | 品質・セキュリティレビュー（読み取り専用） | sonnet | `claude/agents/reviewer.md` |
+| Reviewer | 品質・セキュリティレビュー（読み取り専用） | fable | `claude/agents/reviewer.md` |
 
 各プロジェクトの情報は`docs/`配下を参照すること。
