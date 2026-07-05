@@ -3,7 +3,8 @@
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_NO_FLICKER": "1",
-    "CLAUDE_CODE_DISABLE_MOUSE_CLICKS": "1"
+    "CLAUDE_CODE_DISABLE_MOUSE_CLICKS": "1",
+    "CLAUDE_AFK_TIMEOUT_MS": "3600000"
   },
   "attribution": {
     "commit": "",
