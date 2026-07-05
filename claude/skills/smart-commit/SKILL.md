@@ -1,6 +1,8 @@
 ---
 name: smart-commit
 description: カレントブランチの差分を分析し、適切な粒度で自動的にgitコミットを作成する。「コミットして」「差分をコミット」「変更をコミット」「commit the changes」「commit the diff」など、ユーザーが変更をコミットしたいと伝えてきた場合は必ずこのスキルを使用すること。「smart commit」と明示されなくても、未ステージ/ステージ済みの変更をコミットしたい意図が見えたら迷わず起動する。
+model: sonnet
+effort: high
 ---
 
 ## 目的
