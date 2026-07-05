@@ -9,7 +9,7 @@
     "commit": "",
     "pr": ""
   },
-  "fallbackModel": ["claude-opus-4-8", "claude-sonnet-5"],
+  "fallbackModel": ["opus", "sonnet"],
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
       "source": {
