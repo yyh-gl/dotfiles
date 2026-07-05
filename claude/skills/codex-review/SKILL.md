@@ -1,6 +1,7 @@
 ---
 name: codex-review
-description: Collaborative review skill that pairs Claude's independent analysis with Codex's independent perspective, then synthesizes findings into a final report. Use this skill whenever the user asks for a review, audit, analysis, or feedback on code, documents, or any content — especially when thoroughness matters. Activate even if the user doesn't mention "Codex" or "collaborative": trigger on phrases like "review this", "please check", "audit", "what do you think of this code", "is this document clear", "security review", "code review", "performance review". The two-AI synthesis approach is particularly valuable for catching issues that a single reviewer might miss.
+description: Collaborative review skill that pairs Claude's independent analysis with Codex's independent perspective, then synthesizes findings into a final report. Only runs when explicitly invoked via /codex-review.
+disable-model-invocation: true
 ---
 
 # Codex Collaborative Review
