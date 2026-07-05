@@ -22,11 +22,9 @@ config.colors = {
 	cursor_bg = "#769FF0",
 	cursor_fg = "#000000",
 	cursor_border = "#769FF0",
+	-- タブ自体の配色はformat-tab-titleが全面的に描画するためbackgroundのみ有効
 	tab_bar = {
 		background = "#121212",
-		new_tab = { bg_color = "#121212", fg_color = "#FCE8C3", intensity = "Bold" },
-		new_tab_hover = { bg_color = "#121212", fg_color = "#FBB829", intensity = "Bold" },
-		active_tab = { bg_color = "#121212", fg_color = "#FCE8C3" },
 	},
 }
 config.inactive_pane_hsb = {
@@ -36,10 +34,6 @@ config.inactive_pane_hsb = {
 config.window_background_opacity = 0.7
 config.macos_window_background_blur = 10
 config.window_decorations = "RESIZE"
-config.window_frame = {
-	active_titlebar_bg = "#000000",
-	inactive_titlebar_bg = "#111111",
-}
 config.use_fancy_tab_bar = false
 config.show_new_tab_button_in_tab_bar = false
 config.tab_max_width = 60
@@ -51,10 +45,8 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 
 	if tab.is_active then
 		background = "#769FF0"
-		foreground = "#1C1B19"
 	elseif hover then
 		background = "#A3AED2"
-		foreground = "#1C1B19"
 	end
 
 	local edge_foreground = background
@@ -93,10 +85,7 @@ config.font_size = 14.5
 ---------------------------------
 -- behavior
 ---------------------------------
-config.send_composed_key_when_left_alt_is_pressed = false
 config.send_composed_key_when_right_alt_is_pressed = false
-
-config.default_cwd = wezterm.home_dir
 
 ---------------------------------
 -- mouse
