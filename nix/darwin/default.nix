@@ -2,6 +2,7 @@
   imports = [
     ./homebrew.nix
     ./defaults.nix
+    ./claude-code.nix
   ];
 
   system.stateVersion = 6;
