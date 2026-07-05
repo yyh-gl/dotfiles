@@ -285,12 +285,13 @@ config.keys = {
 		mods = "SUPER",
 		action = wezterm.action_callback(function(window, pane)
 			-- pane:split()は同期APIで、新ペイン作成後すぐに均等化できる
-			local new_pane = pane:split({ direction = "Right" })
+			local new_pane = pane:split({ direction = "Right", cwd = wezterm.home_dir })
 			new_pane:activate()
 			balance_pane_widths(window)
 		end),
 	},
-	{ key = "d", mods = "SUPER|SHIFT", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
+	{ key = "d", mods = "SUPER|SHIFT", action = act.SplitVertical({ cwd = wezterm.home_dir }) },
+	{ key = "t", mods = "SUPER", action = act.SpawnCommandInNewTab({ cwd = wezterm.home_dir }) },
 	{
 		key = "w",
 		mods = "SUPER",
