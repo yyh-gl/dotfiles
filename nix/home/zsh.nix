@@ -197,6 +197,7 @@
       ur = "cd $HOME/workspaces/github.com/yyh-gl/urLogs";
       hobigon = "cd $HOME/workspaces/github.com/yyh-gl/hobigon/";
       br = ''cd "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/main"'';
+      sl = "cd $HOME/workspaces/github.com/yyh-gl/slide-decks/";
     } else if mode == "work" then {
       # Add aliases for work
     } else {});
