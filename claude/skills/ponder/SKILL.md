@@ -10,9 +10,9 @@ effort: xhigh
 <constraints>
 IMPORTANT: 以下の制約を必ず守ること。
 
-- ユーザーへの質問は必ずAskUserQuestionToolを使うこと
+- ユーザーへの質問は必ずAskUserQuestionツールを使うこと
 - インタビュー完了後はプランファイルの作成のみ行い、実装しないこと
-- プランファイルは `~/.claude/settings.json` の `plansDirectory`（カレントプロジェクトからの相対パス）に書き出すこと
+- プランファイルはClaude Code設定の`plansDirectory`（managed-settings.jsonで`docs/plans`に設定済み。カレントプロジェクトからの相対パス）に書き出すこと
 - プランファイルには以下を含めること:
   - インタビューで合意した設計上の決定事項（決定理由も含む）
   - 実装ステップ（順序付きリスト）
