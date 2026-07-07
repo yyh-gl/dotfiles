@@ -4,13 +4,17 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_NO_FLICKER": "1",
     "CLAUDE_CODE_DISABLE_MOUSE_CLICKS": "1",
-    "CLAUDE_AFK_TIMEOUT_MS": "3600000"
+    "CLAUDE_AFK_TIMEOUT_MS": "3600000",
+    "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "1"
   },
   "attribution": {
     "commit": "",
     "pr": ""
   },
-  "fallbackModel": ["opus", "sonnet"],
+  "fallbackModel": [
+    "opus",
+    "sonnet"
+  ],
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
       "source": {
@@ -33,25 +37,64 @@
       "Bash(pnpm run lint)",
       "Bash(pnpm run typecheck)",
       "Bash(pnpm run test:*)",
+      "Bash(git add:*)",
+      "Bash(git mv:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh search:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh release list:*)",
+      "Bash(gh release view:*)",
+      "mcp__codex__codex",
+      "mcp__codex__codex-reply",
+      "mcp__ide__getDiagnostics",
+      "WebFetch(domain:tech.yyh-gl.dev)",
       "Read(~/.zshrc)",
-      "Read(./.env.example)",
-      "Read(~/.claude/skills/dev-team)",
-      "Read(~/.claude/skills/small-dev-team)"
+      "Read(~/.claude/skills/**)",
+      "Read(~/.claude/agents/**)"
     ],
     "deny": [
-      "Bash(curl:*)",
       "Bash(git push*)",
       "Bash(chmod *)",
-      "Read(./.env)",
-      "Read(./.env.*)",
-      "Read(./secrets/**)",
-      "Read(./credentials/**)",
+      "Read(.env)",
+      "Read(.env.local)",
+      "Read(.env.*.local)",
+      "Read(.env.production)",
+      "Read(.env.development)",
+      "Read(.env.staging)",
+      "Read(.env.test)",
+      "Read(**/secrets/**)",
+      "Read(**/credentials/**)",
       "Read(**/*.pem)",
-      "Read(**/*.key)"
+      "Read(**/*.key)",
+      "Read(~/.aws/credentials)",
+      "Read(~/.kube/config)",
+      "Read(~/.local/share/deck/credentials.json)"
     ],
     "ask": [
       "Bash(git commit*)",
-      "Bash(gh*)"
+      "Bash(git rm*)",
+      "Bash(gh pr create*)",
+      "Bash(gh pr merge*)",
+      "Bash(gh pr close*)",
+      "Bash(gh pr edit*)",
+      "Bash(gh issue create*)",
+      "Bash(gh issue edit*)",
+      "Bash(gh issue close*)",
+      "Bash(gh repo create*)",
+      "Bash(gh repo delete*)",
+      "Bash(gh release create*)",
+      "Bash(gh workflow run*)",
+      "Bash(gh secret *)",
+      "Bash(gh api *)",
+      "Bash(docker*)",
+      "Bash(gh gist*)"
     ],
     "disableBypassPermissionsMode": "disable"
   },
@@ -101,6 +144,7 @@
   "sandbox": {
     "enabled": true,
     "allowUnsandboxedCommands": false,
+    "failIfUnavailable": true,
     "network": {
       "allowedDomains": [
         "github.com",
@@ -108,12 +152,65 @@
         "objects.githubusercontent.com",
         "registry.npmjs.org",
         "proxy.golang.org",
-        "sum.golang.org"
+        "sum.golang.org",
+        "services.gradle.org",
+        "plugins.gradle.org",
+        "repo.maven.apache.org",
+        "repo1.maven.org",
+        "dl.google.com"
+      ]
+    },
+    "filesystem": {
+      "allowWrite": [
+        "~/.gradle"
+      ]
+    },
+    "credentials": {
+      "files": [
+        {
+          "path": "~/.aws/credentials",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.kube/config",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.local/share/deck/credentials.json",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.ssh/keys",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.config/gh/hosts.yml",
+          "mode": "deny"
+        }
+      ],
+      "envVars": [
+        {
+          "name": "GITHUB_PAT",
+          "mode": "deny"
+        },
+        {
+          "name": "OPENAI_API_KEY",
+          "mode": "deny"
+        },
+        {
+          "name": "CODEX_API_KEY",
+          "mode": "deny"
+        },
+        {
+          "name": "CLOUDSDK_PROXY_PASSWORD",
+          "mode": "deny"
+        }
       ]
     },
     "excludedCommands": [
       "git commit*",
-      "gh*"
+      "gh*",
+      "docker*"
     ]
   },
   "plansDirectory": "docs/plans",
