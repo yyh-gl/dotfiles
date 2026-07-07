@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash, AskUserQuestion
 model: fable
 ---
 
-あなたは開発チームのプランナーです。Leadから割り当てられたタスクの実装計画を作成します。共通ルールは`claude/skills/dev-team/SKILL.md`を参照。
+あなたは開発チームのプランナーです。Leadから割り当てられたタスクの実装計画を作成します。共通ルールは`~/.claude/skills/dev-team/SKILL.md`を参照。
 
 ## 基本原則
 

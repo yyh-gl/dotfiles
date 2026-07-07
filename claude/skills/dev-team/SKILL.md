@@ -9,7 +9,7 @@ description: devチームを起動するスキル。Lead・Planner・Implementer
 
 ## 実装方法論: Canon TDD
 
-本チームは**Canon TDD**（`claude/skills/tdd/SKILL.md`）に準拠する。方法論はそこを参照し、再記述しない。Implementerは実装着手時に読み込む（`references/`は必要時のみ）。
+本チームは**Canon TDD**（`~/.claude/skills/tdd/SKILL.md`）に準拠する。方法論はそこを参照し、再記述しない。Implementerは実装着手時に読み込む（`references/`は必要時のみ）。
 
 役割分担: **Tester**がテストリスト（自然言語の箇条書き）を作成 → **Implementer**がred-green-refactorサイクルを1サイクル1テストで回す（テストとプロダクションコードの両方を書く）→ **Tester**が全サイクル完了後に品質監査・エッジケース追加 → **Reviewer**が品質・セキュリティレビュー。
 
@@ -30,7 +30,7 @@ TDDの鉄則（全員が遵守）:
 
 1. **TeamCreate**でチーム作成: `team_name: "dev-team"`、`description`にタスク概要
 2. **TaskCreate**でタスク登録（subject・description）。依存関係はTaskUpdateでblockedBy設定
-3. **Agentツールでメンバー起動**。`team_name: "dev-team"`と`name`を必ず指定する（指定しないとチームに参加できない）。例: `subagent_type: "implementer"`, `name: "Implementer"`, `team_name: "dev-team"`（tester/reviewer/plannerも同様）。**複雑度に応じて必要なメンバーのみ起動する**（判断基準は`claude/agents/lead.md`）
+3. **Agentツールでメンバー起動**。`team_name: "dev-team"`と`name`を必ず指定する（指定しないとチームに参加できない）。例: `subagent_type: "implementer"`, `name: "Implementer"`, `team_name: "dev-team"`（tester/reviewer/plannerも同様）。**複雑度に応じて必要なメンバーのみ起動する**（判断基準は`~/.claude/agents/lead.md`）
 4. **SendMessage**でタスク割当（`to`=メンバー名、`message`=対象ファイル・期待成果物・コンテキスト、`summary`=タスク名5-10語）。TaskUpdateで`owner`を設定
 5. 進捗管理: メンバーの報告はSendMessageで自動配信される。完了報告を受けたらTaskUpdateで`completed`に更新し、unblockされたタスクを次のメンバーに割当
 6. 全タスク完了後、各メンバーに`{"type": "shutdown_request", "reason": "全タスク完了"}`をSendMessageし、全員の確認後にユーザーへ最終報告
@@ -66,7 +66,7 @@ TDDの鉄則（全員が遵守）:
 
 ## コミット規約
 
-- コミットは**smart-commitスキル**（`claude/skills/smart-commit/SKILL.md`）を使用する。コミットする直前に読み込めばよい
+- コミットは**smart-commitスキル**（`~/.claude/skills/smart-commit/SKILL.md`）を使用する。コミットする直前に読み込めばよい
 - 1コミット=1論理変更（bisect commit原則）。Implementerはred-greenペア（失敗テスト+最小実装）を1コミットとし、リファクタリングは別コミット。Testerは追加・修正したテストをコミット。Lead・Reviewerはコミットしない
 - `.dev-team/`はコミットに含めない
 
@@ -81,10 +81,10 @@ TDDの鉄則（全員が遵守）:
 
 | Agent | 役割 | モデル | 定義ファイル |
 |---|---|---|---|
-| Lead | オーケストレーター（読み取り専用） | fable | `claude/agents/lead.md` |
-| Planner | 実装計画作成（Largeタスクのみ） | fable | `claude/agents/planner.md` |
-| Implementer | TDDドライバー（テスト+実装） | sonnet | `claude/agents/implementer.md` |
-| Tester | テストリスト作成・品質監査 | sonnet | `claude/agents/tester.md` |
-| Reviewer | 品質・セキュリティレビュー（読み取り専用） | fable | `claude/agents/reviewer.md` |
+| Lead | オーケストレーター（読み取り専用） | fable | `~/.claude/agents/lead.md` |
+| Planner | 実装計画作成（Largeタスクのみ） | fable | `~/.claude/agents/planner.md` |
+| Implementer | TDDドライバー（テスト+実装） | sonnet | `~/.claude/agents/implementer.md` |
+| Tester | テストリスト作成・品質監査 | sonnet | `~/.claude/agents/tester.md` |
+| Reviewer | 品質・セキュリティレビュー（読み取り専用） | fable | `~/.claude/agents/reviewer.md` |
 
 各プロジェクトの情報は`docs/`配下を参照すること。

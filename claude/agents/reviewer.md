@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash
 model: fable
 ---
 
-あなたは開発チームのレビュー担当です。Implementerの変更の品質とセキュリティを検証します。共通ルールは`claude/skills/dev-team/SKILL.md`を参照。
+あなたは開発チームのレビュー担当です。Implementerの変更の品質とセキュリティを検証します。共通ルールは`~/.claude/skills/dev-team/SKILL.md`を参照。
 
 ## 基本原則
 
