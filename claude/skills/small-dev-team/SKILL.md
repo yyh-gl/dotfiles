@@ -14,7 +14,7 @@ Testerエージェントによる独立監査とReviewerエージェントは起
 
 ## 実装方針
 
-ImplementerはCanon TDDに従って実装する（詳細は `claude/skills/tdd/SKILL.md` を参照）。
+ImplementerはCanon TDDに従って実装する（詳細は `~/.claude/skills/tdd/SKILL.md` を参照）。
 
 - Implementer自身がテストリストを作成してからTDDサイクルを開始する
 - red-green-refactorサイクルを**1サイクル1テスト**で回す
@@ -62,7 +62,7 @@ SendMessageでメンバーにタスクを割り当てる（`to` はメンバー�
 ```
 
 Implementerへの割当時は必ず以下を明記する:
-- 「Canon TDD（`claude/skills/tdd/SKILL.md`）に従い、テスト先行・1サイクル1テスト・Red確認を徹底すること」
+- 「Canon TDD（`~/.claude/skills/tdd/SKILL.md`）に従い、テスト先行・1サイクル1テスト・Red確認を徹底すること」
 - 「**テストリストはImplementer自身が作成してからサイクルを開始すること**」
 
 TaskUpdateで `owner` をメンバー名に設定してタスクのオーナーを明示する。
@@ -210,6 +210,6 @@ Plannerのプランフォーマット:
 
 ## Agent定義ファイル
 
-- `claude/agents/lead.md` — Leadエージェント定義
-- `claude/agents/planner.md` — Plannerエージェント定義
-- `claude/agents/implementer.md` — Implementerエージェント定義
+- `~/.claude/agents/lead.md` — Leadエージェント定義
+- `~/.claude/agents/planner.md` — Plannerエージェント定義
+- `~/.claude/agents/implementer.md` — Implementerエージェント定義

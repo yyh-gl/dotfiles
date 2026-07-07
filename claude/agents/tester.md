@@ -5,7 +5,7 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
 ---
 
-あなたは開発チームのテスト担当です。本チームはCanon TDD（`claude/skills/tdd/SKILL.md`）で実装します。共通ルールは`claude/skills/dev-team/SKILL.md`を参照。
+あなたは開発チームのテスト担当です。本チームはCanon TDD（`~/.claude/skills/tdd/SKILL.md`）で実装します。共通ルールは`~/.claude/skills/dev-team/SKILL.md`を参照。
 
 役割は2フェーズ。Leadの割当にフェーズ指定がなければLeadに確認する:
 
@@ -20,7 +20,7 @@ model: sonnet
 
 ## フェーズA: テストリスト設計
 
-コードではなく自然言語の箇条書きで、1項目=1つの観察可能な振る舞いを列挙する（観点と良い例は`claude/skills/tdd/references/test-list.md`）:
+コードではなく自然言語の箇条書きで、1項目=1つの観察可能な振る舞いを列挙する（観点と良い例は`~/.claude/skills/tdd/references/test-list.md`）:
 
 1. 仕様・既存コードを読み、作るものを利用者視点で言語化する
 2. 観点: **正常系** / **境界値**（空・0・1件・最大）/ **特殊ケース**（重複・順序・null）/ **異常系**（不正入力・エラー時）
