@@ -55,7 +55,7 @@ Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 
 ### Claude Code Managed Settings
 
-`claude/managed-settings.json`は`nix/darwin/claude-code.nix`のactivation scriptで`/Library/Application Support/ClaudeCode/managed-settings.json`（root所有、Claude Codeからは書き込み不可）に配置している。Claude Codeは`/model`・`/effort`・plugin installなどの操作で`~/.claude/settings.json`を手動追加フィールドごと丸ごと再生成してしまう既知バグ（[claude-code#22659](https://github.com/anthropics/claude-code/issues/22659)）があり、home-manager経由のsymlink配置では設定が消えてしまうため、絶対に保持したい設定（permissions・hooks・sandbox・statusLineなど）はこちらに置く。`enabledPlugins`・`extraKnownMarketplaces`・`effortLevel`のようなClaude Code自身が書き換える可変設定は`~/.claude/settings.json`側に残し、Nixでは管理しない。
+`claude/managed-settings.json`は`nix/darwin/claude-code.nix`のactivation scriptで`/Library/Application Support/ClaudeCode/managed-settings.json`（root所有、Claude Codeからは書き込み不可）に配置している。Claude Codeは`/model`・`/effort`・plugin installなどの操作で`~/.claude/settings.json`を手動追加フィールドごと丸ごと再生成してしまう既知バグ（[claude-code#22659](https://github.com/anthropics/claude-code/issues/22659)）があり、home-manager経由のsymlink配置では設定が消えてしまうため、絶対に保持したい設定（permissions・hooks・sandbox・statusLineなど）はこちらに置く。`enabledPlugins`・`effortLevel`のようなClaude Code自身が書き換える可変設定は`~/.claude/settings.json`側に残し、Nixでは管理しない（`extraKnownMarketplaces`は公式marketplaceの登録を固定するためmanaged-settings.json側に置いている）。
 
 ### 1Password Secrets Management
 
