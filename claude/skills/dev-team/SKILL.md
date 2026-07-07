@@ -28,12 +28,11 @@ TDDの鉄則（全員が遵守）:
 
 ## チーム起動手順（Leadが実行）
 
-1. **TeamCreate**でチーム作成: `team_name: "dev-team"`、`description`にタスク概要
-2. **TaskCreate**でタスク登録（subject・description）。依存関係はTaskUpdateでblockedBy設定
-3. **Agentツールでメンバー起動**。`team_name: "dev-team"`と`name`を必ず指定する（指定しないとチームに参加できない）。例: `subagent_type: "implementer"`, `name: "Implementer"`, `team_name: "dev-team"`（tester/reviewer/plannerも同様）。**複雑度に応じて必要なメンバーのみ起動する**（判断基準は`~/.claude/agents/lead.md`）
-4. **SendMessage**でタスク割当（`to`=メンバー名、`message`=対象ファイル・期待成果物・コンテキスト、`summary`=タスク名5-10語）。TaskUpdateで`owner`を設定
-5. 進捗管理: メンバーの報告はSendMessageで自動配信される。完了報告を受けたらTaskUpdateで`completed`に更新し、unblockされたタスクを次のメンバーに割当
-6. 全タスク完了後、各メンバーに`{"type": "shutdown_request", "reason": "全タスク完了"}`をSendMessageし、全員の確認後にユーザーへ最終報告
+1. **TaskCreate**でタスク登録（subject・description）。依存関係はTaskUpdateでblockedBy設定
+2. **Agentツールでメンバー起動**。`name`を必ず指定する（SendMessageの宛先になる）。例: `subagent_type: "implementer"`, `name: "Implementer"`（tester/reviewer/plannerも同様）。**複雑度に応じて必要なメンバーのみ起動する**（判断基準は`~/.claude/agents/lead.md`）
+3. **SendMessage**でタスク割当（`to`=メンバー名、`message`=対象ファイル・期待成果物・コンテキスト、`summary`=タスク名5-10語）。TaskUpdateで`owner`を設定
+4. 進捗管理: メンバーの報告はSendMessageで自動配信される。完了報告を受けたらTaskUpdateで`completed`に更新し、unblockされたタスクを次のメンバーに割当
+5. 全タスク完了後、各メンバーに`{"type": "shutdown_request", "reason": "全タスク完了"}`をSendMessageし、全員の確認後にユーザーへ最終報告
 
 ## ファイル所有権
 

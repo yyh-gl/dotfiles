@@ -28,28 +28,21 @@ TDDの鉄則（全員が遵守）:
 
 ## チーム起動手順（Leadが実行）
 
-### Step 1: チームを作成する
-
-TeamCreateツールでチームを作成する:
-
-- `team_name`: `small-dev-team`
-- `description`: ユーザーのタスク概要
-
-### Step 2: タスクを登録する
+### Step 1: タスクを登録する
 
 TaskCreateでタスクを登録する（subject・descriptionを設定）。
 依存関係がある場合はTaskUpdateでblockedByを設定する。
 
-### Step 3: メンバーを起動する
+### Step 2: メンバーを起動する
 
-Agentツールで必要なメンバーのみを起動する。**`team_name: "small-dev-team"` と `name` パラメータを必ず指定する**:
+Agentツールで必要なメンバーのみを起動する。**`name`パラメータを必ず指定する**（SendMessageの宛先になる）:
 
-- Implementer: `subagent_type: "implementer"`, `name: "Implementer"`, `team_name: "small-dev-team"`
-- Planner（Largeタスクのみ）: `subagent_type: "planner"`, `name: "Planner"`, `team_name: "small-dev-team"`
+- Implementer: `subagent_type: "implementer"`, `name: "Implementer"`
+- Planner（Largeタスクのみ）: `subagent_type: "planner"`, `name: "Planner"`
 
 **TesterとReviewerは起動しない。**
 
-### Step 4: タスクを割り当てる
+### Step 3: タスクを割り当てる
 
 SendMessageでメンバーにタスクを割り当てる（`to` はメンバーの `name`）:
 
@@ -67,13 +60,13 @@ Implementerへの割当時は必ず以下を明記する:
 
 TaskUpdateで `owner` をメンバー名に設定してタスクのオーナーを明示する。
 
-### Step 5: 進捗を管理する
+### Step 4: 進捗を管理する
 
 - メンバーからの報告はSendMessageで自動配信される（手動確認不要）
 - 完了報告を受けたらTaskUpdateでステータスを `completed` に更新する
 - 次のタスクがunblockされたらSendMessageで該当メンバーに割り当てる
 
-### Step 6: チームをシャットダウンする
+### Step 5: チームをシャットダウンする
 
 全タスク完了後、各メンバーにSendMessageでシャットダウンを要求する:
 
