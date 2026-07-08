@@ -15,6 +15,7 @@
     "opus",
     "sonnet"
   ],
+  "advisorModel": "fable",
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
       "source": {
