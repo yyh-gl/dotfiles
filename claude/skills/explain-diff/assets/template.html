@@ -1,0 +1,369 @@
+<title>差分解説</title>
+<style>
+  /* ============================================================
+     デザイントークン
+     Color: bg/surface/text/text-muted/accent(理解を助ける青紫)
+            + セマンティック add(緑)/del(赤) はaccentと独立
+     Type:  見出し=ui-serif(知的な質感) / 本文=system-ui / コード=ui-monospace
+     Layout: 最大840pxの縦一列ドキュメント。セクションはsurfaceカードで区切る
+     ============================================================ */
+  :root {
+    --bg: #faf9f7;
+    --surface: #f1efea;
+    --surface-2: #e8e5dd;
+    --text: #23262b;
+    --text-muted: #6b6f76;
+    --border: #ddd9d0;
+    --accent: #4c5fd5;
+    --accent-soft: #e8eafc;
+    --add-fg: #1e8e5a;
+    --add-bg: #e4f5ec;
+    --del-fg: #c23b32;
+    --del-bg: #fbe9e7;
+    --font-display: "Hiragino Mincho ProN", "Yu Mincho", ui-serif, Georgia, serif;
+    --font-body: "Hiragino Sans", "Yu Gothic", -apple-system, "Segoe UI", system-ui, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181c;
+      --surface: #1d2025;
+      --surface-2: #262a31;
+      --text: #e8e6e1;
+      --text-muted: #9a9fa8;
+      --border: #33373e;
+      --accent: #8b98f2;
+      --accent-soft: #262b45;
+      --add-fg: #4fd18f;
+      --add-bg: #16291f;
+      --del-fg: #ff8078;
+      --del-bg: #331c1a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16181c;
+    --surface: #1d2025;
+    --surface-2: #262a31;
+    --text: #e8e6e1;
+    --text-muted: #9a9fa8;
+    --border: #33373e;
+    --accent: #8b98f2;
+    --accent-soft: #262b45;
+    --add-fg: #4fd18f;
+    --add-bg: #16291f;
+    --del-fg: #ff8078;
+    --del-bg: #331c1a;
+  }
+  :root[data-theme="light"] {
+    --bg: #faf9f7;
+    --surface: #f1efea;
+    --surface-2: #e8e5dd;
+    --text: #23262b;
+    --text-muted: #6b6f76;
+    --border: #ddd9d0;
+    --accent: #4c5fd5;
+    --accent-soft: #e8eafc;
+    --add-fg: #1e8e5a;
+    --add-bg: #e4f5ec;
+    --del-fg: #c23b32;
+    --del-bg: #fbe9e7;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.7;
+  }
+  main {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  /* ---- ヘッダー / 対象範囲 ---- */
+  .scope {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 0.3em 0.9em;
+    width: fit-content;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0.4em 0 0;
+    text-wrap: balance;
+  }
+  .summary {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 65ch;
+  }
+
+  /* ---- セクション共通 ---- */
+  section { display: flex; flex-direction: column; gap: 1rem; }
+  h2 {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+  }
+
+  /* ---- 変更マップ（テーブル） ---- */
+  table.change-map { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  table.change-map th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0 0.75rem 0.5rem;
+  }
+  table.change-map td {
+    background: var(--surface);
+    padding: 0.65rem 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+  table.change-map tr td:first-child { border-radius: 8px 0 0 8px; font-family: var(--font-mono); white-space: nowrap; }
+  table.change-map tr td:last-child { border-radius: 0 8px 8px 0; color: var(--text-muted); }
+
+  /* ---- 論理単位カード ---- */
+  .unit {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .unit h3 { margin: 0; font-size: 1.05rem; }
+  .unit code.ref {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 0.1em 0.5em;
+    border-radius: 5px;
+  }
+
+  /* ---- diffハイライト（コード引用） ---- */
+  pre.diff {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 0.75rem 0;
+    overflow-x: auto;
+    margin: 0;
+  }
+  pre.diff .line { padding: 0 1rem; white-space: pre; }
+  pre.diff .add { background: var(--add-bg); color: var(--add-fg); }
+  pre.diff .del { background: var(--del-bg); color: var(--del-fg); }
+
+  /* ---- フローチャート（Before/After並置も可） ---- */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    padding: 0.25rem 0;
+  }
+  .flow-step {
+    font-size: 0.88rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6em 1em;
+    white-space: nowrap;
+  }
+  .flow-step.accent { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .flow-arrow { color: var(--text-muted); font-size: 1.1rem; }
+
+  /* ---- Before/After 2カラム比較 ---- */
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 560px) { .before-after { grid-template-columns: 1fr; } }
+  .ba-col { display: flex; flex-direction: column; gap: 0.5rem; }
+  .ba-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .ba-col.before .ba-body { border-left: 3px solid var(--del-fg); }
+  .ba-col.after .ba-body { border-left: 3px solid var(--add-fg); }
+  .ba-body {
+    background: var(--surface-2);
+    border-radius: 0 8px 8px 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* ---- シーケンス図風タイムライン ---- */
+  .timeline { display: flex; flex-direction: column; }
+  .timeline-step {
+    position: relative;
+    padding: 0 0 1.25rem 1.5rem;
+    border-left: 2px solid var(--border);
+  }
+  .timeline-step:last-child { border-color: transparent; padding-bottom: 0; }
+  .timeline-step::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0.2em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .timeline-actor { font-weight: 600; font-size: 0.9rem; }
+  .timeline-msg { color: var(--text-muted); font-size: 0.88rem; }
+
+  /* ---- 依存関係図（シンプルなノード+矢印。SVGは直線のみ） ---- */
+  .dep-graph { display: flex; align-items: center; justify-content: center; }
+  .dep-node {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5em 1em;
+  }
+  .dep-graph svg { overflow: visible; }
+  .dep-graph line { stroke: var(--text-muted); stroke-width: 1.5; }
+  .dep-graph polygon { fill: var(--text-muted); }
+
+  /* ---- 影響範囲・注意点 ---- */
+  ul.impact { margin: 0; padding-left: 1.3em; font-size: 0.95rem; }
+  ul.impact li { margin-bottom: 0.4em; }
+  ul.impact li::marker { color: var(--accent); }
+</style>
+
+<!--
+  使い方:
+  1. このファイルをコピーし、<title>と各プレースホルダーを実際の解説内容に置き換える
+  2. 図解コンポーネントは使うものだけ残し、不要なものは削除する（1ページ最大3つまで）
+  3. SKILL.mdのStep 5の4部構成（サマリー/変更マップ/詳細/影響範囲）に沿って埋める
+-->
+
+<main>
+  <header>
+    <span class="scope">解説対象: HEADからの未コミット変更（3ファイル）</span>
+    <h1>ここに差分の見出し（何をした変更か一言で）</h1>
+    <p class="summary">
+      ここに全体サマリーを2〜3文で書く。この差分は何を達成するか、なぜその変更が必要と推測されるかを述べる。
+    </p>
+  </header>
+
+  <section>
+    <h2>変更マップ</h2>
+    <table class="change-map">
+      <thead>
+        <tr><th>ファイル</th><th>役割</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>path/to/file.go</td><td>ここに一言で役割を書く</td></tr>
+        <tr><td>path/to/other.go</td><td>ここに一言で役割を書く</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>詳細</h2>
+
+    <div class="unit">
+      <h3>論理単位のタイトル</h3>
+      <p>何が・どう変わったか・なぜそう設計したと読めるかをここに書く。 <code class="ref">file_path:42</code> のように該当行を引用する。</p>
+
+      <!-- 図解コンポーネント例1: フローチャート（Before/After並置） -->
+      <div class="flow">
+        <span class="flow-step">リクエスト受信</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">旧: 検証なしで実行</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step accent">新: トークン検証を追加</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">処理実行</span>
+      </div>
+
+      <!-- 図解コンポーネント例2: diffハイライト -->
+      <pre class="diff"><span class="line del">- if user.IsValid() {</span><span class="line add">+ if user.IsValid() && token.Verify(ctx) {</span></pre>
+    </div>
+
+    <div class="unit">
+      <h3>別の論理単位のタイトル</h3>
+
+      <!-- 図解コンポーネント例3: Before/After 2カラム比較 -->
+      <div class="before-after">
+        <div class="ba-col before">
+          <span class="ba-label">Before</span>
+          <div class="ba-body">ここに変更前の状態を書く</div>
+        </div>
+        <div class="ba-col after">
+          <span class="ba-label">After</span>
+          <div class="ba-body">ここに変更後の状態を書く</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>影響範囲・注意点</h2>
+    <ul class="impact">
+      <li>破壊的変更や、動作が変わる境界条件をここに書く</li>
+      <li>レビュー時に注目すべき点をここに書く</li>
+    </ul>
+  </section>
+</main>
+
+<!--
+  以下は使う場合だけ本文にコピーするコンポーネント例（通常は上のmain内には含めない）:
+
+  シーケンス図風タイムライン:
+  <div class="timeline">
+    <div class="timeline-step">
+      <div class="timeline-actor">Client</div>
+      <div class="timeline-msg">POST /refresh を送信</div>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-actor">AuthService</div>
+      <div class="timeline-msg">トークンを検証し新規発行</div>
+    </div>
+  </div>
+
+  依存関係図（ノード2つ+矢印。3つ以上はノード座標とline座標を調整する）:
+  <div class="dep-graph">
+    <span class="dep-node">handler.go</span>
+    <svg width="80" height="2">
+      <line x1="0" y1="1" x2="65" y2="1" marker-end="url(#arrowhead)"/>
+      <defs>
+        <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <polygon points="0 0, 7 3, 0 6"/>
+        </marker>
+      </defs>
+    </svg>
+    <span class="dep-node">token.go</span>
+  </div>
+-->
