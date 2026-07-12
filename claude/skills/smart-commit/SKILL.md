@@ -116,6 +116,23 @@ docs(api): document rate limiting behavior
 style(ui): fix inconsistent button spacing
 ```
 
+### body — 非自明な変更には理由（Why）を書く
+
+subjectは「何を変えたか」を一行にまとめたもの。だが**diffを見れば「何をしたか」は分かる。コミットログに残す価値があるのは「なぜそうしたか」**である。
+
+以下に該当する場合は`-m`を複数回指定してbodyを書く:
+
+- 一見遠回り・不自然に見える実装（素直な方法をあえて避けた理由がある）
+- 複数の選択肢の中から特定の方針を選んだ理由
+- 過去の障害・制約・ユーザー要望など、変更の背景
+
+subjectだけで意図が自明な変更（typo修正、単純な依存関係アップグレード等）にbodyは不要。書くこと自体を目的化しない。
+
+```bash
+git commit -m "fix(auth): retry token refresh with exponential backoff" \
+  -m "固定間隔リトライだとIdPのレート制限に引っかかっていたため"
+```
+
 ## Step 4: セキュリティチェック
 
 コミット対象の全ファイルに対して、**Git管理すべきではない情報が含まれていないか**を確認する。
@@ -155,7 +172,7 @@ style(ui): fix inconsistent button spacing
 各論理グループについて順番に：
 
 1. `git add <files>` または `git add -p`（ハンク単位の場合）で対象をステージ
-2. `git commit -m "<message>"` でコミット
+2. `git commit -m "<message>"` でコミット（bodyが必要な場合はStep 3のbody節に従い`-m`を追加）
 3. 次のグループに進む前に `git status` で確認
 
 コミット順は依存関係を考慮する（スキーマ・設定などの基盤変更を先に、機能変更を後に）。
