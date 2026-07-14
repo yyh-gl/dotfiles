@@ -8,7 +8,7 @@ effort: high
 ## 目的
 
 作業ディレクトリの全変更を分析し、**論理的な変更単位ごとに**1コミットを作成する。
-コミットメッセージはすべて英語のSemantic Commit Messages形式に従う。
+コミットメッセージ（subject・body問わず全体）はすべて英語のSemantic Commit Messages形式に従う。
 
 「論理的な変更単位」とは、1つの目的・意図のこと。
 「この変更群を一文で説明できるか？」という問いに答えられるなら1コミット。
@@ -128,9 +128,11 @@ subjectは「何を変えたか」を一行にまとめたもの。だが**diff�
 
 subjectだけで意図が自明な変更（typo修正、単純な依存関係アップグレード等）にbodyは不要。書くこと自体を目的化しない。
 
+bodyもsubjectと同様に**必ず英語**で書く。
+
 ```bash
 git commit -m "fix(auth): retry token refresh with exponential backoff" \
-  -m "固定間隔リトライだとIdPのレート制限に引っかかっていたため"
+  -m "Fixed interval retries were hitting the IdP's rate limit"
 ```
 
 ## Step 4: セキュリティチェック
