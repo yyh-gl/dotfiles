@@ -56,7 +56,11 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 		left_arrow = SOLID_LEFT_MOST
 	end
 
-	local title = " " .. wezterm.nerdfonts.md_robot .. " " .. wezterm.truncate_right(tab.active_pane.title, max_width - 6) .. " "
+	local title_text = tab.tab_title
+	if not title_text or title_text == "" then
+		title_text = tab.active_pane.title
+	end
+	local title = " " .. wezterm.nerdfonts.md_robot .. " " .. wezterm.truncate_right(title_text, max_width - 6) .. " "
 
 	return {
 		{ Attribute = { Intensity = "Bold" } },
