@@ -141,7 +141,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/slack-notify.sh 'Claude Code has questions' 'main'",
+            "command": "bash ~/.claude/hooks/wezterm-notify.sh 'Claude Code has questions' 'main'",
             "timeout": 10
           }
         ]
@@ -153,19 +153,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/slack-notify.sh 'Claude Code is free now' 'main'",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/slack-notify.sh 'Subagent finished' 'subagent'",
+            "command": "bash ~/.claude/hooks/wezterm-notify.sh 'Claude Code is free now' 'main'",
             "timeout": 10
           }
         ]
