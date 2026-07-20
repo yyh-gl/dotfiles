@@ -10,6 +10,7 @@
     pkgs.fzf
     pkgs.gibo
     pkgs.git
+    pkgs.google-cloud-sdk
     pkgs.gopls
     pkgs.gradle
     pkgs.helmfile

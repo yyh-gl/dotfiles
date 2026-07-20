@@ -75,10 +75,6 @@
       export LESS='-R'
       export LESSOPEN='| /usr/local/Cellar/source-highlight/3.1.8_5/bin/src-hilite-lesspipe.sh %s'
 
-      # GCP gcloud
-      if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/path.zsh.inc"; fi
-      if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
-
       # Git
       gico() {
         local branches branch
