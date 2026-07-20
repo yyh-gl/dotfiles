@@ -26,6 +26,7 @@
     pkgs.silicon
     pkgs.gitleaks
     pkgs.starship
+    pkgs.terraform
     pkgs.tree
   ] ++ pkgs.lib.optionals (mode == "hobby") [
     pkgs.bun
