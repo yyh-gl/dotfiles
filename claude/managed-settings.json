@@ -105,6 +105,7 @@
       "Read(.env.test)",
       "Read(**/secrets/**)",
       "Read(**/credentials/**)",
+      "Read(**/terraform.tfvars)",
       "Read(**/*.pem)",
       "Read(**/*.key)",
       "Read(~/.aws/credentials)",
