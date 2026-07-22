@@ -13,6 +13,7 @@
     ];
     brews = [
       "deck"
+      "hunk"
       "songmu/tap/laminate"
     ];
     casks = [
