@@ -51,7 +51,7 @@
   imports = [
     ./dotfiles.nix
     ./zsh.nix
-    ./vscode.nix
+    # ./vscode.nix # TODO: nixpkgsのVS Code修正版が未対応でapplyが失敗するため一時的に無効化
     ./emacs.nix
     ./claude.nix
     ./gh.nix
