@@ -138,3 +138,4 @@ http-client.private.env.json
 # Claude
 **/.claude/settings.local.json
 **/docs/plans/*.md
+**/.dev-team
