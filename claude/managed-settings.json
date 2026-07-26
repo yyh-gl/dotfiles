@@ -40,6 +40,7 @@
       "Bash(pnpm run test:*)",
       "Bash(git add:*)",
       "Bash(git mv:*)",
+      "Bash(git commit*)",
       "Bash(gh pr view:*)",
       "Bash(gh pr list:*)",
       "Bash(gh pr diff:*)",
@@ -115,7 +116,6 @@
       "Read(~/.config/gh/hosts.yml)"
     ],
     "ask": [
-      "Bash(git commit*)",
       "Bash(git rm*)",
       "Bash(gh pr create*)",
       "Bash(gh pr merge*)",
