@@ -107,6 +107,13 @@ config.mouse_bindings = {
 		mouse_reporting = true,
 		action = act.OpenLinkAtMouseCursor,
 	},
+	-- WezTermのデフォルトはNONE+クリックでもリンクを開いてしまう（CompleteSelectionOrOpenLinkAtMouseCursor）ため、
+	-- 選択完了のみを行うCompleteSelectionで上書きし、CMD+クリック時のみリンクを開くようにする
+	{
+		event = { Up = { streak = 1, button = "Left" } },
+		mods = "NONE",
+		action = act.CompleteSelection("ClipboardAndPrimarySelection"),
+	},
 }
 
 -- TUIアプリがマウスキャプチャ中でも、ドラッグ/ダブルクリック/トリプルクリックによる
