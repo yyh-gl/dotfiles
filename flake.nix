@@ -27,7 +27,24 @@
         system = "aarch64-darwin";
         specialArgs = { inherit mode username homeDirectory; };
         modules = [
-          { nixpkgs.overlays = [ nix-vscode-extensions.overlays.default ]; }
+          {
+            nixpkgs.overlays = [
+              nix-vscode-extensions.overlays.default
+              # pandas-stubsのテストがpytest 9.1のPytestRemovedIn10Warningでエラーになりビルド失敗するため一時的にスキップ
+              # (nixpkgs-unstable側のpytestバージョンアップとpandas-stubsのテストコードの非互換。upstream修正待ち)
+              (final: prev: {
+                pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+                  (pyfinal: pyprev: {
+                    pandas-stubs = pyprev.pandas-stubs.overrideAttrs (_: {
+                      doCheck = false;
+                      doInstallCheck = false;
+                      pythonImportsCheck = [ ];
+                    });
+                  })
+                ];
+              })
+            ];
+          }
           ./nix/darwin/default.nix
           home-manager.darwinModules.home-manager
           {
