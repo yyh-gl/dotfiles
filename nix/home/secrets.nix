@@ -15,6 +15,17 @@ in {
     chmod 600 "${hd}/.ssh/keys/hobigon-k8s-master.pub" "${hd}/.ssh/keys/hobigon-k8s-worker.pub" "${hd}/.ssh/keys/hobigon-wsl.pub"
   '';
 
+  # Import SSH private keys from 1Password so they can be referenced locally
+  # (e.g. as an IdentityFile / git commit signingkey) without hitting 1Password
+  # on every use. 1Password items needed (vault: PC):
+  #   - "GitHub" : SSH Key (used for both GitHub auth and git commit signing)
+  #                private key field id is "private_key" (label is Japanese: "秘密鍵")
+  home.activation.sshKeysImport = lib.hm.dag.entryAfter [ "writeBoundary" "sshSetup" ] ''
+    ${op} read "op://PC/GitHub/private_key?ssh-format=openssh" \
+               --out-file "${hd}/.ssh/keys/github_yyh-gl" --force
+    chmod 600 "${hd}/.ssh/keys/github_yyh-gl"
+  '';
+
   # Inject secrets from 1Password via op inject.
   # On macOS with 1Password 8+, biometric auth via the desktop app is used automatically.
   # 1Password items needed (vault: PC):

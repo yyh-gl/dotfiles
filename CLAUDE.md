@@ -74,6 +74,12 @@ Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 
 テンプレートファイルは`op-templates/`ディレクトリに配置。`op://Vault/Item/Field`形式で参照。
 
+SSH秘密鍵は`op inject`ではなく`op read`で1Passwordから直接ローカルファイルへ書き出す運用のものもある（`nix/home/secrets.nix`の`sshKeysImport`、vaultは既存の`ssh-config`等と同じ`PC`）:
+
+| Item名   | カテゴリ | フィールド                                          |
+|---------|-------|--------------------------------------------------|
+| `GitHub`| SSH Key | private_key（GitHub認証と`.git-config/config`のcommit署名で共用。`~/.ssh/keys/github_yyh-gl`に配置） |
+
 ### Nix Setup
 
 `nix/` ディレクトリで nix-darwin + home-manager による宣言的管理を段階的に導入中。
