@@ -19,6 +19,7 @@ in {
   home.file.".config/git/config".source = "${dotfiles}/.git-config/config";
   home.file.".config/git/ignore".source = "${dotfiles}/.git-config/ignore";
   home.file.".config/karabiner/karabiner.json".source = "${dotfiles}/karabiner.json";
+  home.file.".config/laminate/config.yaml".source = "${dotfiles}/laminate/config.yaml";
 
   home.file.".aws/config".source = "${dotfiles}/aws/config";
 
