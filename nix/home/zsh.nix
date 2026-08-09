@@ -194,6 +194,7 @@
       hobigon = "cd $HOME/workspaces/github.com/yyh-gl/hobigon/";
       br = ''cd "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/main"'';
       sl = "cd $HOME/workspaces/github.com/yyh-gl/slide-decks/";
+      kf = "cd $HOME/workspaces/github.com/yyh-gl/slide-decks/slides/261114_kotlin-fest_lincheck/";
     } else if mode == "work" then {
       # Add aliases for work
     } else {});
