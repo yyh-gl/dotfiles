@@ -195,6 +195,7 @@
       br = ''cd "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/main"'';
       sl = "cd $HOME/workspaces/github.com/yyh-gl/slide-decks/";
       kf = "cd $HOME/workspaces/github.com/yyh-gl/slide-decks/slides/261114_kotlin-fest_lincheck/";
+      mn = "cd $HOME/Desktop/hobby/01_CasualLife/02_住居/01_マンション購入/ヴェレーナグラン府中三好";
     } else if mode == "work" then {
       # Add aliases for work
     } else {});
