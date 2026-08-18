@@ -1,6 +1,8 @@
 ---
 name: claude-config-check
 description: 対象プロジェクトのClaude Code設定（CLAUDE.md・rules・skills・subagents・hooks・output styles・settings/permission）が、Anthropic公式のステアリング指針に照らして「正しく・効率的に」使えているかを監査し、Markdownレポートと会話要約を出力する。「Claude Codeの設定をチェックして」「.claudeの構成を見て」「CLAUDE.mdが適切か診断して」「スキル/フック/サブエージェントの使い方が正しいか」「Claude Codeを効率よく使えてる?」「Claude設定を監査して」など、Claude Code自体の設定・運用の良し悪しをユーザーが知りたがったら必ずこのスキルを使う。明示的に「監査」と言われなくても、.claude配下の構成やCLAUDE.mdの使い方を見直したい意図が見えたら迷わず起動する。一般的なコードレビューや、Webサービスの公開前チェック（それはservice-launch-check）では起動しない。
+model: fable
+effort: xhigh
 ---
 
 # claude-config-check — Claude Code設定の監査

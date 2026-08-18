@@ -2,6 +2,7 @@
 name: codex-review
 description: Collaborative review skill that pairs Claude's independent analysis with Codex's independent perspective, then synthesizes findings into a final report. Only runs when explicitly invoked via /codex-review.
 disable-model-invocation: true
+model: fable
 ---
 
 # Codex Collaborative Review
