@@ -12,6 +12,7 @@
     brews = [
       "deck"
       "hunk"
+      "python@3.11"
       "songmu/tap/laminate"
     ];
     casks = [
