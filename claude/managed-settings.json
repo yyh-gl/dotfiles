@@ -144,11 +144,6 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/wezterm-notify.sh 'Claude Code has questions' 'main'",
             "timeout": 10
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/slack-notify.sh 'Claude Code has questions' 'main'",
-            "timeout": 10
           }
         ]
       }
@@ -160,11 +155,6 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/wezterm-notify.sh 'Claude Code is free now' 'main'",
-            "timeout": 10
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/slack-notify.sh 'Claude Code is free now' 'main'",
             "timeout": 10
           }
         ]
