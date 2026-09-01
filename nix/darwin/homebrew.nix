@@ -30,7 +30,7 @@
       "logi-options+"
       "notion"
       "obsidian"
-      "orca"
+      "stablyai/orca/orca"
       "postman"
       "rectangle"
       "slack"
