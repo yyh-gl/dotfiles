@@ -60,6 +60,10 @@ Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 
 仕事PCではMDM等により`/Library/Application Support/`配下への書き込みがブロックされていることが多いため、`nix/home/claude.nix`のactivation scriptで、workモードに限り同じ`claude/managed-settings.json`の内容を実ファイルとして`~/.claude/settings.json`にも配置している（前述の再生成バグにより上書きされうるフォールバック的な配置）。
 
+#### WezTermタブへの待ち状態アイコン表示
+
+`claude/hooks/wezterm-state.sh`が`PermissionRequest`・`PreToolUse`（AskUserQuestion/ExitPlanMode）・`Notification`（elicitation系）で`waiting`、`Stop`/`StopFailure`で`done`、`PostToolUse`系・`UserPromptSubmit`・`SessionStart`・`SessionEnd`で`none`をOSC 1337 SetUserVar（`claude_state`）としてペインのttyへ書き込み、`wezterm.lua`の`format-tab-title`がそれを読んでタブのアイコン・背景色を切り替える（詳細は`docs/plans/wezterm-claude-state-tab-icon.md`）。`hooks`に項目を追加・変更する際は、この状態遷移（特に`none`へ戻す経路）を壊さないよう注意する。`find_tty`は`claude/hooks/wezterm-notify.sh`と`claude/hooks/lib/wezterm-tty.sh`で共有している。
+
 ### 1Password Secrets Management
 
 機密ファイルは`op inject`で1Passwordから展開する。`make nix-apply-hobby/work`実行時に自動適用される。
