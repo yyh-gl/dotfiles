@@ -38,12 +38,54 @@ config.use_fancy_tab_bar = false
 config.show_new_tab_button_in_tab_bar = false
 config.tab_max_width = 60
 
+-- Claude Code hook（claude/hooks/wezterm-state.sh）がOSC 1337 SetUserVarで
+-- ペインのuser var "claude_state" に waiting/done/none を書く。
+-- タブ内の全ペインを見て、waiting > done の優先度で1つに集約する。
+local CLAUDE_STATE_STYLE = {
+	waiting = { icon = wezterm.nerdfonts.md_bell_ring, background = "#E8A94A", active_background = "#FFC46B" },
+	done = { icon = wezterm.nerdfonts.md_check_circle, background = "#7DB87D", active_background = "#9CD69C" },
+}
+local CLAUDE_STATE_PRIORITY = { waiting = 2, done = 1 }
+
+local function claude_state_of_tab(tab)
+	local best = nil
+	local function consider(vars)
+		local s = vars and vars.claude_state
+		if s and CLAUDE_STATE_PRIORITY[s] and (best == nil or CLAUDE_STATE_PRIORITY[s] > CLAUDE_STATE_PRIORITY[best]) then
+			best = s
+		end
+	end
+	-- format-tab-titleのpanes引数はアクティブタブのペインしか含まないため、
+	-- 非アクティブタブはmux API経由で全ペインのuser varを読む
+	local ok, mux_tab = pcall(wezterm.mux.get_tab, tab.tab_id)
+	if ok and mux_tab then
+		for _, p in ipairs(mux_tab:panes()) do
+			local ok_vars, vars = pcall(p.get_user_vars, p)
+			if ok_vars then
+				consider(vars)
+			end
+		end
+	else
+		consider(tab.active_pane.user_vars)
+	end
+	return best
+end
+
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
 	local edge_background = "#121212"
 	local background = "#4E4E4E"
 	local foreground = "#1C1B19"
 
-	if tab.is_active then
+	local state = claude_state_of_tab(tab)
+	local state_style = state and CLAUDE_STATE_STYLE[state]
+
+	if state_style then
+		if tab.is_active or hover then
+			background = state_style.active_background
+		else
+			background = state_style.background
+		end
+	elseif tab.is_active then
 		background = "#769FF0"
 	elseif hover then
 		background = "#A3AED2"
@@ -60,7 +102,8 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 	if not title_text or title_text == "" then
 		title_text = tab.active_pane.title
 	end
-	local title = " " .. wezterm.nerdfonts.md_robot .. " " .. wezterm.truncate_right(title_text, max_width - 6) .. " "
+	local icon = state_style and state_style.icon or wezterm.nerdfonts.md_robot
+	local title = " " .. icon .. " " .. wezterm.truncate_right(title_text, max_width - 6) .. " "
 
 	return {
 		{ Attribute = { Intensity = "Bold" } },
