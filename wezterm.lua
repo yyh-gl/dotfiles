@@ -41,9 +41,13 @@ config.tab_max_width = 60
 -- Claude Code hook（claude/hooks/wezterm-state.sh）がOSC 1337 SetUserVarで
 -- ペインのuser var "claude_state" に waiting/done/none を書く。
 -- タブ内の全ペインを見て、waiting > done の優先度で1つに集約する。
+--
+-- pill本体の色（background）でClaude状態とアクティブ/非アクティブの両方を表す（色のみ、マーカーや下線は使わない）。
+-- アクティブなタブ（今見ているタブ）は鮮やかな状態色、非アクティブなタブはグレー寄りにくすませた状態色にする。
+-- 「今アクティブなタブか」は彩度の差で見分ける。
 local CLAUDE_STATE_STYLE = {
-	waiting = { icon = wezterm.nerdfonts.md_bell_ring, background = "#E8A94A", active_background = "#FFC46B" },
-	done = { icon = wezterm.nerdfonts.md_check_circle, background = "#7DB87D", active_background = "#9CD69C" },
+	waiting = { icon = wezterm.nerdfonts.md_bell_ring, background = "#E8A94A", muted_background = "#6D604D" },
+	done = { icon = wezterm.nerdfonts.md_check_circle, background = "#7DB87D", muted_background = "#576357" },
 }
 local CLAUDE_STATE_PRIORITY = { waiting = 2, done = 1 }
 
@@ -81,9 +85,9 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 
 	if state_style then
 		if tab.is_active or hover then
-			background = state_style.active_background
-		else
 			background = state_style.background
+		else
+			background = state_style.muted_background
 		end
 	elseif tab.is_active then
 		background = "#769FF0"
