@@ -133,6 +133,7 @@
       "Bash(docker*)",
       "Bash(gh gist*)"
     ],
+    "defaultMode": "auto",
     "disableBypassPermissionsMode": "disable"
   },
   "hooks": {
