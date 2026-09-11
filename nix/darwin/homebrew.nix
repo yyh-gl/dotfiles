@@ -40,6 +40,7 @@
     ] ++ lib.optionals (mode == "hobby") [
       "adobe-acrobat-reader"
       "discord"
+      "godot"
       "1password"
       "tailscale-app"
     ];
