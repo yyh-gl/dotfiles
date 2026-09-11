@@ -43,7 +43,7 @@ Key configs managed by Nix home-manager (`nix/home/dotfiles.nix`):
 - `.git-config/` → `$HOME/.config/git/`
 - `aws/config` → `$HOME/.aws/config`
 - `.dictionary.txt` → `$HOME/.dictionary.txt`
-- `karabiner.json` → `$HOME/.config/karabiner/karabiner.json`
+- `karabiner.json` → `$HOME/.config/karabiner/karabiner.json`（Karabiner-Elementsは設定変更のたびにこのファイルをwrite-temp-then-renameで書き換え、symlinkを実ファイルに置き換えてしまう。Rectangleと同様の理由で`home.file`ではなくactivation scriptで実ファイルとしてコピーしている）
 - `laminate/config.yaml` → `$HOME/.config/laminate/config.yaml`
 - `RectangleConfig.json` → `$HOME/Library/Application Support/Rectangle/RectangleConfig.json`（Rectangle起動時に自動インポートされる。Rectangleはsymlinkを拒否するため`home.file`ではなくactivation scriptで実ファイルとしてコピーしている）
 

@@ -18,7 +18,6 @@ in {
   home.file.".config/starship.toml".source = "${dotfiles}/starship.toml";
   home.file.".config/git/config".source = "${dotfiles}/.git-config/config";
   home.file.".config/git/ignore".source = "${dotfiles}/.git-config/ignore";
-  home.file.".config/karabiner/karabiner.json".source = "${dotfiles}/karabiner.json";
   home.file.".config/laminate/config.yaml".source = "${dotfiles}/laminate/config.yaml";
 
   home.file.".aws/config".source = "${dotfiles}/aws/config";
@@ -34,6 +33,11 @@ in {
   home.activation.rectangleConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     mkdir -p "${hd}/Library/Application Support/Rectangle"
     install -m 644 "${dotfiles}/RectangleConfig.json" "${hd}/Library/Application Support/Rectangle/RectangleConfig.json"
+  '';
+
+  home.activation.karabinerConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    mkdir -p "${hd}/.config/karabiner"
+    install -m 600 "${dotfiles}/karabiner.json" "${hd}/.config/karabiner/karabiner.json"
   '';
 
   home.activation.desktopSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
