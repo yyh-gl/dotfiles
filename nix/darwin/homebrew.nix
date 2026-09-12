@@ -8,7 +8,6 @@
     };
     taps = [
       "songmu/tap"
-      "stablyai/orca"
     ];
     brews = [
       "deck"
@@ -30,7 +29,6 @@
       "logi-options+"
       "notion"
       "obsidian"
-      "stablyai/orca/orca"
       "postman"
       "rectangle"
       "slack"
