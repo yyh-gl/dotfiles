@@ -1,7 +1,7 @@
 [user]
   name = yyh-gl
   email = yhonda.95.gl@gmail.com
-  signingkey = ~/.ssh/keys/github_yyh-gl
+  signingkey = ~/.config/git/github_signing_ed25519
 
 [color]
   ui = true

@@ -26,6 +26,21 @@ in {
     chmod 600 "${hd}/.ssh/keys/github_yyh-gl"
   '';
 
+  # Import the commit-signing-only SSH private key from 1Password. It lives outside
+  # ~/.ssh so that the Claude Code sandbox (which denies ~/.ssh/keys) can read it for
+  # `git commit`. The key is registered on GitHub as a *Signing Key* only, so a leak
+  # cannot be used to authenticate or push. 1Password is the source of truth; the
+  # local file is a derived copy overwritten on every apply.
+  # 1Password items needed (vault: PC):
+  #   - "GitHub Signing" : SSH Key (commit signing only)
+  #                        private key field id is "private_key"
+  home.activation.gitSigningKeyImport = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    mkdir -p "${hd}/.config/git"
+    ${op} read "op://PC/GitHub Signing/private_key?ssh-format=openssh" \
+               --out-file "${hd}/.config/git/github_signing_ed25519" --force
+    chmod 600 "${hd}/.config/git/github_signing_ed25519"
+  '';
+
   # Inject secrets from 1Password via op inject.
   # On macOS with 1Password 8+, biometric auth via the desktop app is used automatically.
   # 1Password items needed (vault: PC):

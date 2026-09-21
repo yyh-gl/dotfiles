@@ -82,9 +82,12 @@ Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 
 SSH秘密鍵は`op inject`ではなく`op read`で1Passwordから直接ローカルファイルへ書き出す運用のものもある（`nix/home/secrets.nix`の`sshKeysImport`、vaultは既存の`ssh-config`等と同じ`PC`）:
 
-| Item名   | カテゴリ | フィールド                                          |
-|---------|-------|--------------------------------------------------|
-| `GitHub`| SSH Key | private_key（GitHub認証と`.git-config/config`のcommit署名で共用。`~/.ssh/keys/github_yyh-gl`に配置） |
+| Item名            | カテゴリ | フィールド                                          |
+|------------------|-------|--------------------------------------------------|
+| `GitHub`         | SSH Key | private_key（GitHub認証用。`~/.ssh/keys/github_yyh-gl`に配置） |
+| `GitHub Signing` | SSH Key | private_key（commit署名専用。`~/.config/git/github_signing_ed25519`に配置。GitHubにはSigning Keyとして登録する） |
+
+commit署名鍵を認証鍵と分けているのは、Claude Codeのsandboxが`~/.ssh/keys`の読み取りを拒否しているため。署名専用鍵は`~/.ssh`の外に置いてsandbox内の`git commit`から読めるようにしており、漏れても被害は署名偽造に限られる（pushはできない）。正本は1Passwordで、ローカルのファイルはapplyのたびに上書きされる派生コピー。鍵のファイル名に`.key`・`.pem`の拡張子は付けない（sandboxの`**/*.key`・`**/*.pem`のdenyと`Read(**/*.key)`に該当するため）。
 
 ### Nix Setup
 
