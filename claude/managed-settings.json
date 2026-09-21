@@ -112,7 +112,7 @@
       "Read(~/.aws/credentials)",
       "Read(~/.kube/config)",
       "Read(~/.local/share/deck/credentials.json)",
-      "Read(~/.ssh/config)",
+      "Read(~/.ssh/**)",
       "Read(~/.config/gh/hosts.yml)"
     ],
     "ask": [
@@ -322,15 +322,11 @@
           "mode": "deny"
         },
         {
-          "path": "~/.ssh/keys",
+          "path": "~/.ssh",
           "mode": "deny"
         },
         {
           "path": "~/.config/gh/hosts.yml",
-          "mode": "deny"
-        },
-        {
-          "path": "~/.ssh/config",
           "mode": "deny"
         }
       ],
