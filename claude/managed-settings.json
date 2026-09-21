@@ -367,7 +367,8 @@
     },
     "excludedCommands": [
       "gh *",
-      "docker *"
+      "docker *",
+      "hunk session *"
     ]
   },
   "plansDirectory": "docs/plans",
