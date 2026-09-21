@@ -63,6 +63,8 @@ Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 
 `sandbox.excludedCommands`のパターンは`"gh *"`のように`*`の前にスペースを入れる（公式ドキュメントの記法。`"gh*"`は効かず、`gh`がsandbox内で`~/.config/gh/hosts.yml`を読めず失敗した）。`gh`・`docker`はsandbox内で動かせないため除外が必須。`git commit`は署名専用鍵がsandbox内で読めるので除外していない。
 
+`"hunk session *"`も除外している。Hunkのdaemonは`127.0.0.1:47657`でlistenしているが、sandbox内からのloopback接続はseatbeltに拒否される（`nc`が`Operation not permitted`）。sandboxのproxyは`NO_PROXY`にloopbackを含み、そもそもloopback宛を扱わないため、`allowedDomains`等のドメイン許可リストでは開けられない。`allowLocalBinding`は全sandboxedコマンドに全loopbackポート（認証情報入りURLを持つproxyの`52001`を含む）を開くため採用していない。`hunk *`ではなく`hunk session *`に絞っているのは、`hunk session`が`--extension`を受け付けず、extension経由の任意コード実行の経路にならないため。この除外がカバーしない点として、`hunk session reload --source <path>`は任意のディレクトリでレビューコマンドを実行するためsandbox外に出る（read-onlyのgit操作なので影響は小さい）。複数単語のパターン（`hunk session *`）は実機で有効なことを確認済み。ただし除外が効くのは`hunk session list`のような単体コマンドのみで、`hunk session list 2>&1; echo "exit=$?"`のように`;`やリダイレクトを付けた複合コマンドはsandbox内で実行され、接続に失敗して「No active Hunk sessions」と誤った結果を返す（どちらが原因かは切り分けていない）。ClaudeにHunkを操作させる際は複合コマンドにしない。
+
 #### WezTermタブへの待ち状態アイコン表示
 
 `claude/hooks/wezterm-state.sh`が`PermissionRequest`・`PreToolUse`（AskUserQuestion/ExitPlanMode）・`Notification`（elicitation系）で`waiting`、`Stop`/`StopFailure`で`done`、`PostToolUse`系・`UserPromptSubmit`・`SessionStart`・`SessionEnd`で`none`をOSC 1337 SetUserVar（`claude_state`）としてペインのttyへ書き込み、`wezterm.lua`の`format-tab-title`がそれを読んでタブのアイコン・背景色を切り替える（詳細は`docs/plans/wezterm-claude-state-tab-icon.md`）。`hooks`に項目を追加・変更する際は、この状態遷移（特に`none`へ戻す経路）を壊さないよう注意する。`find_tty`は`claude/hooks/wezterm-notify.sh`と`claude/hooks/lib/wezterm-tty.sh`で共有している。
