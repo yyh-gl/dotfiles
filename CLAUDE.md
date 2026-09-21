@@ -61,6 +61,8 @@ Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 
 仕事PCではMDM等により`/Library/Application Support/`配下への書き込みがブロックされていることが多いため、`nix/home/claude.nix`のactivation scriptで、workモードに限り同じ`claude/managed-settings.json`の内容を実ファイルとして`~/.claude/settings.json`にも配置している（前述の再生成バグにより上書きされうるフォールバック的な配置）。
 
+`sandbox.excludedCommands`のパターンは`"gh *"`のように`*`の前にスペースを入れる（公式ドキュメントの記法。`"gh*"`は効かず、`gh`がsandbox内で`~/.config/gh/hosts.yml`を読めず失敗した）。`gh`・`docker`はsandbox内で動かせないため除外が必須。`git commit`は署名専用鍵がsandbox内で読めるので除外していない。
+
 #### WezTermタブへの待ち状態アイコン表示
 
 `claude/hooks/wezterm-state.sh`が`PermissionRequest`・`PreToolUse`（AskUserQuestion/ExitPlanMode）・`Notification`（elicitation系）で`waiting`、`Stop`/`StopFailure`で`done`、`PostToolUse`系・`UserPromptSubmit`・`SessionStart`・`SessionEnd`で`none`をOSC 1337 SetUserVar（`claude_state`）としてペインのttyへ書き込み、`wezterm.lua`の`format-tab-title`がそれを読んでタブのアイコン・背景色を切り替える（詳細は`docs/plans/wezterm-claude-state-tab-icon.md`）。`hooks`に項目を追加・変更する際は、この状態遷移（特に`none`へ戻す経路）を壊さないよう注意する。`find_tty`は`claude/hooks/wezterm-notify.sh`と`claude/hooks/lib/wezterm-tty.sh`で共有している。

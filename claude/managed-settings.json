@@ -370,9 +370,8 @@
       ]
     },
     "excludedCommands": [
-      "git commit*",
-      "gh*",
-      "docker*"
+      "gh *",
+      "docker *"
     ]
   },
   "plansDirectory": "docs/plans",
