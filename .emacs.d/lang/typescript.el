@@ -23,5 +23,3 @@
   (add-to-list 'eglot-server-programs
                '((typescript-ts-mode tsx-ts-mode js-mode)
                  . ("typescript-language-server" "--stdio"))))
-
-(provide 'typescript)

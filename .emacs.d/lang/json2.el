@@ -4,5 +4,3 @@
 (add-hook 'js-json-mode-hook
           (lambda ()
             (setq-local js-indent-level 2)))
-
-(provide 'json2)

@@ -26,15 +26,11 @@
 ;; ▼ Related Config Imports
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'load-path (expand-file-name "lang" user-emacs-directory))
-(require 'go)
-(require 'typescript)
-(require 'kotlin)
-(require 'java)
-(require 'vue)
-(require 'json2)
-(require 'yaml)
-(require 'nix)
+;; lang/ is deliberately kept off `load-path' and loaded by absolute path:
+;; a lang/nix.el on `load-path' would shadow nix-mode's own nix.el.
+(dolist (lang '("go" "typescript" "kotlin" "java" "vue" "json2" "yaml" "nix"))
+  (load (expand-file-name (concat "lang/" lang) user-emacs-directory)
+        nil 'nomessage))
 
 ;; Auto Complete
 (use-package company

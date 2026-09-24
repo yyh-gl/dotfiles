@@ -52,5 +52,3 @@
     (lambda () (interactive) (compile "go test ./...")))
   (define-key go-ts-mode-map (kbd "C-c t b")
     (lambda () (interactive) (compile "go run ."))))
-
-(provide 'go)

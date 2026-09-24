@@ -8,5 +8,3 @@
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
                '(java-mode . ("jdtls"))))
-
-(provide 'java)

@@ -16,5 +16,4 @@
   (add-to-list 'eglot-server-programs
                '(web-mode . ("vue-language-server" "--stdio"))))
 
-(provide 'vue)
 ;;; lang/vue.el ends here
