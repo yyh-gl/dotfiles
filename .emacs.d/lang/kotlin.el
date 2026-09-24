@@ -9,5 +9,3 @@
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs
                '(kotlin-mode . ("kotlin-language-server"))))
-
-(provide 'kotlin)
