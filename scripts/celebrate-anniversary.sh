@@ -3,8 +3,8 @@
 # Get today's date in seconds since epoch
 TODAY_SEC=$(date +%s)
 
-# Define anniversary date (November 9, 2024)
-ANNIVERSARY="2024-11-09"
+# Define anniversary date (November 10, 2024)
+ANNIVERSARY="2024-11-10"
 ANNIVERSARY_SEC=$(date -d "$ANNIVERSARY" +%s 2>/dev/null || date -j -f "%Y-%m-%d" "$ANNIVERSARY" +%s)
 
 # Calculate next half anniversary
