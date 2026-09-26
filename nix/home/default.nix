@@ -51,7 +51,6 @@
   imports = [
     ./dotfiles.nix
     ./zsh.nix
-    ./vscode.nix
     ./emacs.nix
     ./claude.nix
     ./gh.nix

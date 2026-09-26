@@ -33,6 +33,7 @@
       "rectangle"
       "slack"
       "switchhosts"
+      "visual-studio-code"
       "wezterm"
       "zoom"
     ] ++ lib.optionals (mode == "hobby") [
