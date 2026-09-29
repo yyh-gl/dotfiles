@@ -1,8 +1,26 @@
-{ mode, ... }: {
+{ mode, lib, pkgs, config, ... }:
+let
+  # starship init zshの出力をビルド時に生成する（起動のたびに実行するとfork分だけ遅くなる）。
+  # 次の2点だけ置き換える。
+  # - RPROMPT: right_formatを使っていないのに、毎プロンプトstarshipが起動されるのを避ける
+  # - PROMPT2: `starship prompt --continuation`の出力（デフォルト値）を静的にする
+  starshipInit = pkgs.runCommand "starship-init.zsh" { nativeBuildInputs = [ pkgs.starship ]; } ''
+    export HOME=$TMPDIR
+    starship init zsh --print-full-init | grep -v -e '^RPROMPT=' -e '^PROMPT2=' > $out
+    cat >> $out <<'EOF'
+    RPROMPT=""
+    PROMPT2=$'%{\e[90m%}∙%{\e[0m%} '
+    EOF
+  '';
+in {
   programs.zsh = {
     enable = true;
 
     setOptions = [ "CORRECT" ];
+
+    # compinitはここで1回だけ実行する（nix-darwin側は無効化済み）。
+    # -Cはcompauditと.zcompdumpの鮮度チェックを省略するため、下のactivationでapplyのたびにdumpを削除している。
+    completionInit = "autoload -U compinit && compinit -C";
 
     envExtra = ''
       if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "''${ZDOTDIR:-$HOME}/.zprofile" ]]; then
@@ -16,10 +34,6 @@
       fi
 
       export PAGER='less'
-
-      if [[ -z "$LANG" ]]; then
-        export LANG='jp_JP.UTF-8'
-      fi
 
       typeset -gU cdpath fpath mailpath path
       path=(/usr/local/{bin,sbin} $path)
@@ -36,15 +50,25 @@
       fi
       TMPPREFIX="''${TMPDIR%/}/zsh"
 
-      eval $(/opt/homebrew/bin/brew shellenv)
+      # `brew shellenv`の出力を静的に書いたもの（evalすると約14ms遅い）。
+      # fpathの追加とexport FPATHは必須。.zprofileより後のcompinitが補完を拾うのと、
+      # .zprofileを読まないネストしたシェルにFPATH経由で引き継ぐため。
+      export HOMEBREW_PREFIX="/opt/homebrew"
+      export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+      export HOMEBREW_REPOSITORY="/opt/homebrew"
+      fpath[1,0]="/opt/homebrew/share/zsh/site-functions"
+      export FPATH
+      export PATH="/opt/homebrew/bin:/opt/homebrew/sbin''${PATH+:$PATH}"
+      [ -z "''${MANPATH-}" ] || { export MANPATH="''${MANPATH%"''${MANPATH##*[!:]}"}"; export MANPATH=":''${MANPATH#"''${MANPATH%%[!:]*}"}"; }
+      export INFOPATH="/opt/homebrew/share/info:''${INFOPATH:-}"
     '';
 
     initContent = ''
       # Prompt
-      eval "$(starship init zsh)"
+      source ${starshipInit}
 
       # PATH
-      export LANG="$(defaults read -g AppleLocale | sed 's/@.*$//g').UTF-8"
+      export LANG=ja_JP.UTF-8
       export EDITOR=emacs VISUAL=emacs
 
       export PATH=$PATH:$HOME/go/bin
@@ -201,4 +225,9 @@
       # Add aliases for work
     } else {});
   };
+
+  # compinit -Cは補完の追加を自動検知しないので、applyのたびに.zcompdumpを捨てて次の起動で作り直させる
+  home.activation.resetZcompdump = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    rm -f "${config.home.homeDirectory}/.zcompdump" "${config.home.homeDirectory}/.zcompdump.zwc"
+  '';
 }

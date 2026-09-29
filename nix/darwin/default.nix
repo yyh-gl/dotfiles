@@ -21,6 +21,13 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  # /etc/zshrcのcompinit・bashcompinit・promptinit（prompt suse）は使わない。
+  # compinitはhome-manager側（nix/home/zsh.nix）で1回だけ実行し、プロンプトはstarshipが担う。
+  # enableCompletionはtrueのまま残す（/etc/zshenvのfpath設定を維持するため）。
+  programs.zsh.enableGlobalCompInit = false;
+  programs.zsh.enableBashCompletion = false;
+  programs.zsh.promptInit = "";
+
   security.pam.services.sudo_local.touchIdAuth = true;
 
   users.users.${username} = {
