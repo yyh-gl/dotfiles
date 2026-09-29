@@ -1,52 +1,43 @@
-#!/bin/bash
+#!/bin/zsh -f
+# .zloginから毎回呼ばれるため、外部コマンドをforkしないようzsh/datetimeだけで日数を計算する。
+# CELEBRATE_TODAY=YYYY-MM-DDで「今日」を差し替えられる（テスト用）。
 
-# Get today's date in seconds since epoch
-TODAY_SEC=$(date +%s)
+zmodload zsh/datetime
 
-# Define anniversary date (November 10, 2024)
-ANNIVERSARY="2024-11-10"
-ANNIVERSARY_SEC=$(date -d "$ANNIVERSARY" +%s 2>/dev/null || date -j -f "%Y-%m-%d" "$ANNIVERSARY" +%s)
+# 記念日（2024-11-10）
+typeset -i ANNIVERSARY_YEAR=2024 ANNIVERSARY_MONTH=11 ANNIVERSARY_DAY=10
+# 半年記念日の月（6か月後）。日は同じ
+typeset -i HALF_MONTH=$(( (ANNIVERSARY_MONTH + 5) % 12 + 1 ))
 
-# Calculate next half anniversary
-HALF_YEAR_LATER=$(date -d "$ANNIVERSARY +6 months" +%Y-%m-%d 2>/dev/null || date -j -v+6m -f "%Y-%m-%d" "$ANNIVERSARY" +%Y-%m-%d)
-CURRENT_YEAR=$(date +%Y)
-NEXT_YEAR=$((CURRENT_YEAR + 1))
+# YYYY-MM-DDをその日の正午のepoch秒にする（夏時間などで日数がずれないよう正午を使う）
+day_epoch() {
+  strftime -s REPLY -r '%Y-%m-%d %H:%M:%S' "$1 12:00:00"
+}
 
-# Extract month and day from half anniversary
-HALF_MONTH=$(echo $HALF_YEAR_LATER | cut -d'-' -f2)
-HALF_DAY=$(echo $HALF_YEAR_LATER | cut -d'-' -f3)
-
-# Calculate next half anniversary date
-NEXT_HALF_ANNIVERSARY="${CURRENT_YEAR}-${HALF_MONTH}-${HALF_DAY}"
-NEXT_HALF_ANNIVERSARY_SEC=$(date -d "$NEXT_HALF_ANNIVERSARY" +%s 2>/dev/null || date -j -f "%Y-%m-%d" "$NEXT_HALF_ANNIVERSARY" +%s)
-
-# If next half anniversary is in the past, use next year
-if [ $NEXT_HALF_ANNIVERSARY_SEC -lt $TODAY_SEC ]; then
-    NEXT_HALF_ANNIVERSARY="${NEXT_YEAR}-${HALF_MONTH}-${HALF_DAY}"
-    NEXT_HALF_ANNIVERSARY_SEC=$(date -d "$NEXT_HALF_ANNIVERSARY" +%s 2>/dev/null || date -j -f "%Y-%m-%d" "$NEXT_HALF_ANNIVERSARY" +%s)
+if [[ -n "$CELEBRATE_TODAY" ]]; then
+  today="$CELEBRATE_TODAY"
+else
+  strftime -s today '%Y-%m-%d' $EPOCHSECONDS
 fi
+typeset -i current_year=${today%%-*}
 
-# Calculate next year anniversary
-ANNIVERSARY_MONTH=$(echo $ANNIVERSARY | cut -d'-' -f2)
-ANNIVERSARY_DAY=$(echo $ANNIVERSARY | cut -d'-' -f3)
-NEXT_YEAR_ANNIVERSARY="${CURRENT_YEAR}-${ANNIVERSARY_MONTH}-${ANNIVERSARY_DAY}"
-NEXT_YEAR_ANNIVERSARY_SEC=$(date -d "$NEXT_YEAR_ANNIVERSARY" +%s 2>/dev/null || date -j -f "%Y-%m-%d" "$NEXT_YEAR_ANNIVERSARY" +%s)
+day_epoch $today;                                               typeset -i today_sec=$REPLY
+day_epoch "$ANNIVERSARY_YEAR-$ANNIVERSARY_MONTH-$ANNIVERSARY_DAY"; typeset -i anniversary_sec=$REPLY
 
-# If next year anniversary is in the past, use next year
-if [ $NEXT_YEAR_ANNIVERSARY_SEC -lt $TODAY_SEC ]; then
-    NEXT_YEAR_ANNIVERSARY="${NEXT_YEAR}-${ANNIVERSARY_MONTH}-${ANNIVERSARY_DAY}"
-    NEXT_YEAR_ANNIVERSARY_SEC=$(date -d "$NEXT_YEAR_ANNIVERSARY" +%s 2>/dev/null || date -j -f "%Y-%m-%d" "$NEXT_YEAR_ANNIVERSARY" +%s)
-fi
+# 今年の記念日が過去なら来年にする
+next_epoch() {
+  local month=$1 day=$2
+  day_epoch "$(printf '%04d-%02d-%02d' $current_year $month $day)"
+  if (( REPLY < today_sec )); then
+    day_epoch "$(printf '%04d-%02d-%02d' $(( current_year + 1 )) $month $day)"
+  fi
+}
 
-# Calculate days
-SECONDS_PER_DAY=86400
-PASSED_DAYS=$(( (TODAY_SEC - ANNIVERSARY_SEC) / SECONDS_PER_DAY ))
-HALF_DIFF=$(( (NEXT_HALF_ANNIVERSARY_SEC - TODAY_SEC) / SECONDS_PER_DAY ))
-YEAR_DIFF=$(( (NEXT_YEAR_ANNIVERSARY_SEC - TODAY_SEC) / SECONDS_PER_DAY ))
+next_epoch $HALF_MONTH $ANNIVERSARY_DAY;        typeset -i next_half_sec=$REPLY
+next_epoch $ANNIVERSARY_MONTH $ANNIVERSARY_DAY; typeset -i next_year_sec=$REPLY
 
-# Print results
-echo ""
-echo "<< Important Day >>"
-echo "Passed Days -> ${PASSED_DAYS} days passed"
-echo "Next Half Important Day -> ${HALF_DIFF} days left"
-echo "Next Year Important Day -> ${YEAR_DIFF} days left"
+print
+print "<< Important Day >>"
+print "Passed Days -> $(( (today_sec - anniversary_sec) / 86400 )) days passed"
+print "Next Half Important Day -> $(( (next_half_sec - today_sec) / 86400 )) days left"
+print "Next Year Important Day -> $(( (next_year_sec - today_sec) / 86400 )) days left"
