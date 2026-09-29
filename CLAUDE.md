@@ -131,6 +131,17 @@ make nix-apply-hobby
 - `darwin-rebuild switch` はシステム設定変更のため `sudo` が必要
 - `services.nix-daemon.enable` は最新nix-darwinで廃止済み（`nix.enable` が自動管理）
 
+### Zsh起動速度
+
+zsh-benchで計測して、起動（first_prompt_lag）を短くするために次の構成にしている。戻さないこと。
+
+- `compinit`は`nix/home/zsh.nix`の`completionInit`で1回だけ、`-C`付きで実行する。nix-darwin側（`nix/darwin/default.nix`）で`enableGlobalCompInit`・`enableBashCompletion`・`promptInit`を無効化しているのは、`/etc/zshrc`側で`compinit`（compaudit込みで約70ms）が重複して走るのを防ぐため。
+- `-C`は補完の追加を自動検知しないので、`home.activation.resetZcompdump`でapplyのたびに`~/.zcompdump*`を削除している。applyを介さず`brew install`した補完は、`rm ~/.zcompdump`するまで反映されない。
+- `brew shellenv`は`profileExtra`に静的に展開している（evalは約14ms）。`export FPATH`は、`.zprofile`を読まないネストしたシェルにbrewの補完ディレクトリを引き継ぐために必須。
+- `starship init zsh`はビルド時に生成している（`starshipInit`）。`RPROMPT`（`right_format`未使用なのに毎プロンプトstarshipを起動する）と`PROMPT2`を静的化している。`starship.toml`で`right_format`か`continuation_prompt`を設定する場合は、この置き換えを見直す。
+- `scripts/celebrate-anniversary.sh`は`.zlogin`から毎回呼ばれるため、外部コマンドをforkしないzshスクリプトにしている。`CELEBRATE_TODAY=YYYY-MM-DD`で「今日」を差し替えられる。
+- `LANG`は`ja_JP.UTF-8`で固定している（`defaults read`を毎回実行すると約5ms遅い）。
+
 ### Build Mode
 
 Nixのflake設定名でモードを指定する（`.env.public`でのMODE指定は廃止済み）:
