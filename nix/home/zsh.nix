@@ -50,7 +50,7 @@ in {
       fi
       TMPPREFIX="''${TMPDIR%/}/zsh"
 
-      # `brew shellenv`の出力を静的に書いたもの（evalすると約14ms遅い）。
+      # `brew shellenv`の出力を静的に書いたもの（evalするとbrewの起動分だけ遅くなる）。
       # fpathの追加とexport FPATHは必須。.zprofileより後のcompinitが補完を拾うのと、
       # .zprofileを読まないネストしたシェルにFPATH経由で引き継ぐため。
       export HOMEBREW_PREFIX="/opt/homebrew"
