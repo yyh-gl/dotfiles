@@ -3,6 +3,7 @@
     ./homebrew.nix
     ./defaults.nix
     ./claude-code.nix
+    ./codex.nix
   ];
 
   system.stateVersion = 6;
