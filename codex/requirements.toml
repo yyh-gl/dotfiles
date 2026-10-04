@@ -1,0 +1,104 @@
+# Codex CLIのrequirements（/etc/codex/requirements.toml）。nix/darwin/codex.nixのactivation scriptで配置する
+# Claudeのclaude/managed-settings.jsonに相当する層で、ユーザーは上書きできず、CLIフラグでも外せない
+# 既定値（approval_policyなど）はmanaged_config.tomlに置き、ここには強制したい制約だけを書く
+# 対応表はCLAUDE.mdの「Codexのsandbox設定」を参照。Claude側を変えたらここも揃える
+
+# Claudeのdisableが近いもの: danger-full-accessや確認なし実行（never）への切り替えを禁止する
+allowed_approval_policies = ["on-request"]
+allowed_sandbox_modes = ["read-only", "workspace-write"]
+
+# profileはdotfilesと:read-onlyだけ選べる。:workspaceはdeny・ドメイン制限がない素の状態なので許可しない
+# :danger-full-accessも許可しない。許可してもrulesのallowや承認つき昇格はコマンドをsandbox外に出さず（実機で確認）、
+# バイパス禁止（--dangerously-bypass-approvals-and-sandboxの無効化）を失うだけになる
+default_permissions = "dotfiles"
+
+[allowed_permission_profiles]
+dotfiles = true
+":read-only" = true
+
+[permissions.dotfiles]
+description = "claude/managed-settings.jsonのsandbox設定に揃えたprofile"
+extends = ":workspace"
+
+# Claudeのsandbox.filesystem.allowWrite（~/.claude/logsはClaude専用のため除外）
+[permissions.dotfiles.filesystem]
+"~/.gradle" = "write"
+"~/Library/Caches/go-build" = "write"
+"~/go/pkg/mod" = "write"
+"~/Library/Caches/golangci-lint" = "write"
+"~/.docker/buildx" = "write"
+
+[permissions.dotfiles.network]
+enabled = true
+# limitedはGET/HEAD/OPTIONSのみ許可する。Claudeの許可ドメインはメソッドを制限しないためfullにする
+mode = "full"
+
+# Claudeのsandbox.credentials.files・permissions.denyのRead(...)。ワークスペース外にも効く
+[permissions.filesystem]
+deny_read = [
+  "~/.aws/credentials",
+  "~/.kube/config",
+  "~/.local/share/deck/credentials.json",
+  "~/.ssh",
+  "~/.config/gh/hosts.yml",
+  "/**/.env",
+  "/**/.env.local",
+  "/**/.env.*.local",
+  "/**/.env.production",
+  "/**/.env.development",
+  "/**/.env.staging",
+  "/**/.env.test",
+  "/**/secrets/**",
+  "/**/credentials/**",
+  "/**/terraform.tfvars",
+  "/**/*.pem",
+  "/**/*.key",
+]
+
+# Claudeのsandbox.network.allowedDomains
+# managed_allowed_domains_onlyは設定しない（Claudeのallowedは設定間で足し合わされるのと同じ挙動）
+[experimental_network]
+enabled = true
+
+[experimental_network.domains]
+"github.com" = "allow"
+"raw.githubusercontent.com" = "allow"
+"objects.githubusercontent.com" = "allow"
+"registry.npmjs.org" = "allow"
+"proxy.golang.org" = "allow"
+"sum.golang.org" = "allow"
+"services.gradle.org" = "allow"
+"plugins.gradle.org" = "allow"
+"repo.maven.apache.org" = "allow"
+"repo1.maven.org" = "allow"
+"dl.google.com" = "allow"
+
+# requirementsのrulesはdecisionにpromptかforbiddenしか書けない（allowはsandbox外実行にならず承認を省くだけなので使わない）
+# 前方一致なので`git -C dir push`・`env git push`・`GH_CONFIG_DIR=x gh pr create`のような環境変数の前置は一致しない。
+# Claudeの`Bash(git push*)`と同じ弱点で、実質の防御はsandbox（~/.ssh・gh認証情報のdeny、api.github.comが許可ドメインにないこと）が担う
+[rules]
+prefix_rules = [
+  # --- forbidden（Claudeのpermissions.deny） ---
+  { pattern = [{ token = "git" }, { token = "push" }], decision = "forbidden", justification = "pushは人間が行う" },
+  { pattern = [{ token = "chmod" }], decision = "forbidden", justification = "Claudeのpermissions.denyに揃えている" },
+
+  # --- prompt（Claudeのpermissions.ask） ---
+  { pattern = [{ token = "git" }, { token = "rm" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "pr" }, { token = "create" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "pr" }, { token = "merge" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "pr" }, { token = "close" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "pr" }, { token = "edit" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "issue" }, { token = "create" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "issue" }, { token = "edit" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "issue" }, { token = "close" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "repo" }, { token = "create" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "repo" }, { token = "delete" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "release" }, { token = "create" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "workflow" }, { token = "run" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "secret" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "api" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "gist" }], decision = "prompt" },
+  # Claudeでは"docker*"がaskのため、docker ps等のallowより優先されて常に確認が入る。同じ挙動にする
+  # ただしCodexでは承認してもsandbox内で動き、dockerのsocketに届かず失敗する（意図的な差分）
+  { pattern = [{ token = "docker" }], decision = "prompt" },
+]

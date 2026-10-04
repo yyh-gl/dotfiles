@@ -1,0 +1,25 @@
+# Codex CLIの既定値（/etc/codex/managed_config.toml）。nix/darwin/codex.nixのactivation scriptで配置する
+# managed_config.tomlは~/.codex/config.toml（user層）より優先されるため、user層に同じ項目を書かないこと
+# ユーザーが上書きできない強制設定（profile・network・deny・rules・allowed_*）はrequirements.tomlに置く
+
+approval_policy = "on-request"
+# approvals_reviewerはここに置かない（既定のuserのまま）
+# auto_reviewはClaudeのdefaultMode: autoに近いが、managed_config.tomlに置くとCLIの`-c`で上書きできず、
+# OpenRouterなど第三者プロバイダでデッドロックする報告（openai/codex#47916）から抜ける手段がsudoでの編集だけになる。
+# 使う場合は~/.codex/config.toml（user層）に`approvals_reviewer = "auto_review"`を書く
+
+[shell_environment_policy]
+inherit = "all"
+# 既定値はtrue。falseにするとKEY・SECRET・TOKENを含む変数も除外対象になる。削らないこと
+ignore_default_excludes = false
+# Claudeのsandbox.credentials.envVarsと同じ
+exclude = [
+  "GITHUB_PAT",
+  "OPENAI_API_KEY",
+  "CODEX_API_KEY",
+  "CLOUDSDK_PROXY_PASSWORD",
+  "GH_TOKEN",
+  "GITHUB_TOKEN",
+  "AWS_SECRET_ACCESS_KEY",
+  "AWS_SESSION_TOKEN",
+]
