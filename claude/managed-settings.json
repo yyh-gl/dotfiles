@@ -5,7 +5,8 @@
     "CLAUDE_CODE_NO_FLICKER": "1",
     "CLAUDE_CODE_DISABLE_MOUSE_CLICKS": "1",
     "CLAUDE_AFK_TIMEOUT_MS": "3600000",
-    "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "1"
+    "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "1",
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.claude/mods/statusline"
   },
   "attribution": {
     "commit": "",
@@ -272,10 +273,6 @@
         ]
       }
     ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline.sh"
   },
   "language": "japanese",
   "sandbox": {
