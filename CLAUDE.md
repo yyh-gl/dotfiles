@@ -1,61 +1,12 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+@AGENTS.md
 
-## Overview
+This file provides guidance specific to Claude Code (claude.ai/code). Rules that apply to every agent are in AGENTS.md.
 
-macOS dotfiles repository. Manages shell configs, tool settings, and setup scripts via file copies to `$HOME`.
+## Claude Code
 
-## Key Commands
-
-```sh
-# Initial setup (run once on a fresh machine)
-make init       # Install Homebrew, Git, Xcode, clone repo, install Nix
-
-# Full setup
-make build-hobby  # Run manual steps then apply Nix (hobby mode)
-make build-work   # Run manual steps then apply Nix (work mode)
-
-# Nix
-make nix-apply-hobby # Apply Nix configuration (hobby mode)
-make nix-apply-work  # Apply Nix configuration (work mode)
-make nix-cleanup     # Garbage collect Nix store
-```
-
-## Architecture
-
-### Setup Flow
-
-`bin/init.sh` → `make build-hobby` or `make build-work` → runs these scripts in order:
-
-1. `bin/manual.sh` — Final manual steps
-2. `make nix-apply-hobby` or `make nix-apply-work` — Apply Nix configuration
-
-Secrets and SSH configs are managed separately via Nix + 1Password (see below).
-
-### Config Copy Strategy
-
-All config files live here and are managed by **Nix home-manager** (`nix/home/dotfiles.nix`).
-
-Key configs managed by Nix home-manager (`nix/home/dotfiles.nix`):
-
-- `wezterm.lua` → `$HOME/.config/wezterm/wezterm.lua`
-- `.git-config/` → `$HOME/.config/git/`
-- `aws/config` → `$HOME/.aws/config`
-- `.dictionary.txt` → `$HOME/.dictionary.txt`
-- `karabiner.json` → `$HOME/.config/karabiner/karabiner.json`（Karabiner-Elementsは設定変更のたびにこのファイルをwrite-temp-then-renameで書き換え、symlinkを実ファイルに置き換えてしまう。Rectangleと同様の理由で`home.file`ではなくactivation scriptで実ファイルとしてコピーしている）
-- `laminate/config.yaml` → `$HOME/.config/laminate/config.yaml`
-- `hunk/config.toml` → `$HOME/.config/hunk/config.toml`
-- `RectangleConfig.json` → `$HOME/Library/Application Support/Rectangle/RectangleConfig.json`（Rectangle起動時に自動インポートされる。Rectangleはsymlinkを拒否するため`home.file`ではなくactivation scriptで実ファイルとしてコピーしている）
-
-Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
-
-- `op-templates/ssh-config.tpl` → `$HOME/.ssh/config`
-- `op-templates/aws-credentials.tpl` → `$HOME/.aws/credentials`
-- `op-templates/kube-config.tpl` → `$HOME/.kube/config`
-- `op-templates/deck-credentials.json.tpl` → `$HOME/.local/share/deck/credentials.json`
-
-### Claude Code Managed Settings
+### Managed Settings
 
 `claude/managed-settings.json`は`nix/darwin/claude-code.nix`のactivation scriptで`/Library/Application Support/ClaudeCode/managed-settings.json`（root所有、Claude Codeからは書き込み不可）に配置している。Claude Codeは`/model`・`/effort`・plugin installなどの操作で`~/.claude/settings.json`を手動追加フィールドごと丸ごと再生成してしまう既知バグ（[claude-code#22659](https://github.com/anthropics/claude-code/issues/22659)）があり、home-manager経由のsymlink配置では設定が消えてしまうため、絶対に保持したい設定（permissions・hooks・sandbox・statusLineなど）はこちらに置く。`enabledPlugins`・`effortLevel`のようなClaude Code自身が書き換える可変設定は`~/.claude/settings.json`側に残し、Nixでは管理しない（`extraKnownMarketplaces`は公式marketplaceの登録を固定するためmanaged-settings.json側に置いている）。
 
@@ -65,86 +16,6 @@ Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 
 `"hunk session *"`も除外している。Hunkのdaemonは`127.0.0.1:47657`でlistenしているが、sandbox内からのloopback接続はseatbeltに拒否される（`nc`が`Operation not permitted`）。sandboxのproxyは`NO_PROXY`にloopbackを含み、そもそもloopback宛を扱わないため、`allowedDomains`等のドメイン許可リストでは開けられない。`allowLocalBinding`は全sandboxedコマンドに全loopbackポート（認証情報入りURLを持つproxyの`52001`を含む）を開くため採用していない。`hunk *`ではなく`hunk session *`に絞っているのは、`hunk session`が`--extension`を受け付けず、extension経由の任意コード実行の経路にならないため。この除外がカバーしない点として、`hunk session reload --source <path>`は任意のディレクトリでレビューコマンドを実行するためsandbox外に出る（read-onlyのgit操作なので影響は小さい）。複数単語のパターン（`hunk session *`）は実機で有効なことを確認済み。ただし除外が効くのは`hunk session list`のような単体コマンドのみで、`hunk session list 2>&1; echo "exit=$?"`のように`;`やリダイレクトを付けた複合コマンドはsandbox内で実行され、接続に失敗して「No active Hunk sessions」と誤った結果を返す（どちらが原因かは切り分けていない）。ClaudeにHunkを操作させる際は複合コマンドにしない。
 
-#### WezTermタブへの待ち状態アイコン表示
+### WezTermタブへの待ち状態アイコン表示
 
 `claude/hooks/wezterm-state.sh`が`PermissionRequest`・`PreToolUse`（AskUserQuestion/ExitPlanMode）・`Notification`（elicitation系）で`waiting`、`Stop`/`StopFailure`で`done`、`PostToolUse`系・`UserPromptSubmit`・`SessionStart`・`SessionEnd`で`none`をOSC 1337 SetUserVar（`claude_state`）としてペインのttyへ書き込み、`wezterm.lua`の`format-tab-title`がそれを読んでタブのアイコン・背景色を切り替える（詳細は`docs/plans/wezterm-claude-state-tab-icon.md`）。`hooks`に項目を追加・変更する際は、この状態遷移（特に`none`へ戻す経路）を壊さないよう注意する。`find_tty`は`claude/hooks/wezterm-notify.sh`と`claude/hooks/lib/wezterm-tty.sh`で共有している。
-
-### 1Password Secrets Management
-
-機密ファイルは`op inject`で1Passwordから展開する。`make nix-apply-hobby/work`実行時に自動適用される。
-
-1Passwordに以下のアイテムを作成する（vault: `Personal`）:
-
-| Item名             | カテゴリ       | フィールド                             |
-| ------------------ | -------------- | -------------------------------------- |
-| `ssh-config`       | Secure Note    | notesPlain（`~/.ssh/config`の全内容）  |
-| `aws-credentials`  | API Credential | `access_key_id`, `secret_access_key`   |
-| `k8s-config`       | Secure Note    | notesPlain（`~/.kube/config`の全内容） |
-| `deck-credentials` | Secure Note    | notesPlain（credentials.jsonの全内容） |
-
-テンプレートファイルは`op-templates/`ディレクトリに配置。`op://Vault/Item/Field`形式で参照。
-
-SSH秘密鍵は`op inject`ではなく`op read`で1Passwordから直接ローカルファイルへ書き出す運用のものもある（`nix/home/secrets.nix`の`sshKeysImport`、vaultは既存の`ssh-config`等と同じ`PC`）:
-
-| Item名           | カテゴリ | フィールド                                                                                                       |
-| ---------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
-| `GitHub`         | SSH Key  | private_key（GitHub認証用。`~/.ssh/keys/github_yyh-gl`に配置）                                                   |
-| `GitHub Signing` | SSH Key  | private_key（commit署名専用。`~/.config/git/github_signing_ed25519`に配置。GitHubにはSigning Keyとして登録する） |
-
-commit署名鍵を認証鍵と分けているのは、Claude Codeのsandboxが`~/.ssh/keys`の読み取りを拒否しているため。署名専用鍵は`~/.ssh`の外に置いてsandbox内の`git commit`から読めるようにしており、漏れても被害は署名偽造に限られる（pushはできない）。正本は1Passwordで、ローカルのファイルはapplyのたびに上書きされる派生コピー。鍵のファイル名に`.key`・`.pem`の拡張子は付けない（sandboxの`**/*.key`・`**/*.pem`のdenyと`Read(**/*.key)`に該当するため）。
-
-### Nix Setup
-
-`nix/` ディレクトリで nix-darwin + home-manager による宣言的管理を段階的に導入中。
-
-```
-flake.nix              # entrypoint (nixpkgs-unstable + nix-darwin + home-manager)
-flake.lock             # 依存ロックファイル
-nix/
-├── darwin/
-│   └── default.nix    # nix-darwin設定 (system.defaults, Homebrew管理など)
-└── home/
-    └── default.nix    # home-manager設定 (dotfile管理, programs.zshなど)
-```
-
-**初回セットアップ手順:**
-
-```sh
-# 1. Nixをインストール (make init に含まれているが、単独実行も可)
-./bin/install-nix.sh
-
-# 2. /etc/zshrc と /etc/bashrc を削除 (nix-darwinが管理するため)
-sudo rm /etc/zshrc /etc/bashrc
-
-# 3. シェルを再起動後、初回ビルド (nix-darwin未インストールの場合)
-git add nix/ flake.nix flake.lock   # Nixはgit追跡ファイルのみ読み込む
-sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#yyh-gl-mac-hobby
-# または .#yyh-gl-mac-work
-
-# 4. 以降は make nix-apply-hobby または make nix-apply-work で適用
-make nix-apply-hobby
-```
-
-**注意事項:**
-
-- ファイルを変更したら `git add` してから `make nix-apply-hobby` / `make nix-apply-work` を実行する（未追跡ファイルはNixに読み込まれない）
-- `darwin-rebuild switch` はシステム設定変更のため `sudo` が必要
-- `services.nix-daemon.enable` は最新nix-darwinで廃止済み（`nix.enable` が自動管理）
-
-### Zsh起動速度
-
-zsh-benchで計測して、起動（first_prompt_lag）を短くするために次の構成にしている。戻さないこと。
-
-- `compinit`は`nix/home/zsh.nix`の`completionInit`で1回だけ、`-C`付きで実行する。nix-darwin側（`nix/darwin/default.nix`）で`enableGlobalCompInit`・`enableBashCompletion`・`promptInit`を無効化しているのは、`/etc/zshrc`側で`compinit`が重複して走るのを防ぐため。
-- `-C`は補完の追加を自動検知しないので、`home.activation.resetZcompdump`でapplyのたびに`~/.zcompdump*`を削除している。applyを介さず`brew install`した補完は、`rm ~/.zcompdump`するまで反映されない。
-- `brew shellenv`は`profileExtra`に静的に展開している（evalするとbrewの起動分だけ遅くなる）。`export FPATH`は、`.zprofile`を読まないネストしたシェルにbrewの補完ディレクトリを引き継ぐために必須。
-- `starship init zsh`はビルド時に生成している（`starshipInit`）。`RPROMPT`（`right_format`未使用なのに毎プロンプトstarshipを起動する）と`PROMPT2`を静的化している。`starship.toml`で`right_format`か`continuation_prompt`を設定する場合は、この置き換えを見直す。
-- `scripts/celebrate-anniversary.sh`は`.zlogin`から毎回呼ばれるため、外部コマンドをforkしないzshスクリプトにしている。`CELEBRATE_TODAY=YYYY-MM-DD`で「今日」を差し替えられる。
-- `LANG`は`ja_JP.UTF-8`で固定している（`defaults read`を毎回実行すると起動が遅くなる）。
-
-### Build Mode
-
-Nixのflake設定名でモードを指定する（`.env.public`でのMODE指定は廃止済み）:
-
-- `yyh-gl-mac-hobby` (`make nix-apply-hobby`) — 1password/tailscaleをインストール、Google DriveへのSymlinkを`$HOME/Desktop/hobby`と`$HOME/Pictures`に作成
-- `yyh-gl-mac-work` (`make nix-apply-work`) — `$HOME/Desktop/work`ディレクトリを作成
