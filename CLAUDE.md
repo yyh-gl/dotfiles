@@ -65,6 +65,29 @@ Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 
 `"hunk session *"`も除外している。Hunkのdaemonは`127.0.0.1:47657`でlistenしているが、sandbox内からのloopback接続はseatbeltに拒否される（`nc`が`Operation not permitted`）。sandboxのproxyは`NO_PROXY`にloopbackを含み、そもそもloopback宛を扱わないため、`allowedDomains`等のドメイン許可リストでは開けられない。`allowLocalBinding`は全sandboxedコマンドに全loopbackポート（認証情報入りURLを持つproxyの`52001`を含む）を開くため採用していない。`hunk *`ではなく`hunk session *`に絞っているのは、`hunk session`が`--extension`を受け付けず、extension経由の任意コード実行の経路にならないため。この除外がカバーしない点として、`hunk session reload --source <path>`は任意のディレクトリでレビューコマンドを実行するためsandbox外に出る（read-onlyのgit操作なので影響は小さい）。複数単語のパターン（`hunk session *`）は実機で有効なことを確認済み。ただし除外が効くのは`hunk session list`のような単体コマンドのみで、`hunk session list 2>&1; echo "exit=$?"`のように`;`やリダイレクトを付けた複合コマンドはsandbox内で実行され、接続に失敗して「No active Hunk sessions」と誤った結果を返す（どちらが原因かは切り分けていない）。ClaudeにHunkを操作させる際は複合コマンドにしない。
 
+#### Codexのsandbox設定
+
+Claudeの`claude/managed-settings.json`と同じルールをCodexにも適用している。`nix/darwin/codex.nix`のactivation scriptで、system層の`/etc/codex/`へ実ファイルとしてコピーする（Codexは`~/.codex/config.toml`を自分で書き換えるため）。ファイルごとの役割は次のとおり。仕組みの詳細は各ファイルの先頭コメントを参照。
+
+- `codex/requirements.toml` → `/etc/codex/requirements.toml`。Claudeの`managed-settings.json`に相当し、ユーザーが上書きできず、CLIフラグでも外せない。permission profile `dotfiles`・network allowlist・filesystemのdeny・`forbidden`/`prompt`ルール・`allowed_*`の制限（`danger-full-access`やapproval policy `never`への切り替え禁止）を置く
+- `codex/managed_config.toml` → `/etc/codex/managed_config.toml`。user層（`~/.codex/config.toml`）より優先される既定値（`approval_policy`・`shell_environment_policy`）。user層に同じ項目を書かない
+
+Claudeの設定を変えたらCodex側も揃える。対応関係と注意点:
+
+- `sandbox.filesystem.allowWrite` → `[permissions.dotfiles.filesystem]`の`write`
+- `sandbox.credentials.files`・`permissions.deny`の`Read(...)` → `[permissions.filesystem]`の`deny_read`（ワークスペース外にも効く）
+- `sandbox.network.allowedDomains` → `[experimental_network.domains]`。`managed_allowed_domains_only`は、Claudeのallowedが設定間で足し合わされるのに合わせて設定していない
+- `sandbox.credentials.envVars` → `managed_config.toml`の`shell_environment_policy.exclude`。`ignore_default_excludes = false`はKEY・SECRET・TOKENを含む変数も除外する意味があるので削らない
+- `permissions.deny`/`ask`のBash → requirementsの`[rules] prefix_rules`（`forbidden`/`prompt`）。requirementsのrulesは`allow`を書けない
+- `permissions.allow`のBash（`git commit`・`gh`の参照系など）は対応するルールを置いていない。Codexのsandbox内のコマンドは、もともと確認なしで実行される
+
+Claudeに揃えられない点（意図的な差分）:
+
+- `sandbox.excludedCommands`（`gh *`・`docker *`・`hunk session *`）: Codexにはコマンド単位でsandbox外へ出す仕組みがないため、これらはCodexでは使えない。必要な操作はClaudeか自分のターミナルで行う
+- `defaultMode: auto`: `approvals_reviewer = "auto_review"`はmanaged側に置くと`-c`で上書きできず、デッドロックしたときに抜けられないため設定していない（既定の`user`）。使うなら`~/.codex/config.toml`に書く
+- `git push`のforbiddenや`gh`・`docker`のpromptは前方一致なので、環境変数の前置（`GH_CONFIG_DIR=x gh ...`など）で迂回できる。Claudeの`Bash(git push*)`も同じ弱点を持ち、実質の防御はsandboxが担う
+- `--dangerously-bypass-approvals-and-sandbox`などは、起動エラーにはならず、警告を出してrequirementsの値に戻される
+
 #### WezTermタブへの待ち状態アイコン表示
 
 `claude/hooks/wezterm-state.sh`が`PermissionRequest`・`PreToolUse`（AskUserQuestion/ExitPlanMode）・`Notification`（elicitation系）で`waiting`、`Stop`/`StopFailure`で`done`、`PostToolUse`系・`UserPromptSubmit`・`SessionStart`・`SessionEnd`で`none`をOSC 1337 SetUserVar（`claude_state`）としてペインのttyへ書き込み、`wezterm.lua`の`format-tab-title`がそれを読んでタブのアイコン・背景色を切り替える（詳細は`docs/plans/wezterm-claude-state-tab-icon.md`）。`hooks`に項目を追加・変更する際は、この状態遷移（特に`none`へ戻す経路）を壊さないよう注意する。`find_tty`は`claude/hooks/wezterm-notify.sh`と`claude/hooks/lib/wezterm-tty.sh`で共有している。
