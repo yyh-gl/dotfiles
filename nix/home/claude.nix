@@ -16,11 +16,6 @@ in {
     recursive = true;
   };
   home.file.".claude/hooks".source = "${dotfiles}/claude/hooks";
-  # engineが読み込みのたびに.claude-plugin/types/を書き込むため、ディレクトリ丸ごとのsymlink（nix store上で読み取り専用）ではなくファイル単位でsymlinkする
-  home.file.".claude/mods/statusline" = {
-    source = "${dotfiles}/claude/mods/statusline";
-    recursive = true;
-  };
 
   # `hunk skill path`が返すSKILL.mdのあるディレクトリを~/.claude/skills/hunk-reviewへコピーする（applyのたびに上書き）
   # Homebrewのアップグレードに追従させるため、パスは固定せず毎回`hunk skill path`で解決する
@@ -37,6 +32,17 @@ in {
       cp -R "$(dirname "$skill_file")" "$dest"
       chmod -R u+w "$dest"
     fi
+  '';
+
+  # statusline modを~/.claude/mods/statuslineへ実ファイルとしてコピーする（applyのたびに上書き）
+  # nix storeへのsymlinkだと、engineが「Path escapes plugin directory」で拒否するためsymlinkは使えない。
+  # engineが読み込みのたびに.claude-plugin/types/を書き込むため、コピー後にu+wを付与する
+  home.activation.claudeStatuslineMod = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    dest="${hd}/.claude/mods/statusline"
+    rm -rf "$dest"
+    mkdir -p "$(dirname "$dest")"
+    cp -R "${dotfiles}/claude/mods/statusline" "$dest"
+    chmod -R u+w "$dest"
   '';
 
   # 仕事PCではMDM等により/Library/Application Support/配下への書き込みがブロックされることが多いため、
