@@ -16,6 +16,11 @@ in {
     recursive = true;
   };
   home.file.".claude/hooks".source = "${dotfiles}/claude/hooks";
+  # engineが読み込みのたびに.claude-plugin/types/を書き込むため、ディレクトリ丸ごとのsymlink（nix store上で読み取り専用）ではなくファイル単位でsymlinkする
+  home.file.".claude/mods/statusline" = {
+    source = "${dotfiles}/claude/mods/statusline";
+    recursive = true;
+  };
 
   # `hunk skill path`が返すSKILL.mdのあるディレクトリを~/.claude/skills/hunk-reviewへコピーする（applyのたびに上書き）
   # Homebrewのアップグレードに追従させるため、パスは固定せず毎回`hunk skill path`で解決する
