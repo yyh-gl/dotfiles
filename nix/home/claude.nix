@@ -4,10 +4,6 @@ let
 in {
   home.file.".claude/CLAUDE.md".source = "${dotfiles}/claude/CLAUDE.md";
   home.file.".claude/keybindings.json".source = "${dotfiles}/claude/keybindings.json";
-  home.file.".claude/statusline.sh" = {
-    source = "${dotfiles}/claude/statusline.sh";
-    executable = true;
-  };
   home.file.".claude/agents".source = "${dotfiles}/claude/agents";
   home.file.".claude/rules".source = "${dotfiles}/claude/rules";
   # Hunk同梱のスキルをactivation scriptでコピーするため、ディレクトリ丸ごとのsymlink（nix store上で読み取り専用）ではなくファイル単位でsymlinkする

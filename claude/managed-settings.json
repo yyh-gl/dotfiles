@@ -274,10 +274,6 @@
       }
     ]
   },
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline.sh"
-  },
   "language": "japanese",
   "sandbox": {
     "enabled": true,
