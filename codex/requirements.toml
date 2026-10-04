@@ -1,7 +1,7 @@
 # Codex CLIのrequirements（/etc/codex/requirements.toml）。nix/darwin/codex.nixのactivation scriptで配置する
 # Claudeのclaude/managed-settings.jsonに相当する層で、ユーザーは上書きできず、CLIフラグでも外せない
 # 既定値（approval_policyなど）はmanaged_config.tomlに置き、ここには強制したい制約だけを書く
-# 対応表はCLAUDE.mdの「Codexのsandbox設定」を参照。Claude側を変えたらここも揃える
+# 対応表はdocs/codex-sandbox.mdを参照。Claude側を変えたらここも揃える
 
 # Claudeのdisableが近いもの: danger-full-accessや確認なし実行（never）への切り替えを禁止する
 allowed_approval_policies = ["on-request"]
