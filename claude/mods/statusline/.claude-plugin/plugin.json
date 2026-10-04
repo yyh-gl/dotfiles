@@ -1,0 +1,6 @@
+{
+  "name": "statusline",
+  "version": "0.2.0",
+  "description": "Claude Codeのステータスラインを入力欄の上の帯に描画する",
+  "types": "./types/index.d.ts"
+}

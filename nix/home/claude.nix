@@ -4,10 +4,6 @@ let
 in {
   home.file.".claude/CLAUDE.md".source = "${dotfiles}/claude/CLAUDE.md";
   home.file.".claude/keybindings.json".source = "${dotfiles}/claude/keybindings.json";
-  home.file.".claude/statusline.sh" = {
-    source = "${dotfiles}/claude/statusline.sh";
-    executable = true;
-  };
   home.file.".claude/agents".source = "${dotfiles}/claude/agents";
   home.file.".claude/rules".source = "${dotfiles}/claude/rules";
   # Hunk同梱のスキルをactivation scriptでコピーするため、ディレクトリ丸ごとのsymlink（nix store上で読み取り専用）ではなくファイル単位でsymlinkする
@@ -32,6 +28,17 @@ in {
       cp -R "$(dirname "$skill_file")" "$dest"
       chmod -R u+w "$dest"
     fi
+  '';
+
+  # statusline modを~/.claude/mods/statuslineへ実ファイルとしてコピーする（applyのたびに上書き）
+  # nix storeへのsymlinkだと、engineが「Path escapes plugin directory」で拒否するためsymlinkは使えない。
+  # engineが読み込みのたびに.claude-plugin/types/を書き込むため、コピー後にu+wを付与する
+  home.activation.claudeStatuslineMod = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    dest="${hd}/.claude/mods/statusline"
+    rm -rf "$dest"
+    mkdir -p "$(dirname "$dest")"
+    cp -R "${dotfiles}/claude/mods/statusline" "$dest"
+    chmod -R u+w "$dest"
   '';
 
   # 仕事PCではMDM等により/Library/Application Support/配下への書き込みがブロックされることが多いため、
