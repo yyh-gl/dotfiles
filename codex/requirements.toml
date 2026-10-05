@@ -72,6 +72,8 @@ enabled = true
 "repo.maven.apache.org" = "allow"
 "repo1.maven.org" = "allow"
 "dl.google.com" = "allow"
+"pypi.org" = "allow"
+"files.pythonhosted.org" = "allow"
 
 # requirementsのrulesはdecisionにpromptかforbiddenしか書けない（allowはsandbox外実行にならず承認を省くだけなので使わない）
 # 前方一致なので`git -C dir push`・`env git push`・`GH_CONFIG_DIR=x gh pr create`のような環境変数の前置は一致しない。
@@ -80,10 +82,10 @@ enabled = true
 prefix_rules = [
   # --- forbidden（Claudeのpermissions.deny） ---
   { pattern = [{ token = "git" }, { token = "push" }], decision = "forbidden", justification = "pushは人間が行う" },
-  { pattern = [{ token = "chmod" }], decision = "forbidden", justification = "Claudeのpermissions.denyに揃えている" },
 
   # --- prompt（Claudeのpermissions.ask） ---
   { pattern = [{ token = "git" }, { token = "rm" }], decision = "prompt" },
+  { pattern = [{ token = "chmod" }], decision = "prompt" },
   { pattern = [{ token = "gh" }, { token = "pr" }, { token = "create" }], decision = "prompt" },
   { pattern = [{ token = "gh" }, { token = "pr" }, { token = "merge" }], decision = "prompt" },
   { pattern = [{ token = "gh" }, { token = "pr" }, { token = "close" }], decision = "prompt" },
@@ -98,7 +100,52 @@ prefix_rules = [
   { pattern = [{ token = "gh" }, { token = "secret" }], decision = "prompt" },
   { pattern = [{ token = "gh" }, { token = "api" }], decision = "prompt" },
   { pattern = [{ token = "gh" }, { token = "gist" }], decision = "prompt" },
-  # Claudeでは"docker*"がaskのため、docker ps等のallowより優先されて常に確認が入る。同じ挙動にする
+  # Claudeのaskはdockerの書き込み・実行系サブコマンドの列挙（参照系のdocker ps等はallowで、確認なし）。同じ範囲にする
   # ただしCodexでは承認してもsandbox内で動き、dockerのsocketに届かず失敗する（意図的な差分）
-  { pattern = [{ token = "docker" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "run" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "exec" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "cp" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "build" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "buildx" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "builder" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "create" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "start" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "restart" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "stop" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "kill" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "rm" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "rmi" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "update" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "commit" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "pull" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "push" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "login" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "tag" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "save" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "load" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "import" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "export" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "container" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "image" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "volume" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "network" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "plugin" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "context" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "system" }, { token = "prune" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "up" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "down" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "run" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "exec" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "cp" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "build" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "create" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "start" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "stop" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "restart" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "rm" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "kill" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "pull" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "push" }], decision = "prompt" },
+  { pattern = [{ token = "docker" }, { token = "compose" }, { token = "watch" }], decision = "prompt" },
+  { pattern = [{ token = "docker-compose" }], decision = "prompt" },
 ]
