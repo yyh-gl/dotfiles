@@ -16,8 +16,13 @@ PRはチームに公開されるレビュー依頼であり、コミットと違
 
 PRは「あるブランチから別のブランチへの変更提案」なので、まずhead/baseを確定させる。
 
+次の2つを、別々の呼び出しで単体実行する（`gh`はコマンド全体が除外設定に一致したときだけsandbox外で動くため、`&&`・`;`・`$(...)`でつながない）。
+
 ```bash
 git branch --show-current                                  # head（現ブランチ）
+```
+
+```bash
 gh repo view --json defaultBranchRef -q .defaultBranchRef.name  # base（デフォルトブランチ）
 ```
 
@@ -25,7 +30,7 @@ gh repo view --json defaultBranchRef -q .defaultBranchRef.name  # base（デフ�
   PRを作れないため、「先にfeatureブランチを切ってください」とユーザーに伝える。
 - 既に同じheadのPRが存在しないか確認する:
   ```bash
-  gh pr list --head "$(git branch --show-current)" --state open
+  gh pr list --head <上で得たhead名> --state open
   ```
   既存のオープンPRがあれば新規作成せず、そのPR番号・URLを報告して終了する。
 
@@ -149,22 +154,20 @@ base ← head: <base> ← <head>
 
 ## Step 8: PR作成
 
-本文は改行・整形を保つため一時ファイル経由で渡す:
+本文は改行・整形を保つため一時ファイル経由で渡す。Writeツールでscratchpadディレクトリ（なければ`$TMPDIR`を展開した絶対パス）のファイルに本文を書き、`gh pr create`を単体で実行する:
 
 ```bash
-tmpfile=$(mktemp)
-cat > "$tmpfile" <<'EOF'
-<本文全文>
-EOF
-gh pr create --draft --base <base> --title "<title>" --body-file "$tmpfile" --assignee @me
-rm -f "$tmpfile"
+gh pr create --draft --base <base> --head <head> --title "<title>" --body-file <本文ファイルの絶対パス> --assignee @me
 ```
+
+`--head`を明示するのは、sandbox外で動く`gh`がブランチのpushやforkを試みる挙動を確実に止めるため。Step 3で未pushなら中断しているので、通常の動作は変わらない。
 
 作成後、`gh`が返すPRのURLをユーザーに報告する。
 
 ## 注意事項
 
 - `git push`は実行しない。未pushがあればStep 3でユーザーにpushを依頼する。
+- `gh`は単体コマンドで実行する。パイプ・`;`・`&&`・`$(...)`・リダイレクトを含めない（sandboxのexcludedCommandsはコマンド全体が一致したときだけ効き、外れるとsandbox内で`hosts.yml`を読めず失敗するため）。
 - **ユーザー承認なしにPRを作成しない**（`smart-commit`と異なり確認は必須）。
 - デフォルトブランチ上では実行しない。
 - 同じheadのオープンPRが既にあれば新規作成しない。
