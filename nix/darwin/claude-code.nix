@@ -12,6 +12,5 @@
     cp -f "${toString ./../../claude/managed-settings.json}" "$claude_dir/managed-settings.d/50-dotfiles.json"
     chmod 644 "$claude_dir/managed-settings.d/50-dotfiles.json"
     chown root:wheel "$claude_dir/managed-settings.d/50-dotfiles.json"
-    # 旧配置のmanaged-settings.jsonは自動では消さない（移行後の初回のみ必要な作業のため。CLAUDE.mdの手順で手動削除する）
   '';
 }
