@@ -3,6 +3,7 @@ import {
   CODE_COLOR,
   HEADING_COLOR,
   LIST_MARKER_COLOR,
+  MAX_CHARS,
   TASK_DONE_COLOR,
   TASK_TODO_COLOR,
   type Decoration,
@@ -14,6 +15,7 @@ type Style = Omit<Decoration, 'start' | 'end'>
 type Body = { start: number; text: string; style: Style }
 type Syntax = { marks: Decoration[]; body?: Body }
 
+const NEWLINE = /\r\n|\n|\r/g
 const FENCE_OPEN = /^\s*(`{3,}(?=[^`]*$)|~{3,})/
 const FENCE_CLOSE = /^\s*(`{3,}|~{3,})\s*$/
 const HEADING = /^( {0,3})(#{1,6})(?:([ \t]+)(.*))?$/
@@ -34,12 +36,12 @@ const splitLines = (text: string): Line[] => {
   const lines: Line[] = []
   let start = 0
 
-  for (const lineText of text.split('\n')) {
-    lines.push({ start, text: lineText })
-    start += lineText.length + 1
+  for (const newline of text.matchAll(NEWLINE)) {
+    lines.push({ start, text: text.slice(start, newline.index) })
+    start = newline.index + newline[0].length
   }
 
-  return lines
+  return [...lines, { start, text: text.slice(start) }]
 }
 
 const openingFence = (lineText: string): Fence | null => {
@@ -129,6 +131,10 @@ const bodySyntax = ({ start, text, style }: Body): Decoration[] => {
 }
 
 export const decorate = (text: string): Decoration[] => {
+  if (text.length > MAX_CHARS) {
+    return []
+  }
+
   const decorations: Decoration[] = []
   let fence: Fence | null = null
 

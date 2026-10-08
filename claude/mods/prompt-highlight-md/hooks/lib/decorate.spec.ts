@@ -5,6 +5,7 @@ import {
   CODE_COLOR,
   HEADING_COLOR,
   LIST_MARKER_COLOR,
+  MAX_CHARS,
   TASK_DONE_COLOR,
   TASK_TODO_COLOR,
 } from './palette'
@@ -191,6 +192,106 @@ describe('decorate', () => {
         ['`a`', CODE],
         ['```', DIM],
       ])
+    })
+  })
+
+  describe('入力の癖', () => {
+    test('CRLFでも行頭記法を認識し、範囲に改行を含めない', () => {
+      expect(painted('# a\r\n```\r\nx\r\n```\r\n- b')).toEqual([
+        ['#', DIM],
+        ['a', HEADING],
+        ['```', DIM],
+        ['x', CODE],
+        ['```', DIM],
+        ['-', LIST],
+      ])
+    })
+
+    test('単独のCRも改行として扱う', () => {
+      expect(painted('# a\r- b')).toEqual([
+        ['#', DIM],
+        ['a', HEADING],
+        ['-', LIST],
+      ])
+    })
+
+    test('日本語の行でも範囲が本文と一致する', () => {
+      expect(painted('あ\n# 日本語の見出し `コード`')).toEqual([
+        ['#', DIM],
+        ['日本語の見出し ', HEADING],
+        ['`コード`', { ...HEADING, ...CODE }],
+      ])
+    })
+
+    test('サロゲートペアを含む行でも範囲が本文と一致する', () => {
+      expect(painted('𠮷😀\n- 𠮷😀 `😀`')).toEqual([
+        ['-', LIST],
+        ['`😀`', CODE],
+      ])
+    })
+
+    test('末尾の改行の有無で結果が変わらない', () => {
+      expect(painted('# a\n')).toEqual(painted('# a'))
+    })
+  })
+
+  describe('上限', () => {
+    const headingOf = (length: number) => `# ${'a'.repeat(length - 2)}`
+
+    test('60,000文字ちょうどは色付けする', () => {
+      expect(decorate(headingOf(MAX_CHARS))).not.toEqual([])
+    })
+
+    test('60,001文字は色付けしない', () => {
+      expect(decorate(headingOf(MAX_CHARS + 1))).toEqual([])
+    })
+  })
+
+  describe('任意の入力', () => {
+    const FRAGMENTS = [
+      '```', '~~~', '`', '``', '# ', '#', '- ', '* ', '1. ', '> ', '>', '[ ] ', '[x] ', '---', '- - -',
+      '\n', '\n', '\r\n', '\r', 'a', 'abc', '日本', '😀', '𠮷', ' ', '    ', '\t',
+    ]
+
+    const lcg = (seed: number) => () => {
+      seed = (seed * 1664525 + 1013904223) % 2 ** 32
+
+      return seed / 2 ** 32
+    }
+
+    const randomTexts = (count: number) => {
+      const next = lcg(20260101)
+
+      return Array.from({ length: count }, () =>
+        Array.from({ length: Math.floor(next() * 40) }, () => FRAGMENTS[Math.floor(next() * FRAGMENTS.length)]).join(''),
+      )
+    }
+
+    test('範囲は空でなくテキスト内に収まり、改行をまたがない', () => {
+      for (const text of randomTexts(500)) {
+        for (const { start, end } of decorate(text)) {
+          expect(start).toBeGreaterThanOrEqual(0)
+          expect(end).toBeLessThanOrEqual(text.length)
+          expect(end).toBeGreaterThan(start)
+          expect(text.slice(start, end)).not.toMatch(/[\r\n]/)
+        }
+      }
+    })
+
+    test('範囲は互いに重ならない', () => {
+      for (const text of randomTexts(500)) {
+        const ranges = decorate(text).sort((a, b) => a.start - b.start)
+
+        ranges.slice(1).forEach(({ start }, i) => {
+          expect(start).toBeGreaterThanOrEqual(ranges[i].end)
+        })
+      }
+    })
+
+    test('同じ入力には同じ結果を返す', () => {
+      for (const text of randomTexts(100)) {
+        expect(decorate(text)).toEqual(decorate(text))
+      }
     })
   })
 
