@@ -91,9 +91,10 @@ export const register: Register = on => {
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const snap = await read($, snapAtom)
+    const below = await next(e)
 
     if (e.props.hasSurvey || snap === null) {
-      return next(e)
+      return below
     }
 
     const { Box, Text } = $.ui.resolve(e)
@@ -178,6 +179,11 @@ export const register: Register = on => {
 
     const rows = [joinRow('l1', line1), joinRow('l2', line2), joinRow('l3', line3)].filter(Boolean)
 
-    return <Box flexDirection="column">{rows}</Box>
+    return (
+      <Box flexDirection="column">
+        {below}
+        {rows}
+      </Box>
+    )
   })
 }

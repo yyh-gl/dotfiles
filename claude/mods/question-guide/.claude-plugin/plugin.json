@@ -1,0 +1,6 @@
+{
+  "name": "question-guide",
+  "version": "0.1.0",
+  "description": "Claudeの質問の背景と選択肢の詳細をペインに表示する",
+  "types": "./types/index.d.ts"
+}
