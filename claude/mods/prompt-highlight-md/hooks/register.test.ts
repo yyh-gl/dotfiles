@@ -4,7 +4,7 @@ import { describe, expect, test, type Engine } from 'claude-code/testing'
 import { CODE_COLOR, MAX_CHARS } from './lib/palette'
 
 // prompt.editはテストキットから発火できないため、同じ装飾をprompt.fillで検証する。
-// prompt.editへの配線はステップ6の実機確認（e）で見る。
+// prompt.editへの配線は自動テストの対象外で、実機で上矢印の履歴呼び出しなどを含めて目視確認する。
 // decorateが例外を投げた場合のフォールバックは、decorateを差し替えられないため自動テストできない。
 
 const FENCED = '```ts\nconst a = 1\n```'
