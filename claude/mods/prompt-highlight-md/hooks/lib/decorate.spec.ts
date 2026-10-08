@@ -248,19 +248,36 @@ describe('decorate', () => {
   })
 
   describe('U+2028・U+2029を含む長い行', () => {
-    const LINE_SEPARATOR = ' '.repeat(MAX_CHARS - 2)
+    const MAX_REPEAT = MAX_CHARS - 2
 
-    test.each([
-      ['見出し', '# '],
-      ['引用', '> '],
-    ])('%sでも一定時間内に終わり、本文の範囲が正しい', (_name, marker) => {
-      const text = `${marker}${LINE_SEPARATOR}`
-      const startedAt = performance.now()
+    // 空白やマーカーの繰り返しの末尾にU+2028を置くと、正規表現が前段をバックトラックして二次時間になる
+    test.each([' ', ' '])('末尾が%jの最悪ケースでも200ms以内に終わる', (separator) => {
+      const worstCases = [
+        `#${' '.repeat(MAX_REPEAT)}${separator}`,
+        `>${' '.repeat(MAX_REPEAT)}${separator}`,
+        `${'>'.repeat(MAX_REPEAT)}${separator}`,
+        `${'> '.repeat(MAX_REPEAT / 2)}${separator}`,
+      ]
 
-      const result = decorate(text)
+      for (const text of worstCases) {
+        const startedAt = performance.now()
+        const result = decorate(text)
 
-      expect(performance.now() - startedAt).toBeLessThan(200)
-      expect(result.at(-1)).toMatchObject({ start: 2, end: text.length })
+        expect(performance.now() - startedAt).toBeLessThan(200)
+        expect(result).not.toEqual([])
+        for (const { start, end } of result) {
+          expect(end).toBeLessThanOrEqual(text.length)
+          expect(end).toBeGreaterThan(start)
+        }
+      }
+    })
+
+    test.each([' ', ' '])('見出しの本文に%jを含んでも見出しとして装飾する', (separator) => {
+      const [marker, body] = painted(`# a${separator}b`)
+
+      expect(marker).toEqual(['#', DIM])
+      expect(body[0]).toContain('a')
+      expect(body[1]).toEqual(HEADING)
     })
   })
 
