@@ -1,0 +1,5 @@
+{
+  "name": "prompt-highlight-md",
+  "version": "0.1.0",
+  "description": "プロンプト入力欄のコードブロックと行頭のMarkdown記法に色を付ける（設計の参考: https://github.com/nogu66/md-prompt）"
+}
