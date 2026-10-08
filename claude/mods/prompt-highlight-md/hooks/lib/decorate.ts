@@ -18,10 +18,10 @@ type Syntax = { marks: Decoration[]; body?: Body }
 const NEWLINE = /\r\n|\n|\r/g
 const FENCE_OPEN = /^\s*(`{3,}(?=[^`]*$)|~{3,})/
 const FENCE_CLOSE = /^\s*(`{3,}|~{3,})\s*$/
-const HEADING = /^( {0,3})(#{1,6})(?:([ \t]+)(.*))?$/
+const HEADING = /^( {0,3})(#{1,6})(?:([ \t]+)(.*))?$/s
 const RULE = /^ {0,3}([-*_])(?:[ \t]*\1){2,}[ \t]*$/
 const LIST = /^([ \t]*)([-*+]|\d{1,9}[.)])(?=[ \t]|$)(?:([ \t]+)(\[[ xX]\])(?=[ \t]|$))?/
-const QUOTE = /^( {0,3})((?:>[ \t]?)+)(.*)$/
+const QUOTE = /^( {0,3})((?:>[ \t]?)+)(.*)$/s
 
 const DIM: Style = { dimColor: true }
 const CODE: Style = { color: CODE_COLOR }

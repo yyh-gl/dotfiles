@@ -247,6 +247,23 @@ describe('decorate', () => {
     })
   })
 
+  describe('U+2028・U+2029を含む長い行', () => {
+    const LINE_SEPARATOR = ' '.repeat(MAX_CHARS - 2)
+
+    test.each([
+      ['見出し', '# '],
+      ['引用', '> '],
+    ])('%sでも一定時間内に終わり、本文の範囲が正しい', (_name, marker) => {
+      const text = `${marker}${LINE_SEPARATOR}`
+      const startedAt = performance.now()
+
+      const result = decorate(text)
+
+      expect(performance.now() - startedAt).toBeLessThan(200)
+      expect(result.at(-1)).toMatchObject({ start: 2, end: text.length })
+    })
+  })
+
   describe('任意の入力', () => {
     const FRAGMENTS = [
       '```', '~~~', '`', '``', '# ', '#', '- ', '* ', '1. ', '> ', '>', '[ ] ', '[x] ', '---', '- - -',
