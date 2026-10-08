@@ -1,7 +1,6 @@
 { dotfiles, lib, config, mode, ... }:
 let
   hd = config.home.homeDirectory;
-  mods = [ "statusline" "question-guide" ];
 in {
   home.file.".claude/CLAUDE.md".source = "${dotfiles}/claude/CLAUDE.md";
   home.file.".claude/keybindings.json".source = "${dotfiles}/claude/keybindings.json";
@@ -31,16 +30,16 @@ in {
     fi
   '';
 
-  # mods/配下の各modを~/.claude/mods/<name>へ実ファイルとしてコピーする（applyのたびに上書き）
+  # statusline modを~/.claude/mods/statuslineへ実ファイルとしてコピーする（applyのたびに上書き）
   # nix storeへのsymlinkだと、engineが「Path escapes plugin directory」で拒否するためsymlinkは使えない。
   # engineが読み込みのたびに.claude-plugin/types/を書き込むため、コピー後にu+wを付与する
-  home.activation.claudeMods = lib.hm.dag.entryAfter [ "linkGeneration" ] (lib.concatMapStrings (name: ''
-    dest="${hd}/.claude/mods/${name}"
+  home.activation.claudeStatuslineMod = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    dest="${hd}/.claude/mods/statusline"
     rm -rf "$dest"
     mkdir -p "$(dirname "$dest")"
-    cp -R "${dotfiles}/claude/mods/${name}" "$dest"
+    cp -R "${dotfiles}/claude/mods/statusline" "$dest"
     chmod -R u+w "$dest"
-  '') mods);
+  '';
 
   # 仕事PCではMDM等により/Library/Application Support/配下への書き込みがブロックされることが多いため、
   # workモードに限りclaude/managed-settings.jsonの内容を~/.claude/settings.jsonとして配備する（Rectangle同様、symlinkだと書き込みできないため実ファイルとしてコピー）
