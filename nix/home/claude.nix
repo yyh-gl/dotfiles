@@ -30,15 +30,18 @@ in {
     fi
   '';
 
-  # statusline modを~/.claude/mods/statuslineへ実ファイルとしてコピーする（applyのたびに上書き）
+  # claude/mods/*の各modを~/.claude/mods/<名前>へ実ファイルとしてコピーする（applyのたびに上書き）
   # nix storeへのsymlinkだと、engineが「Path escapes plugin directory」で拒否するためsymlinkは使えない。
-  # engineが読み込みのたびに.claude-plugin/types/を書き込むため、コピー後にu+wを付与する
-  home.activation.claudeStatuslineMod = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    dest="${hd}/.claude/mods/statusline"
-    rm -rf "$dest"
-    mkdir -p "$(dirname "$dest")"
-    cp -R "${dotfiles}/claude/mods/statusline" "$dest"
-    chmod -R u+w "$dest"
+  # engineが読み込みのたびに.claude-plugin/types/を書き込むため、コピー後にu+wを付与する。
+  # ~/.claude/mods全体は消さないので、手で置いたmodは残る
+  home.activation.claudeMods = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    mkdir -p "${hd}/.claude/mods"
+    for mod in "${dotfiles}"/claude/mods/*/; do
+      dest="${hd}/.claude/mods/$(basename "$mod")"
+      rm -rf "$dest"
+      cp -R "$mod" "$dest"
+      chmod -R u+w "$dest"
+    done
   '';
 
   # 仕事PCではMDM等により/Library/Application Support/配下への書き込みがブロックされることが多いため、
