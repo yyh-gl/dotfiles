@@ -295,6 +295,93 @@ describe('decorate', () => {
     })
   })
 
+  describe('境界の組み合わせ', () => {
+    test('番号付きリストのタスクも記号とチェックを別々に色付けする', () => {
+      expect(painted('1. [x] a')).toEqual([
+        ['1.', LIST],
+        ['[x]', DONE],
+      ])
+    })
+
+    test('本文のないタスクでもチェックを色付けする', () => {
+      expect(painted('- [x]')).toEqual([
+        ['-', LIST],
+        ['[x]', DONE],
+      ])
+    })
+
+    test('#の後ろがタブでも見出しになる', () => {
+      expect(painted('#\ta')).toEqual([
+        ['#', DIM],
+        ['a', HEADING],
+      ])
+    })
+
+    test('3スペースまでの字下げなら見出しになる', () => {
+      expect(painted('   # a')).toEqual([
+        ['#', DIM],
+        ['a', HEADING],
+      ])
+    })
+
+    test('見出しがインラインコードだけでもコード色になる', () => {
+      expect(painted('# `a`')).toEqual([
+        ['#', DIM],
+        ['`a`', { ...HEADING, ...CODE }],
+      ])
+    })
+
+    test('タブ字下げのリストでも記号がリスト色', () => {
+      expect(painted('\t- a')).toEqual([['-', LIST]])
+    })
+
+    test('4スペース字下げの引用は引用ではない', () => {
+      expect(painted('    > a')).toEqual([])
+    })
+
+    test('情報文字列にバッククォートを含む```はフェンスではない', () => {
+      expect(painted('```a`b\nx')).toEqual([])
+    })
+
+    test('情報文字列にバッククォートを含む~~~はフェンスとして扱う', () => {
+      expect(painted('~~~a`b\nx\n~~~')).toEqual([
+        ['~~~a`b', DIM],
+        ['x', CODE],
+        ['~~~', DIM],
+      ])
+    })
+
+    test('フェンスの閉じ行の末尾の空白は許す', () => {
+      expect(painted('```\na\n```  \nb')).toEqual([
+        ['```', DIM],
+        ['a', CODE],
+        ['```  ', DIM],
+      ])
+    })
+
+    test('対にならない片割れのサロゲートがあっても範囲がずれない', () => {
+      expect(painted('\uD800`a`')).toEqual([['`a`', CODE]])
+    })
+  })
+
+  describe('最悪ケースの入力', () => {
+    test.each([
+      ['バッククォートだけの長い行', '`'.repeat(59_999) + 'a'],
+      ['バッククォートが対にならない行', '`a'.repeat(30_000)],
+      ['長さの違うバッククォートが並ぶ行', Array.from({ length: 340 }, (_, i) => '`'.repeat(i + 1) + 'x').join('')],
+    ])('%sでも1秒以内に終わり、範囲は本文に収まる', (_name, text) => {
+      const startedAt = performance.now()
+      const result = decorate(text)
+
+      expect(performance.now() - startedAt).toBeLessThan(1000)
+      for (const { start, end } of result) {
+        expect(start).toBeGreaterThanOrEqual(0)
+        expect(end).toBeLessThanOrEqual(text.length)
+        expect(end).toBeGreaterThan(start)
+      }
+    })
+  })
+
   describe('4スペース字下げ', () => {
     test('コードとして扱わない', () => {
       expect(painted('text\n\n    code')).toEqual([])
