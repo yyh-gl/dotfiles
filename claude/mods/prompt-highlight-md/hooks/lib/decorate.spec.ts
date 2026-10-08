@@ -144,6 +144,56 @@ describe('decorate', () => {
     })
   })
 
+  describe('インラインコード', () => {
+    test('対応するバッククォートごとコード色', () => {
+      expect(painted('a `b` c')).toEqual([['`b`', CODE]])
+    })
+
+    test('閉じていないバッククォートは色付けしない', () => {
+      expect(painted('a `b c')).toEqual([])
+    })
+
+    test('長さの違うバッククォートでは閉じない', () => {
+      expect(painted('``a`b``')).toEqual([['``a`b``', CODE]])
+    })
+
+    test('改行をまたがない', () => {
+      expect(painted('`a\nb`')).toEqual([])
+    })
+
+    test('見出しの本文では見出し色の太字を保ったままコード色にする', () => {
+      expect(painted('# a `b` c')).toEqual([
+        ['#', DIM],
+        ['a ', HEADING],
+        ['`b`', { ...HEADING, ...CODE }],
+        [' c', HEADING],
+      ])
+    })
+
+    test('リストの本文でもコード色', () => {
+      expect(painted('- a `b`')).toEqual([
+        ['-', LIST],
+        ['`b`', CODE],
+      ])
+    })
+
+    test('引用の本文では斜体を保ったままコード色にする', () => {
+      expect(painted('> a `b`')).toEqual([
+        ['>', DIM],
+        ['a ', QUOTE],
+        ['`b`', { ...QUOTE, ...CODE }],
+      ])
+    })
+
+    test('コードフェンス内では二重に装飾しない', () => {
+      expect(painted('```\n`a`\n```')).toEqual([
+        ['```', DIM],
+        ['`a`', CODE],
+        ['```', DIM],
+      ])
+    })
+  })
+
   describe('4スペース字下げ', () => {
     test('コードとして扱わない', () => {
       expect(painted('text\n\n    code')).toEqual([])
@@ -250,7 +300,7 @@ describe('decorate', () => {
     })
 
     test('同じ行で閉じるバッククォートはフェンスではない', () => {
-      expect(painted('```a```\nb')).toEqual([])
+      expect(painted('```a```\nb')).toEqual([['```a```', CODE]])
     })
 
     test('フェンス内の空行は装飾しない', () => {
