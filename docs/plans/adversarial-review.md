@@ -321,6 +321,7 @@
 
 ## 確認したが問題なしと判断したもの
 
+- 機械チェック: `bun test claude/mods/prompt-highlight-md/hooks/lib`は90件すべて成功。`shellcheck -S warning`（`bin/install-nix.sh`・`claude/hooks/**/*.sh`・`hooks/pre-push`）は警告なし。JSON（managed-settings・keybindings・plugin.json・evals・renovate）とTOML（codex・hunk・starship）はすべて構文として正しい
 - `prompt-highlight-md`のデコレーター: 境界・CRLF・サロゲート・最悪ケースのテストがそろっている。正規表現のバックトラックもテストで押さえている
 - `wezterm.lua`のペイン幅均等化: 世代カウンタで並走ループを止めており、試行回数の上限もある
 - `wezterm-state.sh`: stdoutを捨てる・常にexit 0・subagentの`none`を無視する、の3点がhookの仕様に沿っている
