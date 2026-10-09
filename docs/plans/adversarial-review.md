@@ -93,7 +93,7 @@
 
 ### P1-3 `.env`を全シェルに`set -a`で読み込んでおり、秘密がすべての子プロセスに渡る
 
-- 場所: `nix/home/zsh.nix:80-87`、`claude/hooks/slack-notify.sh:68`
+- 場所: `nix/home/zsh.nix:80-87`、`claude/hooks/slack-notify.sh:50`
 - 問題: dotfilesの`.env`（`AI_AGENTS_SLACK_WEBHOOK_URL`など）をexportしてから`claude`・`codex`を起動するため、sandbox内のコマンドが`env`で読める。`sandbox.credentials.envVars`・Codexの`exclude`は名前の列挙で、`*_URL`のような名前は漏れる（Codexのdefault excludesもKEY・SECRET・TOKENだけ）。
 - 対応案:
   - `.env`を全シェルにexportするのをやめ、使う場面（slack-notifyなど）でだけ読む
@@ -193,7 +193,7 @@
 - `AGENTS.md:56`: `deck-credentials.json.tpl`と書くが、実ファイルは`op-templates/deck-credentials.tpl`
 - `AGENTS.md:66-73`: vaultを`Personal`、`aws-credentials`をAPI Credential（`access_key_id`等のフィールド）と書くが、テンプレートはvault `PC`・全アイテムが`notesPlain`（`op-templates/*.tpl`）
 - `nix/home/secrets.nix:21-22`: 「GitHub鍵は認証とcommit署名の両方に使う」は、署名鍵を分けた後の現状と矛盾する。`:46-50`のアイテム名（"SSH Config"・"AWS"など）も実際の`ssh-config`・`aws-credentials`と違う
-- `AGENTS.md:96-105`: `nix/`のツリーが`default.nix`だけで、実在する`claude-code.nix`・`codex.nix`・`defaults.nix`・`homebrew.nix`・`claude.nix`・`zsh.nix`などが載っていない
+- `AGENTS.md:90-98`: `nix/`のツリーが`default.nix`だけで、実在する`claude-code.nix`・`codex.nix`・`defaults.nix`・`homebrew.nix`・`claude.nix`・`zsh.nix`などが載っていない
 - `CLAUDE.md:23`: 参照先の`docs/plans/wezterm-claude-state-tab-icon.md`はリポジトリに存在しない（グローバルignoreの`**/docs/plans/*.md`で追跡されない）。また「`find_tty`は`wezterm-notify.sh`と`lib/wezterm-tty.sh`で共有」は誤りで、定義が`lib/wezterm-tty.sh`、利用者が`wezterm-notify.sh`と`wezterm-state.sh`
 - `AGENTS.md:45`: `.dictionary.txt` → `$HOME/.dictionary.txt`を管理対象として挙げているが、ファイルもNixの配置もない（辞書は`bin/manual.sh:8`で1Passwordから手動importする運用になっている）
 - `AGENTS.md:7`: 「file copies to `$HOME`」とあるが、実際はほとんどが`home.file`によるnix storeへのsymlinkで、実ファイルのコピーはKarabiner・Rectangle・mod・workモードのsettings.jsonなどの例外だけ
@@ -208,12 +208,12 @@
 | --- | --- | --- |
 | `flake.nix:14-17,32`の`nix-vscode-extensions` | overlayを入れているが、どこからも使っていない（VS Codeはcask） | inputごと削除。eval時間と`flake.lock`の更新が減る |
 | `claude/hooks/slack-notify.sh` | どのhookからも呼ばれていない。JSONを文字列連結で組んでおり、`"`や改行を含むと壊れる | 削除するか、使うなら`jq -n --arg`で組み、`curl -fsS`と空URLのガードを入れる |
-| `.emacs.d/lang/nesc.el` | `init.el:46`の読み込みリストにない | 削除 |
+| `.emacs.d/lang/nesc.el` | `init.el:32`の読み込みリストにない | 削除 |
 | `ghostty-config`・`zed/*` | 配置しているがGhostty・Zedはどこでもインストールしていない | 使うならcaskに足す、使わないなら削除 |
 | `.idea/` | リポジトリに追跡されている。`copilot.data.migration.*.xml`は自分のグローバルignoreでも除外対象 | 削除して`.gitignore`へ |
 | `Makefile:44,48`の`.PHONY` | `gitleaks-detect`/`gitleaks-protect`を宣言しているが、ターゲット名は`gitleaks-all`/`gitleaks-staged` | 名前を揃える |
 | `nix/home/default.nix:49` | `_module.args = { inherit mode; }`は`extraSpecialArgs`で渡済み | 削除 |
-| `init.el:36-37` | Emacs 29以降は`use-package`が組み込み。直前の`:16-17`のコメントは「early-init.elを参照」とあるが、early-init.elにpackage関連の記述はない | 削除（Emacsは`emacs-nox`の最新なので常に29以上）。コメントも直す |
+| `init.el:22-23` | Emacs 29以降は`use-package`が組み込み。直前の`:16-17`のコメントは「early-init.elを参照」とあるが、early-init.elにpackage関連の記述はない | 削除（Emacsは`emacs-nox`の最新なので常に29以上）。コメントも直す |
 | `pkgs.hub` | `gh`へ移行済みでupstreamもアーカイブ済み | 削除 |
 | `.emacs.d/lang/{java,kotlin,vue}.el` | `eglot-ensure`で`jdtls`・`kotlin-language-server`・`vue-language-server`を起動するが、どれもNix/Homebrewで入れていない（入れているのは`gopls`・`typescript-language-server`だけ）。該当ファイルを開くたびにeglotがサーバーなしのエラーを出す | `pkgs.jdt-language-server`・`pkgs.kotlin-language-server`・`pkgs.vue-language-server`を`home.packages`に足すか、`eglot-ensure`のhookを外す |
 | `claude/skills/vercel-react-best-practices/SKILL.md:114` | 参照している`rules/_sections.md`がvendoringの際に抜けていて存在しない | 参照を消すか、upstreamから取り直す（P2-7のプラグイン化も検討） |
@@ -231,7 +231,7 @@
 
 ### P2-4 statuslineのmodに例外処理・テスト・型チェックがない
 
-- 場所: `claude/mods/statusline/hooks/register.tsx:59-71,74-90`、`Makefile:52-55`、`.github/workflows/test-mods.yml`
+- 場所: `claude/mods/statusline/hooks/register.tsx:59-71,74-90`、`Makefile:52-56`、`.github/workflows/test-mods.yml`
 - 問題:
   - `refresh`が`$.session.usage()`などで例外を投げると、`session.measure`のたびに失敗通知が出る（`prompt-highlight-md`は`safeDecorate`で対策済み）
   - `session.measure`のたびに`git branch --show-current`を起動する
@@ -240,7 +240,7 @@
 
 ### P2-5 hooksの細かい問題
 
-- `claude/hooks/wezterm-notify.sh:85`: タイトル・本文をOSC 777にそのまま埋め込む。ディレクトリ名に`;`があるとフィールドがずれ、制御文字（ESC）があればエスケープシーケンスを注入できる。`tr -d '\000-\037;'`で落とす
+- `claude/hooks/wezterm-notify.sh:17`: タイトル・本文をOSC 777にそのまま埋め込む。ディレクトリ名に`;`があるとフィールドがずれ、制御文字（ESC）があればエスケープシーケンスを注入できる。`tr -d '\000-\037;'`で落とす
 - `claude/hooks/wezterm-state.sh`だけファイルモードが`100644`（ほかは`100755`）。`bash`経由で呼ぶので動くが揃える
 - `claude/managed-settings.json:188`: `idle_prompt`でも「Claude Code has questions」と通知するので、Stopの「free now」通知の約60秒後に同じ状態で質問通知が来る。`idle_prompt`を外すか文言を分ける
 
@@ -260,10 +260,10 @@
 - `nix/darwin/homebrew.nix:5-6`: `autoUpdate`・`upgrade`がtrueなので、applyのたびにHomebrewが更新され、同じflake.lockでも結果が変わる。applyも遅くなる。`make brew-upgrade`を別に用意して既定はfalseにすることを検討
 - `codex-review`スキルは`mcp__codex__codex`を前提にしているが、Codex MCPサーバーの登録（`claude mcp add codex ...`）がNixにもドキュメントにもない
 - `claude/skills/vercel-react-best-practices/`: 50ファイルのvendoringでupstreamと乖離していく。`extraKnownMarketplaces`経由のプラグインで入れられるならそちらへ
-- `.emacs.d/lang/go.el:43`: `thing-at-point`がnilのとき`go test -run nil .`になる。`-run '^Name$'`で完全一致にする
+- `.emacs.d/lang/go.el:51`: `thing-at-point`がnilのとき`go test -run nil .`になる。`-run '^Name$'`で完全一致にする
 - `.git-config/config:20`: `core.editor = vim`だが`EDITOR=emacs`。どちらかに揃える
 - `.git-config/config`: `gpg.ssh.allowedSignersFile`がないので`git log --show-signature`で検証できない
-- `claude/agents/architect.md:3`（と`:211-237`）: 末尾の「Project-Specific Architecture (Example)」は外部テンプレートの例（Next.js・Supabase・Redisなど）のままで、どのプロジェクトでもこのスタックに寄った提案を誘導する。descriptionにも「Use PROACTIVELY」とあり、opusのsubagentが自動で呼ばれやすい。ほかのagentは日本語でdev-team専用だが、これだけ英語の汎用定義でどのスキルからも参照されていない。使っていないなら削除、使うなら「明示的に頼まれたときだけ」にする
+- `claude/agents/architect.md:3`（と`:211-239`）: 末尾の「Project-Specific Architecture (Example)」は外部テンプレートの例（Next.js・Supabase・Redisなど）のままで、どのプロジェクトでもこのスタックに寄った提案を誘導する。descriptionにも「Use PROACTIVELY」とあり、opusのsubagentが自動で呼ばれやすい。ほかのagentは日本語でdev-team専用だが、これだけ英語の汎用定義でどのスキルからも参照されていない。使っていないなら削除、使うなら「明示的に頼まれたときだけ」にする
 - `Makefile:41-42`の`nix-cleanup`は`sudo nix-collect-garbage -d`で、システムの古い世代をすべて消す。applyで壊れたときに`darwin-rebuild --rollback`で戻る先がなくなる。`--delete-older-than 14d`のように期間を残す
 - `nix/home/secrets.nix:23-70`: `op`が失敗する（1Passwordがロック中・CLI連携が無効など）と、home-managerのactivationがそこで止まり、後続のClaude設定・mod配置なども適用されない。秘密の取得は失敗しても警告を出して続ける（`if ! op ...; then echo warning >&2; fi`）
 - `nix/home/dotfiles.nix:34-42`: Karabiner・Rectangleの設定はapplyのたびに`install`で上書きされる。GUIで変えた設定は警告なしで消えるので、apply前に`diff`して差分があれば警告を出す（またはdotfilesへ書き戻す手順をAGENTS.mdに書く）
@@ -282,7 +282,7 @@
 - `reviewer.md:21`の`govulncheck`・`pip-audit`は`vuln.go.dev`・`api.osv.dev`へ通信するが、どちらも`allowedDomains`にないのでsandbox内で失敗する。ドメインを足すか、失敗したら「未実施」と報告するよう書く
 - `smart-commit/SKILL.md:11`はコミットメッセージを常に英語にするが、このリポジトリの直近のコミット（`fde9818`など）は日本語。`writing-voice`はコミットメッセージを対象に含めつつ英語は対象外としている。どちらの言語を正とするかを決め、`smart-commit`は「リポジトリの過去のコミットに合わせる」にする
 - `init2/SKILL.md:185`は「CLAUDE.mdに不可逆操作を列挙すればClaudeは自動的に一時停止する」と書くが、CLAUDE.mdの指示は強制されない。`claude-config-check`自身の原則（「必ず/禁止」はhookで強制）とも矛盾する。permissionsの`ask`/hookで強制するよう案内を直す。同ファイルのテンプレートは` \`\`\` `とエスケープしたフェンスを含み、そのまま書き出すとバックスラッシュが残る
-- `writing-voice/references/grammar-checklist.md:16-17`は「サンプルがなければ敬体がデフォルト」と書いた直後のOK例が常体（「〜を修正した。原因は〜である。」）になっている。例を敬体にそろえる
+- `writing-voice/references/grammar-checklist.md:16-19`は「サンプルがなければ敬体がデフォルト」と書いた直後のOK例が常体（「〜を修正した。原因は〜である。」）になっている。例を敬体にそろえる
 - `reviewer.md:37`は「50行超の関数」「800行超のファイル」をHIGH（＝BLOCK）に分類している。行数だけでマージを止めるので、ReviewerとImplementerの修正ループが長引く。行数系はMEDIUM（WARNING）に下げる
 - `dev-team/SKILL.md:69`は「Testerは追加・修正したテストをコミット」とするが、`tester.md`にはコミットの手順も記述もない
 - `create-pr/SKILL.md:80-84`のPRテンプレート探索は`.github/PULL_REQUEST_TEMPLATE.md`など大文字の名前だけで、GitHubが同じく認める小文字の`.github/pull_request_template.md`・`docs/`配下を見ない。大文字小文字を区別するファイルシステムやGlobでは見落とす
@@ -334,13 +334,13 @@
 
 - `use-package :ensure t`で起動時にMELPAから取得しているため、新しいMacの初回起動が遅く、バージョンも固定されない。`programs.emacs.extraPackages = epkgs: [ epkgs.magit epkgs.company ... ]`で入れ、`init.el`は`:ensure nil`（または`use-package-always-ensure nil`）にする。tree-sitterの文法も`epkgs.treesit-grammars.with-grammars`にまとめられる
 
----
-
 ### R-8 常時読み込まれるCLAUDE.md/AGENTS.mdを索引に寄せる
 
 - ルートの`CLAUDE.md`と`AGENTS.md`で合計約16KBあり、毎セッションのコンテキストに載る。中身の多くは「なぜそうしたか」の経緯と、一度きりの手順（`managed-settings.json`の旧配置からの移行・revert時の手動削除、Nixの初回セットアップ）
 - `sandbox下でのコマンドの書き方`は`claude/CLAUDE.md`・ルート`CLAUDE.md`の`excludedCommands`の段落・`create-pr`スキルの3か所に同じ説明がある
 - 案: 経緯と一度きりの手順は`docs/claude-settings.md`・`docs/setup.md`に移し、CLAUDE.md/AGENTS.mdには「変更時に守るルール」と参照先だけを残す。sandboxの書き方は`claude/CLAUDE.md`（全プロジェクトで読まれる）を正とし、ほかは参照にする
+
+---
 
 ## 確認したが問題なしと判断したもの
 
