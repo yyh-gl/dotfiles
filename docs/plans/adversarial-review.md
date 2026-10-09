@@ -197,6 +197,8 @@
 - `CLAUDE.md:23`: 参照先の`docs/plans/wezterm-claude-state-tab-icon.md`はリポジトリに存在しない（グローバルignoreの`**/docs/plans/*.md`で追跡されない）。また「`find_tty`は`wezterm-notify.sh`と`lib/wezterm-tty.sh`で共有」は誤りで、定義が`lib/wezterm-tty.sh`、利用者が`wezterm-notify.sh`と`wezterm-state.sh`
 - `AGENTS.md:45`: `.dictionary.txt` → `$HOME/.dictionary.txt`を管理対象として挙げているが、ファイルもNixの配置もない（辞書は`bin/manual.sh:8`で1Passwordから手動importする運用になっている）
 - `AGENTS.md:7`: 「file copies to `$HOME`」とあるが、実際はほとんどが`home.file`によるnix storeへのsymlinkで、実ファイルのコピーはKarabiner・Rectangle・mod・workモードのsettings.jsonなどの例外だけ
+- `CLAUDE.md:11`: managed settingsに置く「絶対に保持したい設定」の例に`statusLine`を挙げているが、`managed-settings.json`に`statusLine`はない（ステータスラインはmod `claude/mods/statusline`に移っている）
+- `.git-config/ignore:100`: `.idea/sonarlint.xml # see https://...`のように行末にコメントを書いているが、gitignoreは行末コメントを扱わないので、この行は「`.idea/sonarlint.xml # see https://...`」という名前のファイルにしか一致せず、`.idea/sonarlint.xml`は無視されない（取り込み元のgiboテンプレートの不具合）。コメントを前の行に移す
 - `bin/manual.sh:5`: iTerm2のプロファイルimportを案内しているが、ターミナルはWezTermで、ファイルも存在しない
 - 対応案: まとめて現状に合わせる。WezTermの設計メモは`docs/`配下の追跡されるパスへ移すか、参照を消す
 
