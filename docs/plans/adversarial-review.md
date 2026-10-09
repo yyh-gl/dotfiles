@@ -71,6 +71,15 @@
   - 少なくとも`~/.gradle/init.d`・`~/.gradle/init.gradle`・`~/.gradle/gradle.properties`をdenyWrite（Claude: `Edit(...)`のdeny、Codex: 該当パスを`read`に）する
   - 採らない場合は、リスクを受け入れた旨を`docs/codex-sandbox.md`に書く
 
+### P1-1b sandbox内からの書き込みが、sandbox外で実行されるファイルに届く
+
+- 場所: `nix/home/zsh.nix:80-87`（`.env`を`source`）、`Makefile:15-16`（`core.hooksPath hooks`）、`claude/managed-settings.json:98-117`
+- 問題: sandboxは作業ディレクトリへの書き込みを許す。dotfilesリポジトリで作業しているとき、次のファイルはsandbox内から書き換えられるが、実行はsandbox外で起きる。
+  - `.env`: denyは`Read(.env)`だけで、`Edit`/`Write`は止めていない。zshは起動のたびにこのファイルをシェルスクリプトとして`source`するので、`$(...)`などを書き込めば次に開いたターミナルで任意コードが動く。`.env`はgitignore対象なので`git diff`にも出ない
+  - `hooks/pre-push`（`core.hooksPath`）: ユーザーが手元で`git push`したときに実行される
+  - Codexの`workspace-write`も同じ
+- 対応案: `.env`は`Edit(.env)`/`Write(.env)`をdenyにし（Codexは`deny_read`と同様に書き込み禁止のパスへ）、`source`ではなく`KEY=VALUE`だけを読むパーサー（`while IFS== read -r k v`）で読み込む。`hooks/`は`Edit(hooks/**)`をaskにするか、hookをNixで管理して読み取り専用にする
+
 ### P1-2 認証情報のdenyリストが実際に入れているツールに追いついていない
 
 - 場所: `claude/managed-settings.json:98-117,354-411`、`codex/requirements.toml:37-56`
@@ -134,7 +143,9 @@
   3. `make init`はリポジトリの中で実行するのに、`init.sh`が同じリポジトリを`~/workspaces/...`へcloneし直す。READMEの手順（先にclone）と組み合わせると二重cloneか、既存ディレクトリで`git clone`が失敗する。`init.sh`に`set -e`がないので失敗しても続く
   4. `init.sh:36`は`.../yyh-gl/config`を作るが使っていない（`dotfiles`の誤記と思われる）。`:39`は存在しない`make build`を案内している
   5. `init.sh:29`の`sudo rm -rf /Library/Developer/CommandLineTools`は「ディレクトリがない」分岐の中にあり、意味がない。`xcodebuild -license accept`はCommand Line Toolsだけでは失敗する（Xcode本体が必要）
-  6. `bin/install-nix.sh:17`は完了後に`make nix-apply-hobby`/`work`を案内するが、その時点では`darwin-rebuild`がまだない（最初の`nix run nix-darwin -- switch`が必要）。`Makefile:10-11`の`brew tap songmu/tap`は`homebrew.nix`の`taps`と重複している
+  6. 新しいMacでは`make init`が途中で止まる。Apple SiliconのHomebrewは`/opt/homebrew/bin`に入るがPATHには自動で入らないので、`init.sh:9`の`brew install --cask 1password`が`command not found`になる（`init.sh`は`set -e`がないので先へ進み、`git clone`もSSH Agentなしで失敗する）。同様に`install-nix.sh`の直後の`Makefile:10-12`（`brew tap`・`sudo nix ...`）も、同じmakeのシェルではPATHが更新されておらず失敗する。各ステップの後で`eval "$(/opt/homebrew/bin/brew shellenv)"`・`. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh`を実行するか、フルパスで呼ぶ
+  7. AGENTS.mdの初回手順（`AGENTS.md:106-107`）にある`sudo rm /etc/zshrc /etc/bashrc`が`make init`には入っていない。nix-darwinは管理対象の`/etc`ファイルが既にあるとactivationを中断するので、`Makefile:12`の初回switchが失敗する。`init`で`.before-nix-darwin`へ退避する
+  8. `bin/install-nix.sh:17`は完了後に`make nix-apply-hobby`/`work`を案内するが、その時点では`darwin-rebuild`がまだない（最初の`nix run nix-darwin -- switch`が必要）。`Makefile:10-11`の`brew tap songmu/tap`は`homebrew.nix`の`taps`と重複している
 - 対応案:
   - `make init`を`make init-hobby`/`init-work`に分けるか、`MODE`変数を受け取る
   - 1Passwordを両モードのcasksへ移す（init.shが前提にしているため）。または`cleanup = "uninstall"`にする
@@ -164,6 +175,7 @@
 - 場所: `claude/agents/{lead,planner,reviewer,implementer,tester}.md`の`tools`、`claude/skills/dev-team/SKILL.md:22-35,40-45`
 - 問題:
   - Planner・Reviewer・Leadは`tools`にWrite/Editがないのに、`.dev-team/`へ成果物を書くよう指示されている。書けるのはBash経由だけで、それは同じスキルの「Bashは読み取り系のみ」と矛盾する
+  - `dev-team/SKILL.md:31-35`はLeadに`TaskCreate`・Agentツールでのメンバー起動を求めるが、`lead.md:4`の`tools`は`Read, Grep, Glob, Bash`だけ。Leadをsubagentとして起動するとチームを組めない（メインセッションがLeadを務める前提なら、そう明記する）
   - どのagentも`tools`にSendMessage・TaskUpdateを含まない。agent teamsのteammateにはチーム用ツールが常に付与される仕様なら問題ないが、通常のsubagentとして起動された場合は報告手段がない
   - `planner.md:14`は不明点があれば「例外なく`AskUserQuestion`」と求めるが、subagentやteammateから`AskUserQuestion`が使えない場合、Plannerは止まるか推測で進む（どちらも同じファイルで禁止している挙動）
   - `small-dev-team/SKILL.md:131`はPlannerを「ファイル変更なし」とする一方、`:97`はImplementerに「プランのファイルパス」を渡すよう求めており、Plannerがファイルを書かないと成り立たない。`planner.md`は`.dev-team/plan.md`に書く前提で、プランの書式も`small-dev-team`の版（`:101-`）と`planner.md`の版で違う
@@ -184,6 +196,7 @@
 - `AGENTS.md:96-105`: `nix/`のツリーが`default.nix`だけで、実在する`claude-code.nix`・`codex.nix`・`defaults.nix`・`homebrew.nix`・`claude.nix`・`zsh.nix`などが載っていない
 - `CLAUDE.md:23`: 参照先の`docs/plans/wezterm-claude-state-tab-icon.md`はリポジトリに存在しない（グローバルignoreの`**/docs/plans/*.md`で追跡されない）。また「`find_tty`は`wezterm-notify.sh`と`lib/wezterm-tty.sh`で共有」は誤りで、定義が`lib/wezterm-tty.sh`、利用者が`wezterm-notify.sh`と`wezterm-state.sh`
 - `AGENTS.md:45`: `.dictionary.txt` → `$HOME/.dictionary.txt`を管理対象として挙げているが、ファイルもNixの配置もない（辞書は`bin/manual.sh:8`で1Passwordから手動importする運用になっている）
+- `AGENTS.md:7`: 「file copies to `$HOME`」とあるが、実際はほとんどが`home.file`によるnix storeへのsymlinkで、実ファイルのコピーはKarabiner・Rectangle・mod・workモードのsettings.jsonなどの例外だけ
 - `bin/manual.sh:5`: iTerm2のプロファイルimportを案内しているが、ターミナルはWezTermで、ファイルも存在しない
 - 対応案: まとめて現状に合わせる。WezTermの設計メモは`docs/`配下の追跡されるパスへ移すか、参照を消す
 
@@ -198,7 +211,7 @@
 | `.idea/` | リポジトリに追跡されている。`copilot.data.migration.*.xml`は自分のグローバルignoreでも除外対象 | 削除して`.gitignore`へ |
 | `Makefile:44,48`の`.PHONY` | `gitleaks-detect`/`gitleaks-protect`を宣言しているが、ターゲット名は`gitleaks-all`/`gitleaks-staged` | 名前を揃える |
 | `nix/home/default.nix:49` | `_module.args = { inherit mode; }`は`extraSpecialArgs`で渡済み | 削除 |
-| `init.el:36-37` | Emacs 29以降は`use-package`が組み込み | 削除（Emacsは`emacs-nox`の最新なので常に29以上） |
+| `init.el:36-37` | Emacs 29以降は`use-package`が組み込み。直前の`:16-17`のコメントは「early-init.elを参照」とあるが、early-init.elにpackage関連の記述はない | 削除（Emacsは`emacs-nox`の最新なので常に29以上）。コメントも直す |
 | `pkgs.hub` | `gh`へ移行済みでupstreamもアーカイブ済み | 削除 |
 | `.emacs.d/lang/{java,kotlin,vue}.el` | `eglot-ensure`で`jdtls`・`kotlin-language-server`・`vue-language-server`を起動するが、どれもNix/Homebrewで入れていない（入れているのは`gopls`・`typescript-language-server`だけ）。該当ファイルを開くたびにeglotがサーバーなしのエラーを出す | `pkgs.jdt-language-server`・`pkgs.kotlin-language-server`・`pkgs.vue-language-server`を`home.packages`に足すか、`eglot-ensure`のhookを外す |
 | `claude/skills/vercel-react-best-practices/SKILL.md:114` | 参照している`rules/_sections.md`がvendoringの際に抜けていて存在しない | 参照を消すか、upstreamから取り直す（P2-7のプラグイン化も検討） |
@@ -210,6 +223,7 @@
 
 - 場所: `nix/home/zsh.nix:175`、`scripts/celebrate-anniversary.sh`
 - 問題: `.zlogin`から実行ファイルとして呼んでいるので、zshプロセスがまるごと1つfork/execされる。スクリプト内の`$(printf ...)`もサブシェルをforkする。AGENTS.mdの「外部コマンドをforkしない」の意図が半分しか達成されていない。同じ`.zlogin`で`ipconfig`・`df`・`uptime`・`figlet`もforkしている。
+- `ipconfig getifaddr en0`は`en0`だけを見るので、有線LANやUSBアダプタで接続していると「No Connection」と表示される（`route -n get default`でデフォルトのインターフェースを引く）
 - 追加の問題: `fortune`以外（IPアドレス・`df`・`uptime`・記念日・`figlet`のバナー）は対話シェルかどうかを見ていない。IDEやツールが`zsh -l -c '...'`でlogin shellを起動すると、その出力にバナーが混ざり、毎回`ipconfig`などが走る
 - 対応案: 関数としてautoload（または`source`）し、`printf -v`相当の`print -v var -f ...`で日付文字列を組む。`.zlogin`のほかのコマンドも、起動時間を気にするなら削るか非同期にする。`loginExtra`全体を`if [[ -o interactive ]]; then ... fi`で囲む
 
@@ -247,7 +261,9 @@
 - `.emacs.d/lang/go.el:43`: `thing-at-point`がnilのとき`go test -run nil .`になる。`-run '^Name$'`で完全一致にする
 - `.git-config/config:20`: `core.editor = vim`だが`EDITOR=emacs`。どちらかに揃える
 - `.git-config/config`: `gpg.ssh.allowedSignersFile`がないので`git log --show-signature`で検証できない
-- `claude/agents/architect.md:3`: descriptionに「Use PROACTIVELY」とあり、opusのsubagentが自動で呼ばれやすい。ほかのagentは日本語でdev-team専用だが、これだけ英語の汎用定義でどのスキルからも参照されていない。使っていないなら削除、使うなら「明示的に頼まれたときだけ」にする
+- `claude/agents/architect.md:3`（と`:211-237`）: 末尾の「Project-Specific Architecture (Example)」は外部テンプレートの例（Next.js・Supabase・Redisなど）のままで、どのプロジェクトでもこのスタックに寄った提案を誘導する。descriptionにも「Use PROACTIVELY」とあり、opusのsubagentが自動で呼ばれやすい。ほかのagentは日本語でdev-team専用だが、これだけ英語の汎用定義でどのスキルからも参照されていない。使っていないなら削除、使うなら「明示的に頼まれたときだけ」にする
+- `Makefile:41-42`の`nix-cleanup`は`sudo nix-collect-garbage -d`で、システムの古い世代をすべて消す。applyで壊れたときに`darwin-rebuild --rollback`で戻る先がなくなる。`--delete-older-than 14d`のように期間を残す
+- `nix/home/secrets.nix:23-70`: `op`が失敗する（1Passwordがロック中・CLI連携が無効など）と、home-managerのactivationがそこで止まり、後続のClaude設定・mod配置なども適用されない。秘密の取得は失敗しても警告を出して続ける（`if ! op ...; then echo warning >&2; fi`）
 - `nix/home/dotfiles.nix:34-42`: Karabiner・Rectangleの設定はapplyのたびに`install`で上書きされる。GUIで変えた設定は警告なしで消えるので、apply前に`diff`して差分があれば警告を出す（またはdotfilesへ書き戻す手順をAGENTS.mdに書く）
 
 ### P2-8 skills・agentsの間で指示が矛盾している
@@ -265,6 +281,10 @@
 - `smart-commit/SKILL.md:11`はコミットメッセージを常に英語にするが、このリポジトリの直近のコミット（`fde9818`など）は日本語。`writing-voice`はコミットメッセージを対象に含めつつ英語は対象外としている。どちらの言語を正とするかを決め、`smart-commit`は「リポジトリの過去のコミットに合わせる」にする
 - `init2/SKILL.md:185`は「CLAUDE.mdに不可逆操作を列挙すればClaudeは自動的に一時停止する」と書くが、CLAUDE.mdの指示は強制されない。`claude-config-check`自身の原則（「必ず/禁止」はhookで強制）とも矛盾する。permissionsの`ask`/hookで強制するよう案内を直す。同ファイルのテンプレートは` \`\`\` `とエスケープしたフェンスを含み、そのまま書き出すとバックスラッシュが残る
 - `writing-voice/references/grammar-checklist.md:16-17`は「サンプルがなければ敬体がデフォルト」と書いた直後のOK例が常体（「〜を修正した。原因は〜である。」）になっている。例を敬体にそろえる
+- `reviewer.md:37`は「50行超の関数」「800行超のファイル」をHIGH（＝BLOCK）に分類している。行数だけでマージを止めるので、ReviewerとImplementerの修正ループが長引く。行数系はMEDIUM（WARNING）に下げる
+- `dev-team/SKILL.md:69`は「Testerは追加・修正したテストをコミット」とするが、`tester.md`にはコミットの手順も記述もない
+- `create-pr/SKILL.md:80-84`のPRテンプレート探索は`.github/PULL_REQUEST_TEMPLATE.md`など大文字の名前だけで、GitHubが同じく認める小文字の`.github/pull_request_template.md`・`docs/`配下を見ない。大文字小文字を区別するファイルシステムやGlobでは見落とす
+- `smart-commit/SKILL.md`のStep 4（セキュリティチェック）は目視だけで、インストール済みの`gitleaks`を使っていない。`gitleaks git --staged`（ステージ後・コミット前）を機械チェックとして足す
 - `explain-diff/SKILL.md:109`の`open <file>`は、sandbox内からLaunchServicesを呼べず失敗する可能性がある（要検証。失敗する場合は`excludedCommands`に`open *`を足すのではなく、パスを表示してユーザーに開いてもらう）
 
 ---
@@ -333,6 +353,6 @@
 
 1. P0-2（pre-push）・P0-3（ghのdeny/ask）: 変更が小さく、効果が大きい
 2. P0-1（defaults.nix）: 実機でapplyして確認が必要
-3. P1-1〜P1-5（sandbox周り）: Claude/Codexの両方を直すので、先にR-1をやると楽になる
+3. P1-1・P1-1b〜P1-5（sandbox周り）: Claude/Codexの両方を直すので、先にR-1をやると楽になる
 4. P1-6〜P1-11（workモード・初回セットアップ・シェル）
 5. P2・残りのR
