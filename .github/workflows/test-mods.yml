@@ -1,4 +1,4 @@
-name: mods
+name: Test mods
 
 on:
   push:
