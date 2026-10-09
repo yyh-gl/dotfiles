@@ -48,3 +48,9 @@ gitleaks-all: # Scan git history for secrets
 .PHONY: gitleaks-protect
 gitleaks-staged: # Scan staged changes for secrets
 	gitleaks protect -v --redact --staged
+
+.PHONY: test-mods
+test-mods: # Test and validate Claude Code mods
+	bun test claude/mods/prompt-highlight-md/hooks/lib
+	claude plugin validate claude/mods/prompt-highlight-md
+	claude plugin test claude/mods/prompt-highlight-md
