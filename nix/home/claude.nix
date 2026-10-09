@@ -33,7 +33,7 @@ in {
   # claude/mods/*の各modを~/.claude/mods/<名前>へ実ファイルとしてコピーする（applyのたびに上書き）
   # nix storeへのsymlinkだと、engineが「Path escapes plugin directory」で拒否するためsymlinkは使えない。
   # engineが読み込みのたびに.claude-plugin/types/を書き込むため、コピー後にu+wを付与する。
-  # ~/.claude/mods全体は消さないので、手で置いたmodは残る
+  # ~/.claude/mods全体は消さないので、手動で置いたmodは残る
   home.activation.claudeMods = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
     mkdir -p "${hd}/.claude/mods"
     for mod in "${dotfiles}"/claude/mods/*/; do

@@ -24,7 +24,7 @@ permissionsは「deny→ask→allow」の順に評価され、ルールの具体
 
 ### mod（`claude/mods/`）
 
-`claude/mods/<名前>/`の各modは`nix/home/claude.nix`の`claudeMods`で`~/.claude/mods/<名前>`へ実ファイルとしてコピーされ、`claude/managed-settings.json`の`env.CLAUDE_CODE_PLUGIN_DIRS`（`:`区切り。例: `~/.claude/mods/statusline:~/.claude/mods/prompt-highlight-md`）に並べたものが読み込まれる。modを足すときは配備のループは変えずに、この環境変数へ追記する。`~/.claude/mods`全体は消さないので、手で置いたmodは残る。
+`claude/mods/<名前>/`の各modは`nix/home/claude.nix`の`claudeMods`で`~/.claude/mods/<名前>`へ実ファイルとしてコピーされ、`claude/managed-settings.json`の`env.CLAUDE_CODE_PLUGIN_DIRS`（`:`区切り。例: `~/.claude/mods/statusline:~/.claude/mods/prompt-highlight-md`）に並べたものが読み込まれる。modを足すときは配備のループは変えずに、この環境変数へ追記する。`~/.claude/mods`全体は消さないので、手動で置いたmodは残る。
 
 テストは`make test-mods`で回す（`bun test`・`claude plugin validate`・`claude plugin test`）。`hooks/lib/*.spec.ts`がbun用、`hooks/register.test.ts`が`claude plugin test`用で、`claude plugin test`は`*.test.ts`だけを拾う。`bun test`は`.spec.ts`と`.test.ts`の両方を拾い、`register.test.ts`はbunでは動かないため、必ず`bun test claude/mods/prompt-highlight-md/hooks/lib`のようにパスで絞る。CIの`.github/workflows/test-mods.yml`はclaude CLIの導入と認証が要るため`bun test`だけを回す。
 
