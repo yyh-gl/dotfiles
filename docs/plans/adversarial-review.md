@@ -287,6 +287,7 @@
 - `dev-team/SKILL.md:69`は「Testerは追加・修正したテストをコミット」とするが、`tester.md`にはコミットの手順も記述もない
 - `create-pr/SKILL.md:80-84`のPRテンプレート探索は`.github/PULL_REQUEST_TEMPLATE.md`など大文字の名前だけで、GitHubが同じく認める小文字の`.github/pull_request_template.md`・`docs/`配下を見ない。大文字小文字を区別するファイルシステムやGlobでは見落とす
 - `smart-commit/SKILL.md`のStep 4（セキュリティチェック）は目視だけで、インストール済みの`gitleaks`を使っていない。`gitleaks git --staged`（ステージ後・コミット前）を機械チェックとして足す
+- `service-launch-check/evals/evals.json:8,14,20`は`files`に`taskflow`・`devblog`を指定しているが、どちらのフィクスチャもリポジトリにないので、evalを実行できない（`claude-config-check`のevalsは`files: []`なので問題ない）。フィクスチャを`evals/files/`に置くか、evalsを外す
 - `explain-diff/SKILL.md:109`の`open <file>`は、sandbox内からLaunchServicesを呼べず失敗する可能性がある（要検証。失敗する場合は`excludedCommands`に`open *`を足すのではなく、パスを表示してユーザーに開いてもらう）
 
 ---
