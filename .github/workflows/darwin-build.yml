@@ -1,0 +1,32 @@
+name: Build on macOS
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Nix
+        run: |
+          curl -L https://nixos.org/nix/install | sh -s -- --daemon --yes
+          echo "/nix/var/nix/profiles/default/bin" >> "$GITHUB_PATH"
+      - name: Build the nix-darwin configurations
+        run: |
+          for mode in hobby work; do
+            nix --extra-experimental-features 'nix-command flakes' build \
+              ".#darwinConfigurations.yyh-gl-mac-${mode}.system" --no-link --print-build-logs
+          done
+      - name: Hook tests on the macOS system python
+        # macOSのpython3（/usr/bin/python3）はバージョンが古いため、bash-guardが動く最低ラインの確認になる
+        run: |
+          /usr/bin/python3 --version
+          /usr/bin/python3 -m unittest discover -s claude/hooks -p 'test_*.py'
+      - name: Shell syntax
+        run: |
+          zsh -n bin/init.sh scripts/celebrate-anniversary.sh
+          bash -n bin/install-nix.sh
