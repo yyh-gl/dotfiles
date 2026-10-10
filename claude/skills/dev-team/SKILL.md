@@ -28,6 +28,8 @@ TDDの鉄則（全員が遵守）:
 
 ## チーム起動手順（Leadが実行）
 
+Leadは**メインセッション**が務める（`lead.md`はその行動規範）。subagentとして起動したLeadはAgentツールでメンバーを起動できないため、`name`付きでメンバーを起動するのはメインセッションの役割。
+
 1. **TaskCreate**でタスク登録（subject・description）。依存関係はTaskUpdateでblockedBy設定
 2. **Agentツールでメンバー起動**。`name`を必ず指定する（SendMessageの宛先になる）。例: `subagent_type: "implementer"`, `name: "Implementer"`（tester/reviewer/plannerも同様）。**複雑度に応じて必要なメンバーのみ起動する**（判断基準は`~/.claude/agents/lead.md`）
 3. **SendMessage**でタスク割当（`to`=メンバー名、`message`=対象ファイル・期待成果物・コンテキスト、`summary`=タスク名5-10語）。TaskUpdateで`owner`を設定
@@ -66,7 +68,7 @@ TDDの鉄則（全員が遵守）:
 ## コミット規約
 
 - コミットは**smart-commitスキル**（`~/.claude/skills/smart-commit/SKILL.md`）を使用する。コミットする直前に読み込めばよい
-- 1コミット=1論理変更（bisect commit原則）。Implementerはred-greenペア（失敗テスト+最小実装）を1コミットとし、リファクタリングは別コミット。Testerは追加・修正したテストをコミット。Lead・Reviewerはコミットしない
+- 1コミット=1論理変更（bisect commit原則）。Implementerはred-greenペア（失敗テスト+最小実装）を1コミットとし、リファクタリングは別コミット。Testerは追加・修正したテストを、対象ファイルを明示した`git add <files>`→`git commit`でコミットする。Lead・Reviewerはコミットしない
 - `.dev-team/`はコミットに含めない
 
 ## 品質基準

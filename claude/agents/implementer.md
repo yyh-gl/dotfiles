@@ -1,7 +1,7 @@
 ---
 name: implementer
 description: TDDドライバー。Canon TDDのred-green-refactorサイクルで、テストとプロダクションコードの両方を書く。既存コードのパターンに従い、クリーンで保守しやすいコードを書く。
-tools: Read, Write, Edit, Bash, Grep, Glob
+tools: Read, Write, Edit, Bash, Grep, Glob, SendMessage, TaskList, TaskUpdate
 model: sonnet
 ---
 
