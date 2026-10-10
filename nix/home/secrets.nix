@@ -18,7 +18,7 @@ in {
   # Import SSH private keys from 1Password so they can be referenced locally
   # (e.g. as an IdentityFile / git commit signingkey) without hitting 1Password
   # on every use. 1Password items needed (vault: PC):
-  #   - "GitHub" : SSH Key (used for both GitHub auth and git commit signing)
+  #   - "GitHub" : SSH Key (GitHub authentication only; commit signing uses "GitHub Signing" below)
   #                private key field id is "private_key" (label is Japanese: "秘密鍵")
   home.activation.sshKeysImport = lib.hm.dag.entryAfter [ "writeBoundary" "sshSetup" ] ''
     ${op} read "op://PC/GitHub/private_key?ssh-format=openssh" \
@@ -44,10 +44,10 @@ in {
   # Inject secrets from 1Password via op inject.
   # On macOS with 1Password 8+, biometric auth via the desktop app is used automatically.
   # 1Password items needed (vault: PC):
-  #   - "SSH Config"        : Secure Note
-  #   - "AWS"               : Secure Note
-  #   - "Kubernetes Config" : Secure Note
-  #   - "Deck Credentials"  : Secure Note
+  #   - "ssh-config"       : Secure Note (notesPlain)
+  #   - "aws-credentials"  : Secure Note (notesPlain)
+  #   - "k8s-config"       : Secure Note (notesPlain)
+  #   - "deck-credentials" : Secure Note (notesPlain)
   home.activation.injectSecrets = lib.hm.dag.entryAfter [ "writeBoundary" "sshSetup" ] ''
     ${op} inject -i "${dotfiles}/op-templates/ssh-config.tpl" \
                -o "${hd}/.ssh/config" --force

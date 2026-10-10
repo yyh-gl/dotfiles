@@ -4,17 +4,18 @@ This file provides guidance to AI coding agents (Claude Code, Codex, etc.) when 
 
 ## Overview
 
-macOS dotfiles repository. Manages shell configs, tool settings, and setup scripts via file copies to `$HOME`.
+macOS dotfiles repository. Manages shell configs, tool settings, and setup scripts. Most files are symlinked into `$HOME` through Nix home-manager (`home.file`); files that the apps rewrite themselves (Karabiner, Rectangle, the Claude mods, and `~/.claude/settings.json` in work mode) are copied as regular files by activation scripts.
 
 ## Key Commands
 
 ```sh
-# Initial setup (run once on a fresh machine)
-make init       # Install Homebrew, Git, Xcode, clone repo, install Nix
+# Initial setup (run once on a fresh machine, after installing Xcode Command Line Tools and cloning this repo over HTTPS)
+make init-hobby # Install Homebrew, 1Password, Nix, then the first nix-darwin switch (hobby mode)
+make init-work  # Same for work mode
 
 # Full setup
-make build-hobby  # Run manual steps then apply Nix (hobby mode)
-make build-work   # Run manual steps then apply Nix (work mode)
+make build-hobby  # Apply Nix then show the manual steps (hobby mode)
+make build-work   # Apply Nix then show the manual steps (work mode)
 
 # Nix
 make nix-apply-hobby # Apply Nix configuration (hobby mode)
@@ -26,10 +27,10 @@ make nix-cleanup     # Garbage collect Nix store
 
 ### Setup Flow
 
-`bin/init.sh` → `make build-hobby` or `make build-work` → runs these scripts in order:
+`make init-hobby` or `make init-work` (`bin/init.sh` → `bin/install-nix.sh` → first nix-darwin switch) → `make build-hobby` or `make build-work` → runs in order:
 
-1. `bin/manual.sh` — Final manual steps
-2. `make nix-apply-hobby` or `make nix-apply-work` — Apply Nix configuration
+1. `make nix-apply-hobby` or `make nix-apply-work` — Apply Nix configuration
+2. `bin/manual.sh` — Print the remaining manual steps
 
 Secrets and SSH configs are managed separately via Nix + 1Password (see below).
 
@@ -42,7 +43,6 @@ Key configs managed by Nix home-manager (`nix/home/dotfiles.nix`):
 - `wezterm.lua` → `$HOME/.config/wezterm/wezterm.lua`
 - `.git-config/` → `$HOME/.config/git/`
 - `aws/config` → `$HOME/.aws/config`
-- `.dictionary.txt` → `$HOME/.dictionary.txt`
 - `karabiner.json` → `$HOME/.config/karabiner/karabiner.json`（Karabiner-Elementsは設定変更のたびにこのファイルをwrite-temp-then-renameで書き換え、symlinkを実ファイルに置き換えてしまう。Rectangleと同様の理由で`home.file`ではなくactivation scriptで実ファイルとしてコピーしている）
 - `laminate/config.yaml` → `$HOME/.config/laminate/config.yaml`
 - `hunk/config.toml` → `$HOME/.config/hunk/config.toml`
@@ -53,7 +53,7 @@ Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 - `op-templates/ssh-config.tpl` → `$HOME/.ssh/config`
 - `op-templates/aws-credentials.tpl` → `$HOME/.aws/credentials`
 - `op-templates/kube-config.tpl` → `$HOME/.kube/config`
-- `op-templates/deck-credentials.json.tpl` → `$HOME/.local/share/deck/credentials.json`
+- `op-templates/deck-credentials.tpl` → `$HOME/.local/share/deck/credentials.json`
 
 ### Claude・Codexの設定
 
@@ -63,18 +63,18 @@ sandbox・permissionsなどの設定は、Claude Code（`claude/managed-settings
 
 機密ファイルは`op inject`で1Passwordから展開する。`make nix-apply-hobby/work`実行時に自動適用される。
 
-1Passwordに以下のアイテムを作成する（vault: `Personal`）:
+1Passwordに以下のアイテムを作成する（vault: `PC`）:
 
 | Item名             | カテゴリ       | フィールド                             |
 | ------------------ | -------------- | -------------------------------------- |
 | `ssh-config`       | Secure Note    | notesPlain（`~/.ssh/config`の全内容）  |
-| `aws-credentials`  | API Credential | `access_key_id`, `secret_access_key`   |
+| `aws-credentials`  | Secure Note    | notesPlain（`~/.aws/credentials`の全内容） |
 | `k8s-config`       | Secure Note    | notesPlain（`~/.kube/config`の全内容） |
 | `deck-credentials` | Secure Note    | notesPlain（credentials.jsonの全内容） |
 
 テンプレートファイルは`op-templates/`ディレクトリに配置。`op://Vault/Item/Field`形式で参照。
 
-SSH秘密鍵は`op inject`ではなく`op read`で1Passwordから直接ローカルファイルへ書き出す運用のものもある（`nix/home/secrets.nix`の`sshKeysImport`、vaultは既存の`ssh-config`等と同じ`PC`）:
+SSH秘密鍵は`op inject`ではなく`op read`で1Passwordから直接ローカルファイルへ書き出す運用のものもある（`nix/home/secrets.nix`の`sshKeysImport`・`gitSigningKeyImport`、vaultは既存の`ssh-config`等と同じ`PC`）。これらはhobbyモードだけで配置する。commit署名の設定も別ファイル（`.git-config/signing`）に分けていて、hobbyモードだけ`~/.config/git/signing`に置く。workモードでemailなどを変えたいときは、Nix管理外の`~/.config/git/local`に書く:
 
 | Item名           | カテゴリ | フィールド                                                                                                       |
 | ---------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -92,26 +92,34 @@ flake.nix              # entrypoint (nixpkgs-unstable + nix-darwin + home-manage
 flake.lock             # 依存ロックファイル
 nix/
 ├── darwin/
-│   └── default.nix    # nix-darwin設定 (system.defaults, Homebrew管理など)
+│   ├── default.nix    # nix-darwin設定 (キーボード, PAM, zshのシステム側設定)
+│   ├── defaults.nix   # system.defaults と macOS の defaults / pmset
+│   ├── homebrew.nix   # Homebrewのtaps / brews / casks / masApps
+│   ├── claude-code.nix # Claude Codeのmanaged settingsを/Library/Application Supportへ配置
+│   └── codex.nix      # Codexのrequirements / managed_configを/etc/codexへ配置
 └── home/
-    └── default.nix    # home-manager設定 (dotfile管理, programs.zshなど)
+    ├── default.nix    # home-manager設定 (パッケージ, モード別のimport)
+    ├── dotfiles.nix   # 各種設定ファイルの配置 (wezterm, git, karabiner, rectangleなど)
+    ├── zsh.nix        # programs.zsh (起動速度の工夫は下の「Zsh起動速度」)
+    ├── emacs.nix      # Emacs本体とtree-sitterの文法
+    ├── claude.nix     # ~/.claude 配下 (CLAUDE.md, agents, skills, hooks, mods)
+    ├── gh.nix         # programs.gh
+    └── secrets.nix    # 1Password連携 (hobbyモードのみ)
 ```
 
 **初回セットアップ手順:**
 
 ```sh
-# 1. Nixをインストール (make init に含まれているが、単独実行も可)
-./bin/install-nix.sh
+# 1. Xcode Command Line Toolsを入れ、このリポジトリをHTTPSでcloneしてcdする
+xcode-select --install
+git clone https://github.com/yyh-gl/dotfiles.git ~/workspaces/github.com/yyh-gl/dotfiles
 
-# 2. /etc/zshrc と /etc/bashrc を削除 (nix-darwinが管理するため)
-sudo rm /etc/zshrc /etc/bashrc
-
-# 3. シェルを再起動後、初回ビルド (nix-darwin未インストールの場合)
+# 2. 初回セットアップ。Homebrew・1Password・Nixを入れ、/etc/zshrc・/etc/bashrcを
+#    .before-nix-darwinへ退避して（nix-darwinが管理するため）、最初のswitchまで行う
 git add nix/ flake.nix flake.lock   # Nixはgit追跡ファイルのみ読み込む
-sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#yyh-gl-mac-hobby
-# または .#yyh-gl-mac-work
+make init-hobby                     # または make init-work
 
-# 4. 以降は make nix-apply-hobby または make nix-apply-work で適用
+# 3. 以降は make nix-apply-hobby または make nix-apply-work で適用
 make nix-apply-hobby
 ```
 
