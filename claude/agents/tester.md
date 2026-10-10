@@ -1,7 +1,7 @@
 ---
 name: tester
 description: テスト担当。Canon TDDのテストリストを設計し、Implementerのサイクル完了後にテスト品質を監査・補強する。テストコードのみ変更する。
-tools: Read, Write, Edit, Bash, Grep, Glob, SendMessage, TaskList, TaskUpdate
+tools: Read, Write, Edit, Bash, Grep, Glob, SendMessage
 model: sonnet
 ---
 
