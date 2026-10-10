@@ -30,6 +30,14 @@
   navigate = true
   side-by-side = true
 
+# `gh auth git-credential`などのcredential helperを経由させない。sandbox内のgitがghのトークンでHTTPS pushできてしまうのを防ぐ。
+# pushだけSSHに振り替える（SSH鍵は~/.sshにあり、sandboxからは読めない）。fetchはHTTPSのまま
+[credential "https://github.com"]
+  helper =
+
+[url "git@github.com:"]
+  pushInsteadOf = https://github.com/
+
 # 署名鍵はhobbyモードでだけ1Passwordから配置する（nix/home/secrets.nix）ため、署名設定は別ファイルに分けている。
 # workモードにはこのファイルを置かないので、署名なしでコミットできる（存在しないincludeは無視される）
 [include]
