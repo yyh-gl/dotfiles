@@ -368,7 +368,7 @@
 
 | ID | 状態 | 内容・メモ |
 | --- | --- | --- |
-| P0-1 | ✅ | `defaults.nix`を`system.defaults.controlcenter`・`CustomUserPreferences`・`postActivation`（`sudo -u`）へ移した。nix-darwinのソースで、(1)`customDefaults`等の任意名が実行リストに無く`postActivation`が最後に実行されること、(2)`controlcenter`の3オプションが実在しByHostに書かれること、(3)`CustomUserPreferences`がprimaryUserとして書かれることを確認済み。生成スクリプトも構文確認済み（`defaults read`での反映だけはmacOSで見る価値がある） |
+| P0-1 | ✅ | `defaults.nix`を`system.defaults.controlcenter`・`CustomUserPreferences`・`postActivation`（`sudo -u`）へ移した。nix-darwinのソースで実行リストを確認したうえで、GitHubのmacOSランナーで実際にswitchを実行し、`defaults -currentHost read com.apple.controlcenter`、入力ソース、`symbolichotkeys`のID 27、`pmset`のAC電源スリープ0が反映されたことを確認済み（`darwin-build.yml`） |
 | P0-2 | ✅ | pre-pushをpush範囲のスキャンへ、pre-commitを追加。`--no-verify`/`-n`をdeny（Codexは直後形のみ）。Makefileを`gitleaks git`へ。範囲の組み立てはスタブで確認済み（gitleaks本体はこの環境になく未実行） |
 | P0-3 | ✅ | `gh auth/ssh-key/gpg-key/extension`をdeny、書き込み系サブコマンドをask。Codexにも同じ範囲 |
 | P1-1 | ✅ | Gradleのinit/propertiesを書き込み禁止に。Goキャッシュは受け入れるリスクとして`docs/codex-sandbox.md`に明記 |
@@ -380,7 +380,7 @@
 | P1-6 | ✅ | workモードのsettings.jsonはjqでマージ。user層の強度の違いをCLAUDE.mdに明記。マージは実際に実行して確認済み |
 | P1-7 | ✅ | darwin側の配置は失敗しても警告だけで続行（失敗経路を実行して確認済み） |
 | P1-8 | ✅ | 署名設定を`.git-config/signing`に分離しhobbyのみ配置。`~/.config/git/local`で機械ごとに上書き可。gitのinclude挙動を実行して確認済み |
-| P1-9 | 🟡 | `init-hobby/work`、PATH/フルパス、`/etc`退避、1Passwordを両モードのcaskに、`init.sh`のclone削除とset -e相当。`brew`・`sudo`・`xcode-select`・`curl`をスタブにして、`bin/init.sh`（新規・再実行・Command Line Tools未導入・Xcode本体あり）と`make _init`を実行し、全分岐が期待どおりの順序（1Password導入→CLT確認→Nix導入→`/etc`退避→nix-darwin switch）で終わることを確認済み。本物のmacOSでの通しだけ未実施 |
+| P1-9 | ✅ | `init-hobby/work`、PATH/フルパス、`/etc`退避、1Passwordを両モードのcaskに、`init.sh`のclone削除とset -e相当。スタブでの`init.sh`と`make _init`の全分岐に加え、GitHubのmacOSランナーで、`/etc/zshrc`・`/etc/bashrc`の退避→ロックされたrevのnix-darwinで最初のswitch→home-managerのactivationまで本物のmacOSで通した。この過程で、activateのshellcheck(SC2194)で落ちる不具合を見つけて修正した。**CIでは再現できない部分**: 1Passwordのサインイン（GUI）、Homebrewのcask導入、`op`が必要なhobbyモードの秘密情報の展開 |
 | P1-10 | ✅ | Homebrewを後ろに、`/usr/local`を削除 |
 | P1-11 | ✅ | `initContent`の`LESS`/`LESSOPEN`を削除 |
 | P1-12 | ✅ | `git apply --cached --unidiff-zero`の手順に置き換え。一時リポジトリで確認済み |
@@ -402,8 +402,15 @@
 | R-7 | ✅ | `programs.emacs.extraPackages`で入れ、`:ensure t`とMELPA登録を削除。全属性名が最新のnixpkgs-unstableに存在することを`nix-instantiate`で確認済み（ロック済みrevでの評価は未実施） |
 | R-8 | ✅ | CLAUDE.mdの経緯と一度きりの手順を`docs/claude-settings.md`へ移し、ルールだけを残した |
 
-### まだ実機でしか確認できないこと
+### 実機・CIでの確認状況
 
-1. 新しいMacでの`make init-hobby`/`init-work`の通し（P1-9）。各部品（PATH、`/etc`退避、1Passwordのcask、モード別の分岐）はスクリプトを実行またはソースで確認したが、スタブでの全分岐の実行は済み、本物のmacOSでの通しだけが残る
+`.github/workflows/darwin-build.yml`が、GitHubのmacOSランナーで次を毎回実行する（`claude/adversarial-review-plan`の最新コミットで成功）。
 
-確認済みの補足: `claude`の実セッションで、`managed-settings.json`全体がスキーマエラーなく読み込まれること（`denyWrite`・`Edit()`のdeny含む）、bash-guardのdeny/ask/素通りの3経路、`claude plugin validate`/`test`の通過を確認した。
+- hobby・workの両方のnix-darwin構成のビルド
+- workモードをrunnerユーザーに実際に適用（`/etc/zshrc`・`/etc/bashrc`の退避、nix-darwinの初回switch、home-manager）
+- 適用結果の確認（`defaults`・`pmset`・Claude/Codexの配置・workの設定マージ・署名なし・bash-guardの配備）
+- macOS標準のPython 3.9.6でのhookテスト46件
+
+CIでは再現できず、あなたのMacで最初に`make init-hobby`を実行するときだけ出る部分: 1Passwordのサインインと`op`による秘密情報の展開（hobbyモード）、Homebrewのcask導入。これらは対話や外部サービスが要るもので、設定の誤りではなく手順の問題になる。
+
+確認済みの補足: `claude`の実セッションで、`managed-settings.json`全体がスキーマエラーなく読み込まれること（`denyWrite`・`Edit()`のdenyを含む）、bash-guardのdeny/ask/素通りの3経路、`claude plugin validate`/`test`の通過を確認した。
