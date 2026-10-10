@@ -36,14 +36,24 @@ in {
     executable = true;
   };
 
+  # アプリがGUIから書き換える設定は、applyのたびに上書きすると変更が消える。
+  # 上書き前に差分を警告するので、残したい変更はdotfilesの元ファイルへ書き戻す
   home.activation.rectangleConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    mkdir -p "${hd}/Library/Application Support/Rectangle"
-    install -m 644 "${dotfiles}/RectangleConfig.json" "${hd}/Library/Application Support/Rectangle/RectangleConfig.json"
+    dest="${hd}/Library/Application Support/Rectangle/RectangleConfig.json"
+    mkdir -p "$(dirname "$dest")"
+    if [ -e "$dest" ] && ! cmp -s "${dotfiles}/RectangleConfig.json" "$dest"; then
+      echo "warning: $dest differs from the dotfiles and will be overwritten" >&2
+    fi
+    install -m 644 "${dotfiles}/RectangleConfig.json" "$dest"
   '';
 
   home.activation.karabinerConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    mkdir -p "${hd}/.config/karabiner"
-    install -m 600 "${dotfiles}/karabiner.json" "${hd}/.config/karabiner/karabiner.json"
+    dest="${hd}/.config/karabiner/karabiner.json"
+    mkdir -p "$(dirname "$dest")"
+    if [ -e "$dest" ] && ! cmp -s "${dotfiles}/karabiner.json" "$dest"; then
+      echo "warning: $dest differs from the dotfiles and will be overwritten" >&2
+    fi
+    install -m 600 "${dotfiles}/karabiner.json" "$dest"
   '';
 
   home.activation.desktopSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

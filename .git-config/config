@@ -16,7 +16,7 @@
   cp = cherry-pick
 
 [core]
-  editor = vim
+  editor = emacs
   # pager = less -R -F -X
   pager = delta
 
