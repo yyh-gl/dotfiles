@@ -21,7 +21,7 @@
       assert nixpkgs.lib.elem mode [ "hobby" "work" ];
       nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
-        specialArgs = { inherit mode username homeDirectory; };
+        specialArgs = { dotfiles = self; inherit mode username homeDirectory; };
         modules = [
           {
             nixpkgs.overlays = [

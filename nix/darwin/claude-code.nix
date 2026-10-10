@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{ lib, dotfiles, ... }: {
   # Claude Code自身は書き換えないmanaged settingsに置くことで、/model等の操作による自動再生成（claude-code#22659）から設定を保護する
   # managed-settings.json（先）とmanaged-settings.d/*.json（アルファベット順）は同じ層としてマージされて読まれる。
   # ほかのツールがmanaged-settings.jsonを使っても上書きし合わないよう、drop-inの50-dotfiles.jsonに置く
@@ -14,7 +14,7 @@
       mkdir -p "$claude_dir/managed-settings.d"
       chmod 755 "$claude_dir/managed-settings.d"
       chown root:wheel "$claude_dir/managed-settings.d"
-      install -m 644 -o root -g wheel "${toString ./../../claude/managed-settings.json}" "$claude_dropin"
+      install -m 644 -o root -g wheel "${dotfiles}/claude/managed-settings.json" "$claude_dropin"
     ); then
       echo "warning: could not install Claude Code managed settings to $claude_dropin (MDM may block it), skipping" >&2
     fi
