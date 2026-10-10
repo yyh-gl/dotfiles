@@ -187,14 +187,13 @@ in {
 
     shellAliases = {
       cd = "cdls";
-      fix = "e $HOME/.zshrc";
+      fix = "e $HOME/workspaces/github.com/yyh-gl/dotfiles/nix/home/zsh.nix";
       load = "exec $SHELL -l";
       ls = "ls -GF";
       ll = "ls -lGF";
       la = "ls -alGF";
       e = "emacs";
-      fixe = "e $HOME/.emacs.d/init.el";
-      fixs = "e $HOME/.ssh/config";
+      fixe = "e $HOME/workspaces/github.com/yyh-gl/dotfiles/.emacs.d/init.el";
       xcode = "open -a Xcode";
       k = "kubectl";
       kc = "kubectx";

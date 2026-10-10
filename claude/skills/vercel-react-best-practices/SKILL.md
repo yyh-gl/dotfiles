@@ -111,7 +111,6 @@ Read individual rule files for detailed explanations and code examples:
 ```
 rules/async-parallel.md
 rules/bundle-barrel-imports.md
-rules/_sections.md
 ```
 
 Each rule file contains:

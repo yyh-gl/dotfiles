@@ -14,6 +14,7 @@ let
   ];
 in {
   home.file.".config/wezterm/wezterm.lua".source = "${dotfiles}/wezterm.lua";
+  # GhosttyとZedはNix/Homebrewでは入れていない（手動インストール）。設定だけここで配置する
   home.file.".config/ghostty/config".source = "${dotfiles}/ghostty-config";
   home.file.".config/starship.toml".source = "${dotfiles}/starship.toml";
   home.file.".config/git/config".source = "${dotfiles}/.git-config/config";

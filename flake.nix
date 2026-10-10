@@ -11,13 +11,9 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-vscode-extensions = {
-      url = "github:nix-community/nix-vscode-extensions";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-vscode-extensions, ... }:
+  outputs = { self, nixpkgs, nix-darwin, home-manager, ... }:
   let
     username = "yyh-gl";
     homeDirectory = "/Users/${username}";
@@ -29,9 +25,9 @@
         modules = [
           {
             nixpkgs.overlays = [
-              nix-vscode-extensions.overlays.default
               # pandas-stubsのテストがpytest 9.1のPytestRemovedIn10Warningでエラーになりビルド失敗するため一時的にスキップ
               # (nixpkgs-unstable側のpytestバージョンアップとpandas-stubsのテストコードの非互換。upstream修正待ち)
+              # 外す条件: nix flake update後にこのoverlayなしでpandas-stubsがビルドできるようになったら削除する（`nix build nixpkgs#python3Packages.pandas-stubs`で確認）
               (final: prev: {
                 pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
                   (pyfinal: pyprev: {

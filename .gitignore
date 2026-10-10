@@ -1,3 +1,5 @@
 .env
 
+.idea/
+
 claude/mods/*/.claude-plugin/types/
