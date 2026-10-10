@@ -398,7 +398,7 @@
 | R-3 | ✅ | 公開鍵は`home.file`、`op inject`はデータ駆動 |
 | R-4 | ✅ / ⏭ | `optionalString`/`optionalAttrs`に統一。`sessionVariables`/`siteFunctions`への移動は、実測した起動構成を変えるため見送り |
 | R-5 | ✅ / ⏭ | `help`の自動化、`init-*`、`test-mods`のループは対応。パターンルール化は`help`に出なくなるため見送り |
-| R-6 | ⏭ | PreToolUse hookでのコマンド判定。deny/ask列挙で当面の穴は塞いだ。hookはpermissionsの意味を変える大きな変更なので、別タスクとして切り出す |
+| R-6 | 🟡 | `claude/hooks/bash-guard.py`（締める方向にだけ働くPreToolUse hook）。dev-teamの手順で実装→独立Reviewer（BLOCK、バイパス14種と誤検知を指摘）→修正→再検証。unittest 46件と、自分で流した51ケース・処理時間の確認は通過。Codexには同等の仕組みがなく`prefix_rules`のまま（`docs/codex-sandbox.md`に記載）。実際のClaude Codeから`PreToolUse`として呼ばれることはmacOSでの確認が必要。トークン化による判定には限界があり、既知の未対応は`bash ./script.sh`の中身など |
 | R-7 | ✅ | `programs.emacs.extraPackages`で入れ、`:ensure t`とMELPA登録を削除。全属性名が最新のnixpkgs-unstableに存在することを`nix-instantiate`で確認済み（ロック済みrevでの評価は未実施） |
 | R-8 | ✅ | CLAUDE.mdの経緯と一度きりの手順を`docs/claude-settings.md`へ移し、ルールだけを残した |
 
