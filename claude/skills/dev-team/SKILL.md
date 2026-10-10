@@ -67,7 +67,7 @@ Leadは**メインセッション**が務める（`lead.md`はその行動規範
 
 ## コミット規約
 
-- コミットは**smart-commitスキル**（`~/.claude/skills/smart-commit/SKILL.md`）を使用する。コミットする直前に読み込めばよい
+- コミットは、自分が変更したファイルだけを`git add <files>`でステージして行う。メッセージ規約（type/scope）は`~/.claude/skills/smart-commit/SKILL.md`に合わせる。`smart-commit`スキルそのものは作業ツリーの全差分をまとめ直すため、チーム作業では使わない
 - 1コミット=1論理変更（bisect commit原則）。Implementerはred-greenペア（失敗テスト+最小実装）を1コミットとし、リファクタリングは別コミット。Testerは追加・修正したテストを、対象ファイルを明示した`git add <files>`→`git commit`でコミットする。Lead・Reviewerはコミットしない
 - `.dev-team/`はコミットに含めない
 
@@ -75,7 +75,7 @@ Leadは**メインセッション**が務める（`lead.md`はその行動規範
 
 - すべてのコードはビルド・lintを通過すること
 - TDD準拠（Red確認・1サイクル1テスト・テスト先行）
-- テストカバレッジ90%以上を目標（TDDの結果として検証する指標）
+- テストカバレッジは参考値として報告する（`tdd`スキルのとおり、数値は目的にしない）
 - セキュリティ上のCRITICAL issueがある場合はマージしない
 
 ## チーム構成

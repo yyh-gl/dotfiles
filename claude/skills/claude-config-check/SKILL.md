@@ -92,7 +92,7 @@ OK/NGを付けず、正直に「要手動確認」として人間に委ねる。
 
 ## Step 4: レポートを生成・保存する
 
-監査結果を `claude-config-check-report.md`（対象プロジェクトのルート）に保存する。
+監査結果を `docs/plans/claude-config-check-report.md`（対象プロジェクトのClaude Code設定`plansDirectory`。作業ファイルをプロジェクト直下に残さないため）に保存する。
 既存があれば上書き前に日付サフィックスで退避するか、ユーザーに確認する。
 
 レポート構成（この順序を守る）:
