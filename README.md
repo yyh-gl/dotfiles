@@ -1,42 +1,43 @@
 # Dotfiles
 
+macOS向けのdotfiles。Nix（nix-darwin + home-manager）で宣言的に管理している。
+
 ## Setup
 
-```sh
-make init
-make build-hobby  # or make build-work
-```
+1. Xcode Command Line Toolsを入れ、リポジトリをHTTPSでcloneする（SSHの鍵は1Passwordのセットアップ後に使えるようになるため）
 
-> [!NOTE]
-> Run `make init` only once at the beginning
+   ```sh
+   xcode-select --install
+   git clone https://github.com/yyh-gl/dotfiles.git ~/workspaces/github.com/yyh-gl/dotfiles
+   cd ~/workspaces/github.com/yyh-gl/dotfiles
+   ```
+
+2. 初回セットアップ（最初の1回だけ）
+
+   ```sh
+   git add nix/ flake.nix flake.lock   # Nixはgit追跡ファイルだけを読む
+   make init-hobby                     # 仕事用のMacなら make init-work
+   ```
+
+3. 設定を適用する
+
+   ```sh
+   make build-hobby                    # 仕事用のMacなら make build-work
+   ```
+
+使えるコマンドは`make help`で見られる。詳しい構成と運用上の注意は[AGENTS.md](AGENTS.md)を参照。
 
 ## Repository Structure
 
-- `.brewfile-base`, `.brewfile-hobby`: Homebrew package lists for installing software
-- `.git-config`: Git configuration files
-- `.karabiner`: Karabiner Elements keyboard customization settings
-- `.rectangle-config.json`: Rectangle window manager configuration
-- `.iterm2-profiles.json`: iTerm2 terminal emulator profiles
-- `.zshrc`, `.zshenv`, `.zprofile`, `.zpreztorc`, etc.: Zsh shell configuration files
-- `bin/`: Directory containing utility scripts for setup and initialization
-- `nix/`: Nix configuration (nix-darwin + home-manager)
-- `scripts/`: Utility shell scripts (added to PATH)
-
-## Installation and Setup
-
-The repository includes several scripts and a Makefile to help with installation:
-
-- `bin/init.sh`: Initial setup script for installing base tools (Homebrew, Git, Xcode, 1Password) and cloning repositories
-- `bin/install-nix.sh`: Installs Nix package manager
-- `bin/manual.sh`: Final setup steps including manual setup
-- `bin/brew.sh`: Installs packages using Homebrew from `.Brewfile-base` and optionally `.Brewfile-hobby`
-- `bin/defaults.sh`: Configures macOS system defaults like keyboard and trackpad settings
-
-To set up the dotfiles, you can use the Makefile which provides various targets for installation and
-configuration.
-
-## Usage
-
-1. Clone this repository: `git clone git@github.com:yyh-gl/dotfiles.git`
-2. Run `make init` (first time only)
-3. Run `make build-hobby` or `make build-work`
+- `nix/`: nix-darwin（システム設定・Homebrew）とhome-manager（dotfileの配置・zsh・パッケージ）
+- `bin/`: セットアップ用スクリプト（`init.sh`・`install-nix.sh`・`manual.sh`）
+- `claude/`: Claude Codeの設定（managed settings・agents・skills・hooks・mods）
+- `codex/`: Codexの設定（requirements・managed config）
+- `docs/`: 設計メモ（`docs/codex-sandbox.md`など）
+- `.git-config/`: Gitの設定とグローバルignore
+- `.emacs.d/`: Emacsの設定
+- `.ssh/keys/`: SSH公開鍵
+- `op-templates/`: 1Passwordから展開する機密ファイルのテンプレート
+- `hooks/`: このリポジトリのGit hooks（gitleaks）
+- `scripts/`: シェルから呼ぶスクリプト（`~/.local/bin`に配置）
+- `wezterm.lua`・`karabiner.json`・`RectangleConfig.json`・`starship.toml`など: 各アプリの設定
