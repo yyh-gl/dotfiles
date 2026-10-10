@@ -368,14 +368,14 @@
 
 | ID | 状態 | 内容・メモ |
 | --- | --- | --- |
-| P0-1 | 🟡 | `defaults.nix`を`system.defaults.controlcenter`・`CustomUserPreferences`・`postActivation`（`sudo -u`）へ移した。生成スクリプトの構文は確認済みだが、nix-darwinの評価と`defaults read`での反映はmacOSでの確認が必要 |
+| P0-1 | ✅ | `defaults.nix`を`system.defaults.controlcenter`・`CustomUserPreferences`・`postActivation`（`sudo -u`）へ移した。nix-darwinのソースで、(1)`customDefaults`等の任意名が実行リストに無く`postActivation`が最後に実行されること、(2)`controlcenter`の3オプションが実在しByHostに書かれること、(3)`CustomUserPreferences`がprimaryUserとして書かれることを確認済み。生成スクリプトも構文確認済み（`defaults read`での反映だけはmacOSで見る価値がある） |
 | P0-2 | ✅ | pre-pushをpush範囲のスキャンへ、pre-commitを追加。`--no-verify`/`-n`をdeny（Codexは直後形のみ）。Makefileを`gitleaks git`へ。範囲の組み立てはスタブで確認済み（gitleaks本体はこの環境になく未実行） |
 | P0-3 | ✅ | `gh auth/ssh-key/gpg-key/extension`をdeny、書き込み系サブコマンドをask。Codexにも同じ範囲 |
 | P1-1 | ✅ | Gradleのinit/propertiesを書き込み禁止に。Goキャッシュは受け入れるリスクとして`docs/codex-sandbox.md`に明記 |
-| P1-1b | 🟡 | `.env`を`source`せずKEY=VALUEパーサーに（zshで確認済み）。`Edit(.env)`のdeny・`sandbox.filesystem.denyWrite`・Codexの`"none"`は仕様どおりに書いたが実機での確認が必要。`hooks/`はEditツール経由のaskのみ（Bash経由は未対応と明記） |
+| P1-1b | ✅ | `.env`を`source`せずKEY=VALUEパーサーに（zshで確認済み）。公式ドキュメントで、`sandbox.filesystem.denyWrite`が存在しmanaged settingsでも有効で`~/`を受け付けること、`Edit()`のdenyがdenyWriteに統合されBashからの書き込みにも効くこと、`Edit(.env)`が任意の深さに一致することを確認済み。`hooks/`のaskはEditツール経由のみ（Bash経由は未対応と明記）。Codexの`"none"`だけは未確認 |
 | P1-2 | ✅ | 認証情報のパスを3か所（credentials.files・Read deny・deny_read）に追加 |
 | P1-3 | ✅ | `.env`は全シェルexportを続けつつ、変数名をenvVars deny・Codex excludeに追加。`slack-notify.sh`は削除 |
-| P1-4 | 🟡 | credential helperは、ユーザー自身のHTTPS pushに必要なため無効化せず残した。`git -C/-c/--git-dir/--work-tree ... push`をdenyに追加。sandbox内から`git -C . push --dry-run`が通るかの実機確認は未実施 |
+| P1-4 | ✅ | 検証の代わりに根本から塞いだ。`.git-config/config`でgithub.comのcredential helperをリセットし、`pushInsteadOf`でpushだけSSHに振り替え（helperが呼ばれないこと・push URLの書き換えをgitで実行して確認済み）。`git -C/-c/--git-dir/--work-tree ... push`のdenyも残す。副作用: sandbox内でのprivate repoのHTTPS fetchはできなくなる |
 | P1-5 | ✅ | `docker -* *`・`docker compose -* *`をask（Codexのprefix_rulesでは表現できず、意図的な差分として`scripts/check-agent-policy.py`に記録） |
 | P1-6 | ✅ | workモードのsettings.jsonはjqでマージ。user層の強度の違いをCLAUDE.mdに明記。マージは実際に実行して確認済み |
 | P1-7 | ✅ | darwin側の配置は失敗しても警告だけで続行（失敗経路を実行して確認済み） |
@@ -384,7 +384,7 @@
 | P1-10 | ✅ | Homebrewを後ろに、`/usr/local`を削除 |
 | P1-11 | ✅ | `initContent`の`LESS`/`LESSOPEN`を削除 |
 | P1-12 | ✅ | `git apply --cached --unidiff-zero`の手順に置き換え。一時リポジトリで確認済み |
-| P1-13 | 🟡 | tools・フォールバック・プラン書式の重複を修正。`Agent`/`SendMessage`等のtool名がsubagentの`tools`で有効かは`/agents`での確認が必要 |
+| P1-13 | ✅ | 公式ドキュメントで確認: `Agent`・`SendMessage`は有効なtool名、`Task*`系はteammateに自動付与で`tools`には不要（削除）、`AskUserQuestion`はsubagentから常に除外される（plannerのLeadへ返す手順が正しい）。planner/reviewer/leadにWriteを追加済み |
 | P2-1 | ✅ | README・AGENTS.md・CLAUDE.md・コメント・ignoreの`sonarlint`行（`check-ignore`で確認）・`manual.sh`を修正 |
 | P2-2 | ✅ | nix-vscode-extensions・hub・slack-notify・nesc・`.idea/`・`use-package`・`_module.args`を削除、aliasは元ファイルを開くよう変更、eglotはサーバーがあるときだけ起動、laminateの依存はHomebrewに追加、`ghostty`/`zed`は手動インストール前提とコメント |
 | P2-3 | ✅ | 記念日スクリプトを`source`する関数に（旧出力と5日付で一致を確認）、バナーは対話シェルのみ、デフォルトルートのインターフェース |
@@ -398,14 +398,14 @@
 | R-3 | ✅ | 公開鍵は`home.file`、`op inject`はデータ駆動 |
 | R-4 | ✅ / ⏭ | `optionalString`/`optionalAttrs`に統一。`sessionVariables`/`siteFunctions`への移動は、実測した起動構成を変えるため見送り |
 | R-5 | ✅ / ⏭ | `help`の自動化、`init-*`、`test-mods`のループは対応。パターンルール化は`help`に出なくなるため見送り |
-| R-6 | 🟡 | `claude/hooks/bash-guard.py`（締める方向にだけ働くPreToolUse hook）。dev-teamの手順で実装→独立Reviewer（BLOCK、バイパス14種と誤検知を指摘）→修正→再検証。unittest 46件と、自分で流した51ケース・処理時間の確認は通過。Codexには同等の仕組みがなく`prefix_rules`のまま（`docs/codex-sandbox.md`に記載）。実際のClaude Codeから`PreToolUse`として呼ばれることはmacOSでの確認が必要。トークン化による判定には限界があり、既知の未対応は`bash ./script.sh`の中身など |
+| R-6 | ✅ | `claude/hooks/bash-guard.py`（締める方向にだけ働くPreToolUse hook）。dev-teamの手順で実装→独立Reviewer（BLOCK、バイパス14種と誤検知を指摘）→修正→再検証。unittest 46件と自分で流した51ケース・処理時間は通過。出力形式（`hookSpecificOutput`・`permissionDecision`）と、hookのaskがallowルールより優先されることは公式ドキュメントで確認済み。Codexには同等の仕組みがなく`prefix_rules`のまま（`docs/codex-sandbox.md`に記載）。トークン化による判定には限界があり、既知の未対応は`bash ./script.sh`の中身など |
 | R-7 | ✅ | `programs.emacs.extraPackages`で入れ、`:ensure t`とMELPA登録を削除。全属性名が最新のnixpkgs-unstableに存在することを`nix-instantiate`で確認済み（ロック済みrevでの評価は未実施） |
 | R-8 | ✅ | CLAUDE.mdの経緯と一度きりの手順を`docs/claude-settings.md`へ移し、ルールだけを残した |
 
-### 実機で確認してほしいこと
+### まだ実機でしか確認できないこと
 
-1. `make nix-apply-hobby`が通り、`defaults read com.apple.controlcenter`・`pmset -g custom`・入力ソース/ショートカットが反映されている（P0-1）
-2. Claudeのsandbox内から`git -C . push --dry-run`を実行して、拒否されること（P1-4）
-3. Claude Codeが新しい`sandbox.filesystem.denyWrite`・`Edit(.env)`のdenyを読み込めること、Codexが`"none"`の値を受け付けること（P1-1b）
-4. `/agents`で各subagentに`SendMessage`等が付いていること（P1-13）
-5. 新しいMacでの`make init-hobby`/`init-work`の通し（P1-9）
+1. 新しいMacでの`make init-hobby`/`init-work`の通し（P1-9）。各部品（PATH、`/etc`退避、1Passwordのcask、モード別の分岐）はスクリプトを実行またはソースで確認したが、通しは実機のみ
+2. statuslineのmodがClaude Code上で動くこと（P2-4）。型とエンジンのAPIは`claude`が要り、構文のビルドまでしか確認していない
+3. bash-guardが実際のClaude Codeセッションから呼ばれて、askが出ること（R-6）。仕様はドキュメントで確認済みだが、実機の通しは未実施
+4. Codexが`[permissions.dotfiles.filesystem]`の`"none"`を受け付けること（P1-1b）
+5. `mn`エイリアスの住居情報を公開履歴から消すか（force pushを伴うため、ユーザーの判断待ち。P2-6）
