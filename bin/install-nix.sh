@@ -14,4 +14,4 @@ if ! grep -q 'experimental-features' ~/.config/nix/nix.conf 2>/dev/null; then
   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
 fi
 
-echo "Nix installed. Please restart your shell, then run 'make nix-apply-hobby' or 'make nix-apply-work'."
+echo "Nix installed. Continue with the first nix-darwin switch (make init-hobby / init-work does this); use make nix-apply-* only after that."
