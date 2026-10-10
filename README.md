@@ -13,7 +13,6 @@ make build-hobby  # or make build-work
 ## Repository Structure
 
 - `.brewfile-base`, `.brewfile-hobby`: Homebrew package lists for installing software
-- `.defaults`: macOS system defaults configuration
 - `.git-config`: Git configuration files
 - `.karabiner`: Karabiner Elements keyboard customization settings
 - `.rectangle-config.json`: Rectangle window manager configuration
