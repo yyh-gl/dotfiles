@@ -1,2 +1,21 @@
 #!/usr/bin/env bash
-gitleaks protect -v --redact --staged
+# pushされるコミットだけをgitleaksでスキャンする。
+# pre-pushの時点で秘密情報はすでにコミットに入っており、indexは見ても意味がない。
+# stdinには「<local ref> <local sha> <remote ref> <remote sha>」が1行ずつ渡される。
+set -euo pipefail
+
+zero=0000000000000000000000000000000000000000
+
+while read -r _ local_sha _ remote_sha; do
+  # ブランチの削除はスキャン対象がない
+  [ "$local_sha" = "$zero" ] && continue
+
+  if [ "$remote_sha" = "$zero" ]; then
+    # 新規ブランチ: どのリモートにもまだ無いコミットだけを対象にする
+    range="$local_sha --not --remotes"
+  else
+    range="$remote_sha..$local_sha"
+  fi
+
+  gitleaks git -v --redact --log-opts="$range"
+done

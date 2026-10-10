@@ -41,13 +41,13 @@ nix-update: # Update tools on Nix
 nix-cleanup: # Cleanup Nix
 	sudo nix-collect-garbage -d
 
-.PHONY: gitleaks-detect
+.PHONY: gitleaks-all
 gitleaks-all: # Scan git history for secrets
-	gitleaks detect -v --redact
+	gitleaks git -v --redact
 
-.PHONY: gitleaks-protect
+.PHONY: gitleaks-staged
 gitleaks-staged: # Scan staged changes for secrets
-	gitleaks protect -v --redact --staged
+	gitleaks git -v --redact --staged
 
 .PHONY: test-mods
 test-mods: # Test and validate Claude Code mods
