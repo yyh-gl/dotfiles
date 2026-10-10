@@ -5,3 +5,4 @@
 claude/mods/*/.claude-plugin/types/
 
 .dev-team/
+__pycache__/
