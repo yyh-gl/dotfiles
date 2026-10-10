@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: コードレビュー・セキュリティレビュー担当。変更の品質・安全性を検証し、APPROVE/BLOCK判定を行う。読み取り専用。
-tools: Read, Write, Grep, Glob, Bash, SendMessage, TaskList, TaskUpdate
+tools: Read, Write, Grep, Glob, Bash, SendMessage
 model: opus
 ---
 

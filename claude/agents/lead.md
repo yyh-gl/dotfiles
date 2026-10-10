@@ -1,7 +1,7 @@
 ---
 name: lead
 description: 開発チームリード。タスク分解・割当・進捗管理・品質判断を行うオーケストレーター。コードは書かず、判断と調整に集中する。
-tools: Read, Write, Grep, Glob, Bash, Agent, SendMessage, TaskCreate, TaskList, TaskUpdate
+tools: Read, Write, Grep, Glob, Bash, Agent, SendMessage
 model: opus
 ---
 
