@@ -29,3 +29,4 @@ Claudeに揃えられない点（意図的な差分）:
 
 - `~/Library/Caches/go-build`・`~/go/pkg/mod`をsandboxから書き込み可能にしている。GOCACHEのエントリはビルド時に再検証されず、改ざんされたオブジェクトがsandbox外のビルドにリンクされうる。キャッシュを共有しないとGoのビルドが毎回フルになるため受け入れている。Gradleは`init.d`・`init.gradle`・`gradle.properties`だけ書き込み禁止にしている
 - `Edit(hooks/**)`はClaudeのEditツール経由だけをaskにしている。Bashからの書き込みは止めていない（dotfilesで作業する際に`hooks/`を編集できなくなるため）。Codexには対応するaskがない
+- GitHubへのpushは、`.git-config/config`でcredential helperをリセットし、`pushInsteadOf`でSSHに振り替えている。ghのトークンはキーチェーンにあり`hosts.yml`のdenyでは守れないため、HTTPS pushが`gh auth git-credential`経由で通らないようにしている（ClaudeもCodexも同じ。private repoのHTTPS fetchはsandbox内ではできなくなる）
