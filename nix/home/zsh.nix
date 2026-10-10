@@ -153,28 +153,34 @@ in {
         fi
       } &!
 
-      if (( $+commands[fortune] )); then
-        if [[ -t 0 || -t 1 ]]; then
-          fortune -s
-          print
+      # IDEやツールが`zsh -l -c`で起動した非対話のlogin shellには、バナーも外部コマンドの実行も不要
+      if [[ -o interactive ]]; then
+        if (( $+commands[fortune] )); then
+          if [[ -t 0 || -t 1 ]]; then
+            fortune -s
+            print
+          fi
         fi
+
+        echo "\n<< Used IP address >>"
+        echo -n " -> "
+        # en0固定だと有線LANやUSBアダプタ接続時に取れないため、デフォルトルートのインターフェースを使う
+        _default_if=$(route -n get default 2>/dev/null | awk '/interface:/ {print $2}')
+        ipconfig getifaddr "''${_default_if:-en0}" || echo "No Connection"
+        unset _default_if
+
+        echo "\n<< Machine Used >>"
+        df -h .
+
+        echo "\n<< Uptime >>"
+        echo -n " -> "
+        uptime
+
+        source "$HOME/.local/bin/celebrate-anniversary.sh"
+
+        echo
+        figlet -f banner3-D -w 300 Welcome
       fi
-
-      echo "\n<< Used IP address >>"
-      echo -n " -> "
-      ipconfig getifaddr en0 || echo "No Connection"
-
-      echo "\n<< Machine Used >>"
-      df -h .
-
-      echo "\n<< Uptime >>"
-      echo -n " -> "
-      uptime
-
-      celebrate-anniversary.sh
-
-      echo
-      figlet -f banner3-D -w 300 Welcome
     '';
 
     logoutExtra = ''

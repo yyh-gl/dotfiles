@@ -137,7 +137,7 @@ zsh-benchで計測して、起動（first_prompt_lag）を短くするために�
 - `-C`は補完の追加を自動検知しないので、`home.activation.resetZcompdump`でapplyのたびに`~/.zcompdump*`を削除している。applyを介さず`brew install`した補完は、`rm ~/.zcompdump`するまで反映されない。
 - `brew shellenv`は`profileExtra`に静的に展開している（evalするとbrewの起動分だけ遅くなる）。`export FPATH`は、`.zprofile`を読まないネストしたシェルにbrewの補完ディレクトリを引き継ぐために必須。
 - `starship init zsh`はビルド時に生成している（`starshipInit`）。`RPROMPT`（`right_format`未使用なのに毎プロンプトstarshipを起動する）と`PROMPT2`を静的化している。`starship.toml`で`right_format`か`continuation_prompt`を設定する場合は、この置き換えを見直す。
-- `scripts/celebrate-anniversary.sh`は`.zlogin`から毎回呼ばれるため、外部コマンドをforkしないzshスクリプトにしている。`CELEBRATE_TODAY=YYYY-MM-DD`で「今日」を差し替えられる。
+- `scripts/celebrate-anniversary.sh`は`.zlogin`から毎回`source`されるため、プロセスもサブシェルもforkしない関数にしている。`.zlogin`のバナー類は対話シェルのときだけ出す（IDEの`zsh -l -c`に出力を混ぜない）。`CELEBRATE_TODAY=YYYY-MM-DD`で「今日」を差し替えられる。
 - PATHはNixで入れたツールをHomebrewより優先する（`profileExtra`でHomebrewを後ろに足す。`initContent`で先頭に戻さない）。`/usr/local`はApple Silicon専用構成のため含めない。
 - `LANG`は`ja_JP.UTF-8`で固定している（`defaults read`を毎回実行すると起動が遅くなる）。
 
