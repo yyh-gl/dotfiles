@@ -22,14 +22,19 @@ jobs:
               ".#darwinConfigurations.yyh-gl-mac-${mode}.system" --no-link --print-build-logs
           done
       - name: Activate the work configuration as the runner user
-        # bin/init.sh→make _initと同じく、nix-darwinが管理する/etc/zshrc・/etc/bashrcを退避してから最初のswitchを行う
+        # bin/init.sh→make _initと同じく、nix-darwinが管理する/etc/zshrc・/etc/bashrcを退避してから最初のswitchを行う。
+        # `nix run nix-darwin`はロックされていないHEADをGitHub APIで引いて未認証のレート制限に当たるため、
+        # flake.lockで固定されたrevを指定し、認証トークンも渡す
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           for f in zshrc bashrc; do
             if [ -e /etc/$f ] && [ ! -L /etc/$f ]; then sudo mv /etc/$f /etc/$f.before-nix-darwin; fi
           done
-          git add -A
-          sudo /nix/var/nix/profiles/default/bin/nix --extra-experimental-features 'nix-command flakes' \
-            run nix-darwin -- switch --flake ".#yyh-gl-mac-ci"
+          rev="$(python3 -c "import json;print(json.load(open('flake.lock'))['nodes']['nix-darwin']['locked']['rev'])")"
+          sudo -H env NIX_CONFIG="access-tokens = github.com=$GITHUB_TOKEN" \
+            /nix/var/nix/profiles/default/bin/nix --extra-experimental-features 'nix-command flakes' \
+            run "github:nix-darwin/nix-darwin/$rev" -- switch --flake ".#yyh-gl-mac-ci"
       - name: Check that the activation applied the settings
         run: |
           fail=0
