@@ -78,11 +78,15 @@ in {
 
       # Environment variables
       ${if mode == "hobby" then ''
-      local _dotenv="$HOME/workspaces/github.com/yyh-gl/dotfiles/.env"
+      # sandbox内から書き換えられても任意コードが動かないよう、sourceせずKEY=VALUEの行だけを読む
+      local _dotenv="$HOME/workspaces/github.com/yyh-gl/dotfiles/.env" _k _v
       if [[ -r "$_dotenv" ]]; then
-        set -a
-        source "$_dotenv"
-        set +a
+        while IFS='=' read -r _k _v || [[ -n "$_k" ]]; do
+          _k=''${_k#export }
+          [[ "$_k" =~ '^[A-Za-z_][A-Za-z0-9_]*$' ]] || continue
+          _v=''${_v#\"}; _v=''${_v%\"}; _v=''${_v#\'}; _v=''${_v%\'}
+          export "$_k=$_v"
+        done < "$_dotenv"
       fi
       '' else ""}
 
