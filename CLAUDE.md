@@ -10,7 +10,7 @@ This file provides guidance specific to Claude Code (claude.ai/code). Rules that
 
 - `claude/managed-settings.json`は`nix/darwin/claude-code.nix`のactivation scriptで`/Library/Application Support/ClaudeCode/managed-settings.d/50-dotfiles.json`（root所有、Claude Codeからは書き込み不可）に配置する。絶対に保持したい設定（permissions・hooks・sandbox・envなど。ステータスラインはmod `claude/mods/statusline`）はここに置く。`/model`・`/effort`・plugin installが`~/.claude/settings.json`を丸ごと再生成する既知バグ（[claude-code#22659](https://github.com/anthropics/claude-code/issues/22659)）で消えるため
 - `enabledPlugins`・`effortLevel`のようなClaude Code自身が書き換える設定は`~/.claude/settings.json`側に残し、Nixでは管理しない（`extraKnownMarketplaces`は例外でmanaged側）
-- 旧配置の`managed-settings.json`はapplyでは消さない。移行後の初回だけ`sudo rm "/Library/Application Support/ClaudeCode/managed-settings.json"`で手動削除する（残ると消したルールが効き続ける）
+- 旧配置の`managed-settings.json`は、中身がdotfilesの過去版（`nix/darwin/claude-code.nix`のsha256一覧）と一致するときだけapplyが消す。手で編集されたものは残して警告するので、不要なら`sudo rm "/Library/Application Support/ClaudeCode/managed-settings.json"`で消す（残るとdrop-inとマージされ、消したルールが効き続ける）
 - 仕事PCでは`/Library/Application Support/`への書き込みがMDMで拒否されることがあり、その場合は警告だけ出してapplyを続ける。代わりにworkモードに限り`nix/home/claude.nix`が同じ内容を`~/.claude/settings.json`へjqで上書きマージする。user層なので、クローンしたリポジトリの`.claude/settings.json`に上書きされうる（managed層ほど強くない）
 - `sandbox.excludedCommands`のパターンは`"gh *"`のように`*`の前にスペースを入れる（`"gh*"`は効かない）。`gh`・`docker`・`hunk session *`はsandbox内で動かせないため除外が必須。1回の呼び出しに含まれるすべてのコマンドが一致したときだけsandbox外になるので、パイプ・`;`・`$(...)`・リダイレクト・`cd`を付けると丸ごとsandbox内で動き失敗する。ClaudeにHunk・`gh`・`docker`を操作させる際は単体コマンドにする（`claude/CLAUDE.md`に指示がある）
 - permissionsは「deny→ask→allow」の順に評価され、具体性は関係ない。広い`ask`（`Bash(docker*)`など）は具体的な`allow`を打ち消すため、dockerのaskは書き込み・実行系サブコマンドの列挙にしている。`chmod`はdenyだと作業が止まるため`ask`
