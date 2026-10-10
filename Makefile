@@ -66,5 +66,8 @@ gitleaks-staged: # Scan staged changes for secrets
 .PHONY: test-mods
 test-mods: # Test and validate Claude Code mods
 	bun test claude/mods/prompt-highlight-md/hooks/lib
-	claude plugin validate claude/mods/prompt-highlight-md
-	claude plugin test claude/mods/prompt-highlight-md
+	@for mod in claude/mods/*/; do \
+	  echo "== $$mod"; \
+	  claude plugin validate $$mod || exit 1; \
+	  if ls $$mod/hooks/*.test.ts >/dev/null 2>&1; then claude plugin test $$mod || exit 1; fi; \
+	done
