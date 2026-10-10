@@ -11,6 +11,8 @@
     ];
     brews = [
       "deck"
+      "imagemagick"
+      "mermaid-cli"
       "hunk"
       "python@3.11"
       "songmu/tap/laminate"

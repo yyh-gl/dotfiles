@@ -8,4 +8,4 @@ commands:
     run: 'silicon -l "go" --theme "Visual Studio Dark+" --background "#ffffff" --no-window-controls --pad-horiz 0 --pad-vert 0 -o "{{output}}"'
     ext: png
   - lang: '*'
-    run: [ 'convert', '-background', 'white', '-fill', 'black', 'label:{{input}}', '{{output}}' ]
+    run: [ 'magick', '-background', 'white', '-fill', 'black', 'label:{{input}}', '{{output}}' ]
