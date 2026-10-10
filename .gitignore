@@ -3,3 +3,5 @@
 .idea/
 
 claude/mods/*/.claude-plugin/types/
+
+.dev-team/
