@@ -380,7 +380,7 @@
 | P1-6 | ✅ | workモードのsettings.jsonはjqでマージ。user層の強度の違いをCLAUDE.mdに明記。マージは実際に実行して確認済み |
 | P1-7 | ✅ | darwin側の配置は失敗しても警告だけで続行（失敗経路を実行して確認済み） |
 | P1-8 | ✅ | 署名設定を`.git-config/signing`に分離しhobbyのみ配置。`~/.config/git/local`で機械ごとに上書き可。gitのinclude挙動を実行して確認済み |
-| P1-9 | 🟡 | `init-hobby/work`、PATH/フルパス、`/etc`退避、1Passwordを両モードのcaskに、`init.sh`のclone削除とset -e相当。実際の新規Macでの通しは未実施 |
+| P1-9 | 🟡 | `init-hobby/work`、PATH/フルパス、`/etc`退避、1Passwordを両モードのcaskに、`init.sh`のclone削除とset -e相当。`brew`・`sudo`・`xcode-select`・`curl`をスタブにして、`bin/init.sh`（新規・再実行・Command Line Tools未導入・Xcode本体あり）と`make _init`を実行し、全分岐が期待どおりの順序（1Password導入→CLT確認→Nix導入→`/etc`退避→nix-darwin switch）で終わることを確認済み。本物のmacOSでの通しだけ未実施 |
 | P1-10 | ✅ | Homebrewを後ろに、`/usr/local`を削除 |
 | P1-11 | ✅ | `initContent`の`LESS`/`LESSOPEN`を削除 |
 | P1-12 | ✅ | `git apply --cached --unidiff-zero`の手順に置き換え。一時リポジトリで確認済み |
@@ -404,6 +404,6 @@
 
 ### まだ実機でしか確認できないこと
 
-1. 新しいMacでの`make init-hobby`/`init-work`の通し（P1-9）。各部品（PATH、`/etc`退避、1Passwordのcask、モード別の分岐）はスクリプトを実行またはソースで確認したが、通しはmacOSの実機のみ
+1. 新しいMacでの`make init-hobby`/`init-work`の通し（P1-9）。各部品（PATH、`/etc`退避、1Passwordのcask、モード別の分岐）はスクリプトを実行またはソースで確認したが、スタブでの全分岐の実行は済み、本物のmacOSでの通しだけが残る
 
 確認済みの補足: `claude`の実セッションで、`managed-settings.json`全体がスキーマエラーなく読み込まれること（`denyWrite`・`Edit()`のdeny含む）、bash-guardのdeny/ask/素通りの3経路、`claude plugin validate`/`test`の通過を確認した。
