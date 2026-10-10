@@ -104,6 +104,7 @@
       "Bash(gh gpg-key *)",
       "Bash(gh extension *)",
       "Read(.env)",
+      "Edit(.env)",
       "Read(.env.local)",
       "Read(.env.*.local)",
       "Read(.env.production)",
@@ -119,7 +120,16 @@
       "Read(~/.kube/config)",
       "Read(~/.local/share/deck/credentials.json)",
       "Read(~/.ssh/**)",
-      "Read(~/.config/gh/hosts.yml)"
+      "Read(~/.config/gh/hosts.yml)",
+      "Read(~/.config/gcloud/**)",
+      "Read(~/.docker/config.json)",
+      "Read(~/.terraform.d/credentials.tfrc.json)",
+      "Read(~/.npmrc)",
+      "Read(~/.netrc)",
+      "Read(~/.git-credentials)",
+      "Read(~/.pypirc)",
+      "Read(~/.gradle/gradle.properties)",
+      "Read(~/.config/op/**)"
     ],
     "ask": [
       "Bash(git rm*)",
@@ -212,7 +222,8 @@
       "Bash(docker compose push *)",
       "Bash(docker compose watch *)",
       "Bash(docker-compose *)",
-      "Bash(chmod *)"
+      "Bash(chmod *)",
+      "Edit(hooks/**)"
     ],
     "defaultMode": "auto",
     "disableBypassPermissionsMode": "disable"
@@ -384,6 +395,12 @@
         "~/Library/Caches/golangci-lint",
         "~/.docker/buildx",
         "~/.claude/logs"
+      ],
+      "denyWrite": [
+        "~/.gradle/init.d",
+        "~/.gradle/init.gradle",
+        "~/.gradle/gradle.properties",
+        "~/workspaces/github.com/yyh-gl/dotfiles/.env"
       ]
     },
     "credentials": {
@@ -406,6 +423,42 @@
         },
         {
           "path": "~/.config/gh/hosts.yml",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.config/gcloud",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.docker/config.json",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.terraform.d/credentials.tfrc.json",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.npmrc",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.netrc",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.git-credentials",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.pypirc",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.gradle/gradle.properties",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.config/op",
           "mode": "deny"
         }
       ],
@@ -440,6 +493,10 @@
         },
         {
           "name": "AWS_SESSION_TOKEN",
+          "mode": "deny"
+        },
+        {
+          "name": "AI_AGENTS_SLACK_WEBHOOK_URL",
           "mode": "deny"
         }
       ]

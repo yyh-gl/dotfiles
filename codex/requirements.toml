@@ -27,6 +27,12 @@ extends = ":workspace"
 "~/go/pkg/mod" = "write"
 "~/Library/Caches/golangci-lint" = "write"
 "~/.docker/buildx" = "write"
+# Claudeのsandbox.filesystem.denyWrite。GradleのinitスクリプトはIDEからのビルドでも実行される
+"~/.gradle/init.d" = "read"
+"~/.gradle/init.gradle" = "read"
+"~/.gradle/gradle.properties" = "none"
+# zshが起動のたびに読む.env。書き換えられるとsandbox外で任意コードが動く
+"~/workspaces/github.com/yyh-gl/dotfiles/.env" = "none"
 
 [permissions.dotfiles.network]
 enabled = true
@@ -41,6 +47,15 @@ deny_read = [
   "~/.local/share/deck/credentials.json",
   "~/.ssh",
   "~/.config/gh/hosts.yml",
+  "~/.config/gcloud",
+  "~/.docker/config.json",
+  "~/.terraform.d/credentials.tfrc.json",
+  "~/.npmrc",
+  "~/.netrc",
+  "~/.git-credentials",
+  "~/.pypirc",
+  "~/.gradle/gradle.properties",
+  "~/.config/op",
   "/**/.env",
   "/**/.env.local",
   "/**/.env.*.local",
