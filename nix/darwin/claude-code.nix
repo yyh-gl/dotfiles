@@ -30,10 +30,16 @@ in {
     legacy="$claude_dir/managed-settings.json"
     if [ -f "$legacy" ]; then
       legacy_hash="$(shasum -a 256 "$legacy" | cut -d' ' -f1)"
-      case " ${lib.concatStringsSep " " legacyManagedSettingsHashes} " in
-        *" $legacy_hash "*) rm -f "$legacy" || echo "warning: could not remove $legacy" >&2 ;;
-        *) echo "warning: $legacy exists and is not a known dotfiles version; it is merged with the drop-in. Remove it by hand if unneeded" >&2 ;;
-      esac
+      legacy_known=0
+      # nix-darwinはactivateをshellcheckにかける。定数に対するcaseはSC2194でビルドが落ちるため、ループで比べる
+      for known_hash in ${lib.concatStringsSep " " legacyManagedSettingsHashes}; do
+        [ "$legacy_hash" = "$known_hash" ] && legacy_known=1
+      done
+      if [ "$legacy_known" = 1 ]; then
+        rm -f "$legacy" || echo "warning: could not remove $legacy" >&2
+      else
+        echo "warning: $legacy exists and is not a known dotfiles version; it is merged with the drop-in. Remove it by hand if unneeded" >&2
+      fi
     fi
     if ! (
       set -e
