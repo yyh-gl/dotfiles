@@ -82,6 +82,14 @@ enabled = true
 prefix_rules = [
   # --- forbidden（Claudeのpermissions.deny） ---
   { pattern = [{ token = "git" }, { token = "push" }], decision = "forbidden", justification = "pushは人間が行う" },
+  # gitleaksのpre-commit hookを飛ばさせない。前方一致なので`git commit -m x --no-verify`のような後ろ付きは防げない（Claude側は後ろ付きもdeny）
+  { pattern = [{ token = "git" }, { token = "commit" }, { token = "--no-verify" }], decision = "forbidden", justification = "hookを飛ばさない" },
+  { pattern = [{ token = "git" }, { token = "commit" }, { token = "-n" }], decision = "forbidden", justification = "hookを飛ばさない" },
+  # 認証情報・鍵・任意コード実行の経路になるため使わせない（Claudeのpermissions.deny）
+  { pattern = [{ token = "gh" }, { token = "auth" }], decision = "forbidden", justification = "トークンを出さない" },
+  { pattern = [{ token = "gh" }, { token = "ssh-key" }], decision = "forbidden", justification = "鍵を登録させない" },
+  { pattern = [{ token = "gh" }, { token = "gpg-key" }], decision = "forbidden", justification = "鍵を登録させない" },
+  { pattern = [{ token = "gh" }, { token = "extension" }], decision = "forbidden", justification = "任意コードの実行経路になる" },
 
   # --- prompt（Claudeのpermissions.ask） ---
   { pattern = [{ token = "git" }, { token = "rm" }], decision = "prompt" },
@@ -100,6 +108,35 @@ prefix_rules = [
   { pattern = [{ token = "gh" }, { token = "secret" }], decision = "prompt" },
   { pattern = [{ token = "gh" }, { token = "api" }], decision = "prompt" },
   { pattern = [{ token = "gh" }, { token = "gist" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "pr" }, { token = "comment" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "pr" }, { token = "review" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "pr" }, { token = "ready" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "pr" }, { token = "reopen" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "issue" }, { token = "comment" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "issue" }, { token = "delete" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "issue" }, { token = "transfer" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "issue" }, { token = "reopen" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "repo" }, { token = "edit" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "repo" }, { token = "rename" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "repo" }, { token = "archive" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "repo" }, { token = "fork" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "repo" }, { token = "sync" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "repo" }, { token = "deploy-key" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "release" }, { token = "edit" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "release" }, { token = "delete" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "release" }, { token = "upload" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "run" }, { token = "cancel" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "run" }, { token = "rerun" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "run" }, { token = "delete" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "cache" }, { token = "delete" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "workflow" }, { token = "enable" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "workflow" }, { token = "disable" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "variable" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "label" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "codespace" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "poi" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "ruleset" }], decision = "prompt" },
+  { pattern = [{ token = "gh" }, { token = "alias" }], decision = "prompt" },
   # Claudeのaskはdockerの書き込み・実行系サブコマンドの列挙（参照系のdocker ps等はallowで、確認なし）。同じ範囲にする
   # ただしCodexでは承認してもsandbox内で動き、dockerのsocketに届かず失敗する（意図的な差分）
   { pattern = [{ token = "docker" }, { token = "run" }], decision = "prompt" },

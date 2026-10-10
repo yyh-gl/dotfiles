@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# ステージ済みの変更をコミット前にスキャンする
+set -euo pipefail
+
+gitleaks git -v --redact --staged
