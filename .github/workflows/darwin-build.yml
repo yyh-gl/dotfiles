@@ -21,6 +21,29 @@ jobs:
             nix --extra-experimental-features 'nix-command flakes' build \
               ".#darwinConfigurations.yyh-gl-mac-${mode}.system" --no-link --print-build-logs
           done
+      - name: Activate the work configuration as the runner user
+        # bin/init.sh→make _initと同じく、nix-darwinが管理する/etc/zshrc・/etc/bashrcを退避してから最初のswitchを行う
+        run: |
+          for f in zshrc bashrc; do
+            if [ -e /etc/$f ] && [ ! -L /etc/$f ]; then sudo mv /etc/$f /etc/$f.before-nix-darwin; fi
+          done
+          git add -A
+          sudo /nix/var/nix/profiles/default/bin/nix --extra-experimental-features 'nix-command flakes' \
+            run nix-darwin -- switch --flake ".#yyh-gl-mac-ci"
+      - name: Check that the activation applied the settings
+        run: |
+          fail=0
+          check() { if eval "$2"; then echo "ok:   $1"; else echo "FAIL: $1"; fail=1; fi; }
+          check "controlcenter BatteryShowPercentage" '[ "$(defaults -currentHost read com.apple.controlcenter BatteryShowPercentage)" = 1 ]'
+          check "HIToolbox enabled input sources" 'defaults read com.apple.HIToolbox AppleEnabledInputSources | grep -q com.apple.keylayout.ABC || defaults read com.apple.HIToolbox AppleEnabledInputSources | grep -q "KeyboardLayout Name"'
+          check "symbolichotkeys 27 enabled" '/usr/libexec/PlistBuddy -c "Print :AppleSymbolicHotKeys:27:enabled" ~/Library/Preferences/com.apple.symbolichotkeys.plist | grep -q true'
+          check "pmset AC sleep 0" 'pmset -g custom | awk "/AC Power/{f=1} f&&/ sleep /{print \$2; exit}" | grep -qx 0'
+          check "Claude managed settings drop-in" 'cmp -s claude/managed-settings.json "/Library/Application Support/ClaudeCode/managed-settings.d/50-dotfiles.json"'
+          check "Codex requirements" 'cmp -s codex/requirements.toml /etc/codex/requirements.toml'
+          check "work mode user settings are merged" 'jq -e ".sandbox.enabled == true" ~/.claude/settings.json >/dev/null'
+          check "git signing is not configured in work mode" '! git config --global --get commit.gpgsign'
+          check "bash-guard is deployed" 'test -f ~/.claude/hooks/bash-guard.py'
+          exit $fail
       - name: Hook tests on the macOS system python
         # macOSのpython3（/usr/bin/python3）はバージョンが古いため、bash-guardが動く最低ラインの確認になる
         run: |
