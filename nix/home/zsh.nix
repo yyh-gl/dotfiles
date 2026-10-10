@@ -89,6 +89,9 @@ in {
       fi
       '' else ""}
 
+      # このリポジトリに載せたくない機械固有の設定（個人的なパスのエイリアスなど）
+      [[ -r "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
       # Completion
       zmodload zsh/complist
       zstyle ':completion:*' menu select
@@ -100,37 +103,45 @@ in {
 
       # Git
       gico() {
-        local branches branch
-        branches=$(git branch -vv)
-        branch=$(echo "$branches" | fzf +m)
-        git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
+        local branch
+        branch=$(git branch --format='%(refname:short) %(contents:subject)' | fzf +m | awk '{print $1}')
+        [[ -n "$branch" ]] && git checkout "$branch"
       }
 
+      # 作業ツリーに変更があるファイル（未ステージ・未追跡）をfzfで選んでaddする。ctrl-dでdiffを見る
       giad() {
-        local input key addfiles
-        while input=$(
-            git status --short |
-            awk '{if (substr($0,2,1) !~ / /) print $2}' |
+        local input key
+        local -a addfiles
+        while input=$({ git -c core.quotepath=false diff --name-only --relative; git -c core.quotepath=false ls-files --others --exclude-standard; } |
+            sort -u |
             fzf --multi --exit-0 --expect=ctrl-d); do
           key=$(head -1 <<< "$input")
-          addfiles=(`echo $(tail "-1" <<< "$input")`)
-          [[ -z "$addfiles" ]] && continue
+          addfiles=("''${(@f)$(tail -n +2 <<< "$input")}")
+          [[ -z "''${addfiles[*]}" ]] && continue
           if [ "$key" = ctrl-d ]; then
-            git diff --color=always $addfiles | less -R
+            git diff --color=always -- "''${addfiles[@]}" | less -R
           else
-            git add $addfiles
+            git add -- "''${addfiles[@]}"
           fi
         done
       }
 
       gla() {
-        default_branch=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
-        local dest_branch="''${1:-$default_branch}"
-        git switch $default_branch
+        if [[ -n "$(git status --porcelain)" ]]; then
+          echo "uncommitted changes exist; commit or stash them first" >&2
+          return 1
+        fi
+        local default_branch dest_branch
+        # origin/HEADはcloneのときに設定済み。ネットワークに出ない
+        default_branch=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)
+        default_branch=''${default_branch#origin/}
+        [[ -z "$default_branch" ]] && default_branch=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
+        dest_branch="''${1:-$default_branch}"
+        git switch "$default_branch"
         git fetch origin
-        git reset --hard origin/$default_branch
+        git reset --hard "origin/$default_branch"
         gh poi
-        git switch $dest_branch
+        git switch "$dest_branch"
       }
 
       rom() {
@@ -139,8 +150,7 @@ in {
       }
 
       back() {
-        git reset --soft $(git rev-parse head~)
-        git restore --staged .
+        git reset HEAD~
       }
 
     '';
@@ -204,8 +214,8 @@ in {
       k = "kubectl";
       kc = "kubectx";
       kn = "kubens";
-      dsh = ''docker exec -it $(docker ps | fzf | cut -f 1 -d " ") /bin/bash'';
-      ksh = ''kubectl exec -it $(kubectl get po | fzf | cut -f 1 -d " ") -- /bin/bash'';
+      dsh = ''docker exec -it $(docker ps | fzf --header-lines=1 | cut -f 1 -d " ") /bin/bash'';
+      ksh = ''kubectl exec -it $(kubectl get po | fzf --header-lines=1 | cut -f 1 -d " ") -- /bin/bash'';
       dot = "cd $HOME/workspaces/github.com/yyh-gl/dotfiles";
       my = "cd $HOME/workspaces/github.com/yyh-gl/my-agent-teams";
     } // (if mode == "hobby" then {
@@ -223,7 +233,6 @@ in {
       br = ''cd "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/main"'';
       sl = "cd $HOME/workspaces/github.com/yyh-gl/slide-decks/";
       kf = "cd $HOME/workspaces/github.com/yyh-gl/slide-decks/slides/261114_kotlin-fest_lincheck/";
-      mn = "cd $HOME/Desktop/hobby/01_CasualLife/02_住居/REDACTED";
       ant = "cd $HOME/workspaces/github.com/yyh-gl/assist-ant/";
     } else if mode == "work" then {
       # Add aliases for work
