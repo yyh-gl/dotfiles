@@ -390,7 +390,7 @@
 | P2-3 | ✅ | 記念日スクリプトを`source`する関数に（旧出力と5日付で一致を確認）、バナーは対話シェルのみ、デフォルトルートのインターフェース |
 | P2-4 | 🟡 | statuslineのtry/catch・並行取得・branchの取得条件、`make test-mods`は全modをループ。型検査とmodの実行は`claude`が必要で未確認（構文のビルドのみ確認） |
 | P2-5 | ✅ | OSC文字列の無害化（制御文字が落ちることを確認）、`wezterm-state.sh`を実行可能に、`idle_prompt`の質問通知を外した |
-| P2-6 | ✅ | `gla`・`back`・`giad`・`gico`・`dsh`/`ksh`を修正し、空白/日本語/サブディレクトリ/dirty treeで確認。`mn`エイリアスはHEADから削除（`~/.zshrc.local`へ）。**公開履歴からの削除（履歴の書き換え）は未実施** — 外部に影響する操作なので、希望があれば別途指示してほしい |
+| P2-6 | ✅ | `gla`・`back`・`giad`・`gico`・`dsh`/`ksh`を修正し、空白/日本語/サブディレクトリ/dirty treeで確認。`mn`エイリアスはHEADから削除（`~/.zshrc.local`へ）。公開履歴からの削除は、ユーザーの選択（「手順だけ作る」）により手順書`docs/history-rewrite.md`を作成。実行はしない（force pushを伴うため。mainにはこのブランチの修正が入るまで残る） |
 | P2-7 | ✅ / ⏭ | `permissions`・renovateのpreset（`pinGitHubActionDigests`でSHA固定はRenovateのPRで行う）、brewの自動更新を`make brew-upgrade`へ、`go test -run '^名$'`、git editor、`allowed_signers`、architectの汎用化、`nix-cleanup`の期間指定、1Password失敗時の続行、Karabiner/Rectangleの上書き警告、Codex MCP登録の記載は対応済み。vercelスキルは、公式marketplaceに見つからないためプラグイン化せず、出所と更新手順を`UPSTREAM.md`に記録して固定 |
 | P2-8 | ✅ | 書き出し先、reviewer/implementer/tester/dev-teamの矛盾、smart-commitの言語とgitleaks、init2、grammar例、PRテンプレート探索、evalsフィクスチャ、explain-diffを修正 |
 | R-1 | ✅（最小案） | 生成方式ではなく`make check-policy`と`check-policy`ワークフローで差分を検出（意図的な差分の混入を検出できることを確認済み） |
@@ -407,4 +407,3 @@
 1. 新しいMacでの`make init-hobby`/`init-work`の通し（P1-9）。各部品（PATH、`/etc`退避、1Passwordのcask、モード別の分岐）はスクリプトを実行またはソースで確認したが、通しは実機のみ
 2. statuslineのmodがClaude Code上で動くこと（P2-4）。型とエンジンのAPIは`claude`が要り、構文のビルドまでしか確認していない
 3. bash-guardが実際のClaude Codeセッションから呼ばれて、askが出ること（R-6）。仕様はドキュメントで確認済みだが、実機の通しは未実施
-4. `mn`エイリアスの住居情報を公開履歴から消すか（force pushを伴うため、ユーザーの判断待ち。P2-6）
