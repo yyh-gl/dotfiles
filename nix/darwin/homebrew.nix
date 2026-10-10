@@ -2,8 +2,9 @@
   homebrew = {
     enable = true;
     onActivation = {
-      autoUpdate = true;
-      upgrade = true;
+      # applyのたびにHomebrewを更新すると、同じflake.lockでも結果が変わりapplyも遅くなる。更新は`make brew-upgrade`で行う
+      autoUpdate = false;
+      upgrade = false;
       cleanup = "zap";
     };
     taps = [

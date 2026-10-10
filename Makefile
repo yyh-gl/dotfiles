@@ -51,6 +51,11 @@ nix-apply-work: # Apply Nix configuration (work mode)
 nix-update: # Update tools on Nix
 	nix flake update
 
+.PHONY: brew-upgrade
+brew-upgrade: # Update Homebrew and upgrade formulae and casks
+	brew update
+	brew upgrade
+
 .PHONY: nix-cleanup
 nix-cleanup: # Cleanup Nix (keep generations from the last 14 days for rollback)
 	sudo nix-collect-garbage --delete-older-than 14d

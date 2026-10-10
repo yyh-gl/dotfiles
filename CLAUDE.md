@@ -29,3 +29,7 @@ permissionsは「deny→ask→allow」の順に評価され、ルールの具体
 テストは`make test-mods`で回す（`bun test`・`claude plugin validate`・`claude plugin test`）。`hooks/lib/*.spec.ts`がbun用、`hooks/register.test.ts`が`claude plugin test`用で、`claude plugin test`は`*.test.ts`だけを拾う。`bun test`は`.spec.ts`と`.test.ts`の両方を拾い、`register.test.ts`はbunでは動かないため、必ず`bun test claude/mods/prompt-highlight-md/hooks/lib`のようにパスで絞る。CIの`.github/workflows/test-mods.yml`はclaude CLIの導入と認証が要るため`bun test`だけを回す。
 
 modはClaude Code固有の仕組みでCodexに対応する設定はないので、`docs/codex-sandbox.md`は変更していない（意図的な差分）。
+
+### Codex MCPサーバー
+
+`codex-review`スキルは`mcp__codex__codex`を使う。サーバーの登録はNixでは管理していないため、新しいマシンでは一度だけ`claude mcp add codex -s user -- codex mcp-server`で登録する（`codex`はHomebrewのcaskで入る）。
