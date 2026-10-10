@@ -391,15 +391,15 @@
 | P2-4 | 🟡 | statuslineのtry/catch・並行取得・branchの取得条件、`make test-mods`は全modをループ。型検査とmodの実行は`claude`が必要で未確認（構文のビルドのみ確認） |
 | P2-5 | ✅ | OSC文字列の無害化（制御文字が落ちることを確認）、`wezterm-state.sh`を実行可能に、`idle_prompt`の質問通知を外した |
 | P2-6 | ✅ | `gla`・`back`・`giad`・`gico`・`dsh`/`ksh`を修正し、空白/日本語/サブディレクトリ/dirty treeで確認。`mn`エイリアスはHEADから削除（`~/.zshrc.local`へ）。**公開履歴からの削除（履歴の書き換え）は未実施** — 外部に影響する操作なので、希望があれば別途指示してほしい |
-| P2-7 | ✅ / ⏭ | `permissions`・renovateのpreset（`pinGitHubActionDigests`でSHA固定はRenovateのPRで行う）、brewの自動更新を`make brew-upgrade`へ、`go test -run '^名$'`、git editor、`allowed_signers`、architectの汎用化、`nix-cleanup`の期間指定、1Password失敗時の続行、Karabiner/Rectangleの上書き警告、Codex MCP登録の記載は対応済み。**vercelスキルのプラグイン化は見送り**（プラグインとして配布されているか確認できないため） |
+| P2-7 | ✅ / ⏭ | `permissions`・renovateのpreset（`pinGitHubActionDigests`でSHA固定はRenovateのPRで行う）、brewの自動更新を`make brew-upgrade`へ、`go test -run '^名$'`、git editor、`allowed_signers`、architectの汎用化、`nix-cleanup`の期間指定、1Password失敗時の続行、Karabiner/Rectangleの上書き警告、Codex MCP登録の記載は対応済み。vercelスキルは、公式marketplaceに見つからないためプラグイン化せず、出所と更新手順を`UPSTREAM.md`に記録して固定 |
 | P2-8 | ✅ | 書き出し先、reviewer/implementer/tester/dev-teamの矛盾、smart-commitの言語とgitleaks、init2、grammar例、PRテンプレート探索、evalsフィクスチャ、explain-diffを修正 |
 | R-1 | ✅（最小案） | 生成方式ではなく`make check-policy`と`check-policy`ワークフローで差分を検出（意図的な差分の混入を検出できることを確認済み） |
-| R-2 | ✅ / ⏭ | `install`への統一と`dotfiles`の共有は対応。旧`managed-settings.json`の自動削除は、過去版の内容を持たないため見送り（手動削除のまま） |
+| R-2 | ✅ | `install`への統一と`dotfiles`の共有、旧`managed-settings.json`の自動削除（dotfilesの過去版のsha256と一致するときだけ消し、編集済みなら警告して残す。両方の経路を実行して確認済み） |
 | R-3 | ✅ | 公開鍵は`home.file`、`op inject`はデータ駆動 |
 | R-4 | ✅ / ⏭ | `optionalString`/`optionalAttrs`に統一。`sessionVariables`/`siteFunctions`への移動は、実測した起動構成を変えるため見送り |
 | R-5 | ✅ / ⏭ | `help`の自動化、`init-*`、`test-mods`のループは対応。パターンルール化は`help`に出なくなるため見送り |
 | R-6 | ⏭ | PreToolUse hookでのコマンド判定。deny/ask列挙で当面の穴は塞いだ。hookはpermissionsの意味を変える大きな変更なので、別タスクとして切り出す |
-| R-7 | ⏭ | EmacsのパッケージをNixへ。epkgsの属性名をこの環境で評価できず、誤ると構成全体のevalが壊れるため見送り |
+| R-7 | ✅ | `programs.emacs.extraPackages`で入れ、`:ensure t`とMELPA登録を削除。全属性名が最新のnixpkgs-unstableに存在することを`nix-instantiate`で確認済み（ロック済みrevでの評価は未実施） |
 | R-8 | ✅ | CLAUDE.mdの経緯と一度きりの手順を`docs/claude-settings.md`へ移し、ルールだけを残した |
 
 ### 実機で確認してほしいこと
