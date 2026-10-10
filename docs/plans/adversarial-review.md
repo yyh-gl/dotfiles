@@ -372,7 +372,7 @@
 | P0-2 | ✅ | pre-pushをpush範囲のスキャンへ、pre-commitを追加。`--no-verify`/`-n`をdeny（Codexは直後形のみ）。Makefileを`gitleaks git`へ。範囲の組み立てはスタブで確認済み（gitleaks本体はこの環境になく未実行） |
 | P0-3 | ✅ | `gh auth/ssh-key/gpg-key/extension`をdeny、書き込み系サブコマンドをask。Codexにも同じ範囲 |
 | P1-1 | ✅ | Gradleのinit/propertiesを書き込み禁止に。Goキャッシュは受け入れるリスクとして`docs/codex-sandbox.md`に明記 |
-| P1-1b | ✅ | `.env`を`source`せずKEY=VALUEパーサーに（zshで確認済み）。公式ドキュメントで、`sandbox.filesystem.denyWrite`が存在しmanaged settingsでも有効で`~/`を受け付けること、`Edit()`のdenyがdenyWriteに統合されBashからの書き込みにも効くこと、`Edit(.env)`が任意の深さに一致することを確認済み。`hooks/`のaskはEditツール経由のみ（Bash経由は未対応と明記）。Codexの`"none"`だけは未確認 |
+| P1-1b | ✅ | `.env`を`source`せずKEY=VALUEパーサーに（zshで確認済み）。公式ドキュメントで、`sandbox.filesystem.denyWrite`が存在しmanaged settingsでも有効で`~/`を受け付けること、`Edit()`のdenyがdenyWriteに統合されBashからの書き込みにも効くこと、`Edit(.env)`が任意の深さに一致することを確認済み。`hooks/`のaskはEditツール経由のみ（Bash経由は未対応と明記）。Codexは、公式のconfig schemaで現行の値が`deny`（`none`は互換用の旧名）と分かったため`deny`に変更済み |
 | P1-2 | ✅ | 認証情報のパスを3か所（credentials.files・Read deny・deny_read）に追加 |
 | P1-3 | ✅ | `.env`は全シェルexportを続けつつ、変数名をenvVars deny・Codex excludeに追加。`slack-notify.sh`は削除 |
 | P1-4 | ✅ | 検証の代わりに根本から塞いだ。`.git-config/config`でgithub.comのcredential helperをリセットし、`pushInsteadOf`でpushだけSSHに振り替え（helperが呼ばれないこと・push URLの書き換えをgitで実行して確認済み）。`git -C/-c/--git-dir/--work-tree ... push`のdenyも残す。副作用: sandbox内でのprivate repoのHTTPS fetchはできなくなる |
@@ -407,5 +407,4 @@
 1. 新しいMacでの`make init-hobby`/`init-work`の通し（P1-9）。各部品（PATH、`/etc`退避、1Passwordのcask、モード別の分岐）はスクリプトを実行またはソースで確認したが、通しは実機のみ
 2. statuslineのmodがClaude Code上で動くこと（P2-4）。型とエンジンのAPIは`claude`が要り、構文のビルドまでしか確認していない
 3. bash-guardが実際のClaude Codeセッションから呼ばれて、askが出ること（R-6）。仕様はドキュメントで確認済みだが、実機の通しは未実施
-4. Codexが`[permissions.dotfiles.filesystem]`の`"none"`を受け付けること（P1-1b）
-5. `mn`エイリアスの住居情報を公開履歴から消すか（force pushを伴うため、ユーザーの判断待ち。P2-6）
+4. `mn`エイリアスの住居情報を公開履歴から消すか（force pushを伴うため、ユーザーの判断待ち。P2-6）

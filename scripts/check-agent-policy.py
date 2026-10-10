@@ -51,7 +51,7 @@ compare("allowWrite", set(sandbox["filesystem"]["allowWrite"]),
         {p for p, m in codex_fs.items() if m == "write"},
         claude_only=INTENTIONAL_CLAUDE_ONLY["allow_write"])
 compare("denyWrite", set(sandbox["filesystem"].get("denyWrite", [])),
-        {p for p, m in codex_fs.items() if m in ("read", "none")})
+        {p for p, m in codex_fs.items() if m in ("read", "deny")})
 
 
 # 読み取り禁止: credentials.filesとpermissions.denyのRead(...)をCodexのdeny_readの形に直して比べる
