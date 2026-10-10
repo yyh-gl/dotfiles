@@ -1,4 +1,4 @@
-{ dotfiles, lib, config, mode, ... }:
+{ dotfiles, lib, config, mode, pkgs, ... }:
 let
   hd = config.home.homeDirectory;
 in {
@@ -45,11 +45,19 @@ in {
   '';
 
   # 仕事PCではMDM等により/Library/Application Support/配下への書き込みがブロックされることが多いため、
-  # workモードに限りclaude/managed-settings.jsonの内容を~/.claude/settings.jsonとして配備する（Rectangle同様、symlinkだと書き込みできないため実ファイルとしてコピー）
+  # workモードに限りclaude/managed-settings.jsonの内容を~/.claude/settings.jsonへ配備する（Rectangle同様、symlinkだと書き込みできないため実ファイルにする）
+  # Claude Codeが書く可変設定（enabledPlugins・effortLevelなど）を消さないよう、既存のsettings.jsonへmanaged側のキーを上書きマージする
+  # user層なので、クローンしたリポジトリの.claude/settings.jsonにsandbox無効化などで上書きされうる（managed層と違い強制力はない）
   home.activation.claudeManagedSettingsAsUserSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${lib.optionalString (mode == "work") ''
       mkdir -p "${hd}/.claude"
-      install -m 644 "${dotfiles}/claude/managed-settings.json" "${hd}/.claude/settings.json"
+      settings="${hd}/.claude/settings.json"
+      managed="${dotfiles}/claude/managed-settings.json"
+      if [ -s "$settings" ] && merged="$(${pkgs.jq}/bin/jq -s '.[0] * .[1]' "$settings" "$managed")"; then
+        printf '%s\n' "$merged" > "$settings.tmp" && mv "$settings.tmp" "$settings"
+      else
+        install -m 644 "$managed" "$settings"
+      fi
     ''}
   '';
 }

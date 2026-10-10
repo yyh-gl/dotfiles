@@ -1,7 +1,6 @@
 [user]
   name = yyh-gl
   email = yhonda.95.gl@gmail.com
-  signingkey = ~/.config/git/github_signing_ed25519
 
 [color]
   ui = true
@@ -31,8 +30,9 @@
   navigate = true
   side-by-side = true
 
-[gpg]
-  format = ssh
-
-[commit]
-  gpgsign = true
+# 署名鍵はhobbyモードでだけ1Passwordから配置する（nix/home/secrets.nix）ため、署名設定は別ファイルに分けている。
+# workモードにはこのファイルを置かないので、署名なしでコミットできる（存在しないincludeは無視される）
+[include]
+  path = ~/.config/git/signing
+  # 機械ごとの上書き用（workのuser.emailなど）。Nixでは管理しない
+  path = ~/.config/git/local

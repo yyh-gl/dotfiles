@@ -18,6 +18,10 @@ in {
   home.file.".config/starship.toml".source = "${dotfiles}/starship.toml";
   home.file.".config/git/config".source = "${dotfiles}/.git-config/config";
   home.file.".config/git/ignore".source = "${dotfiles}/.git-config/ignore";
+  # 署名鍵を配置するhobbyモードだけ署名を有効にする（nix/home/secrets.nixのgitSigningKeyImport）
+  home.file.".config/git/signing" = lib.mkIf (mode == "hobby") {
+    source = "${dotfiles}/.git-config/signing";
+  };
   home.file.".config/laminate/config.yaml".source = "${dotfiles}/laminate/config.yaml";
   home.file.".config/hunk/config.toml".source = "${dotfiles}/hunk/config.toml";
 

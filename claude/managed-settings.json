@@ -97,6 +97,10 @@
     ],
     "deny": [
       "Bash(git push*)",
+      "Bash(git -C * push*)",
+      "Bash(git -c * push*)",
+      "Bash(git --git-dir* push*)",
+      "Bash(git --work-tree* push*)",
       "Bash(git commit*--no-verify*)",
       "Bash(git commit* -n*)",
       "Bash(gh auth *)",
@@ -222,6 +226,8 @@
       "Bash(docker compose push *)",
       "Bash(docker compose watch *)",
       "Bash(docker-compose *)",
+      "Bash(docker -* *)",
+      "Bash(docker compose -* *)",
       "Bash(chmod *)",
       "Edit(hooks/**)"
     ],
