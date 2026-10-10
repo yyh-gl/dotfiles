@@ -388,7 +388,7 @@
 | P2-1 | ✅ | README・AGENTS.md・CLAUDE.md・コメント・ignoreの`sonarlint`行（`check-ignore`で確認）・`manual.sh`を修正 |
 | P2-2 | ✅ | nix-vscode-extensions・hub・slack-notify・nesc・`.idea/`・`use-package`・`_module.args`を削除、aliasは元ファイルを開くよう変更、eglotはサーバーがあるときだけ起動、laminateの依存はHomebrewに追加、`ghostty`/`zed`は手動インストール前提とコメント |
 | P2-3 | ✅ | 記念日スクリプトを`source`する関数に（旧出力と5日付で一致を確認）、バナーは対話シェルのみ、デフォルトルートのインターフェース |
-| P2-4 | 🟡 | statuslineのtry/catch・並行取得・branchの取得条件、`make test-mods`は全modをループ。型検査とmodの実行は`claude`が必要で未確認（構文のビルドのみ確認） |
+| P2-4 | ✅ | statuslineのtry/catch・並行取得・branchの取得条件、`make test-mods`は全modをループ。`claude plugin validate`で両modが通り（改変後のhooksと`$.session.*`の呼び出しを認識）、`claude plugin test`も8件通過 |
 | P2-5 | ✅ | OSC文字列の無害化（制御文字が落ちることを確認）、`wezterm-state.sh`を実行可能に、`idle_prompt`の質問通知を外した |
 | P2-6 | ✅ | `gla`・`back`・`giad`・`gico`・`dsh`/`ksh`を修正し、空白/日本語/サブディレクトリ/dirty treeで確認。`mn`エイリアスはHEADから削除（`~/.zshrc.local`へ）。公開履歴からの削除は、ユーザーの選択（「手順だけ作る」）により手順書`docs/history-rewrite.md`を作成。実行はしない（force pushを伴うため。mainにはこのブランチの修正が入るまで残る） |
 | P2-7 | ✅ / ⏭ | `permissions`・renovateのpreset（`pinGitHubActionDigests`でSHA固定はRenovateのPRで行う）、brewの自動更新を`make brew-upgrade`へ、`go test -run '^名$'`、git editor、`allowed_signers`、architectの汎用化、`nix-cleanup`の期間指定、1Password失敗時の続行、Karabiner/Rectangleの上書き警告、Codex MCP登録の記載は対応済み。vercelスキルは、公式marketplaceに見つからないためプラグイン化せず、出所と更新手順を`UPSTREAM.md`に記録して固定 |
@@ -398,12 +398,12 @@
 | R-3 | ✅ | 公開鍵は`home.file`、`op inject`はデータ駆動 |
 | R-4 | ✅ / ⏭ | `optionalString`/`optionalAttrs`に統一。`sessionVariables`/`siteFunctions`への移動は、実測した起動構成を変えるため見送り |
 | R-5 | ✅ / ⏭ | `help`の自動化、`init-*`、`test-mods`のループは対応。パターンルール化は`help`に出なくなるため見送り |
-| R-6 | ✅ | `claude/hooks/bash-guard.py`（締める方向にだけ働くPreToolUse hook）。dev-teamの手順で実装→独立Reviewer（BLOCK、バイパス14種と誤検知を指摘）→修正→再検証。unittest 46件と自分で流した51ケース・処理時間は通過。出力形式（`hookSpecificOutput`・`permissionDecision`）と、hookのaskがallowルールより優先されることは公式ドキュメントで確認済み。Codexには同等の仕組みがなく`prefix_rules`のまま（`docs/codex-sandbox.md`に記載）。トークン化による判定には限界があり、既知の未対応は`bash ./script.sh`の中身など |
+| R-6 | ✅ | `claude/hooks/bash-guard.py`（締める方向にだけ働くPreToolUse hook）。dev-teamの手順で実装→独立Reviewer（BLOCK、バイパス14種と誤検知を指摘）→修正→再検証。unittest 46件と自分で流した51ケース・処理時間は通過。実セッション（`claude -p`＋PreToolUse hook）で、`git -C . push`はallowルールがあってもdeny、`docker -H ... run`はask、`git status`は素通りになることを確認済み。出力形式（`hookSpecificOutput`・`permissionDecision`）と、hookのaskがallowルールより優先されることは公式ドキュメントで確認済み。Codexには同等の仕組みがなく`prefix_rules`のまま（`docs/codex-sandbox.md`に記載）。トークン化による判定には限界があり、既知の未対応は`bash ./script.sh`の中身など |
 | R-7 | ✅ | `programs.emacs.extraPackages`で入れ、`:ensure t`とMELPA登録を削除。全属性名が最新のnixpkgs-unstableに存在することを`nix-instantiate`で確認済み（ロック済みrevでの評価は未実施） |
 | R-8 | ✅ | CLAUDE.mdの経緯と一度きりの手順を`docs/claude-settings.md`へ移し、ルールだけを残した |
 
 ### まだ実機でしか確認できないこと
 
-1. 新しいMacでの`make init-hobby`/`init-work`の通し（P1-9）。各部品（PATH、`/etc`退避、1Passwordのcask、モード別の分岐）はスクリプトを実行またはソースで確認したが、通しは実機のみ
-2. statuslineのmodがClaude Code上で動くこと（P2-4）。型とエンジンのAPIは`claude`が要り、構文のビルドまでしか確認していない
-3. bash-guardが実際のClaude Codeセッションから呼ばれて、askが出ること（R-6）。仕様はドキュメントで確認済みだが、実機の通しは未実施
+1. 新しいMacでの`make init-hobby`/`init-work`の通し（P1-9）。各部品（PATH、`/etc`退避、1Passwordのcask、モード別の分岐）はスクリプトを実行またはソースで確認したが、通しはmacOSの実機のみ
+
+確認済みの補足: `claude`の実セッションで、`managed-settings.json`全体がスキーマエラーなく読み込まれること（`denyWrite`・`Edit()`のdeny含む）、bash-guardのdeny/ask/素通りの3経路、`claude plugin validate`/`test`の通過を確認した。
