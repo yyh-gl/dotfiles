@@ -29,15 +29,12 @@
 ;; ▼ Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package dape
-  :ensure t
   :after go-ts-mode)
 
 (use-package yasnippet
-  :ensure t
   :defer t)
 
 (use-package yasnippet-snippets
-  :ensure t
   :defer t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

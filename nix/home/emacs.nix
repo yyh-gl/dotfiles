@@ -2,6 +2,21 @@
   programs.emacs = {
     enable = true;
     package = pkgs.emacs-nox;
+    # MELPAから起動時に取得せず、Nixで固定する（新しいMacの初回起動が速く、バージョンも固定される）
+    extraPackages = epkgs: with epkgs; [
+      company
+      dape
+      expand-region
+      kotlin-mode
+      magit
+      neotree
+      nix-mode
+      projectile
+      web-mode
+      yaml-mode
+      yasnippet
+      yasnippet-snippets
+    ];
   };
 
   home.file.".emacs.d/tree-sitter/libtree-sitter-go.dylib".source =

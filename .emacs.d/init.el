@@ -13,11 +13,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ▼ Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Emacs 27+ runs `package-initialize' before init.el, so only the extra archive
-;; needs registering here. use-package is built in since Emacs 29.
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
+;; パッケージはNix（nix/home/emacs.nix の extraPackages）で入れる。MELPAからは取得しない。
+;; use-packageはEmacs 29から組み込み。
 ;; Package Management
 (require 'use-package)
 
@@ -33,29 +30,24 @@
 
 ;; Auto Complete
 (use-package company
-  :ensure t
   :hook (after-init . global-company-mode))
 
 ;; Git
 (use-package magit
-  :ensure t
   :bind ("C-x g" . magit-status))
 
 ;; Project Management
 (use-package projectile
-  :ensure t
   :defer t
   :bind ("C-x f" . projectile-find-file)
   :config (projectile-mode +1))
 
 ;; Extend Selection
 (use-package expand-region
-  :ensure t
   :bind ("C-M-w" . er/expand-region))
 
 ;; File Tree
 (use-package neotree
-  :ensure t
   :bind ("C-\\" . neotree-toggle))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
