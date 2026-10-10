@@ -107,21 +107,7 @@ nix/
     └── secrets.nix    # 1Password連携 (hobbyモードのみ)
 ```
 
-**初回セットアップ手順:**
-
-```sh
-# 1. Xcode Command Line Toolsを入れ、このリポジトリをHTTPSでcloneしてcdする
-xcode-select --install
-git clone https://github.com/yyh-gl/dotfiles.git ~/workspaces/github.com/yyh-gl/dotfiles
-
-# 2. 初回セットアップ。Homebrew・1Password・Nixを入れ、/etc/zshrc・/etc/bashrcを
-#    .before-nix-darwinへ退避して（nix-darwinが管理するため）、最初のswitchまで行う
-git add nix/ flake.nix flake.lock   # Nixはgit追跡ファイルのみ読み込む
-make init-hobby                     # または make init-work
-
-# 3. 以降は make nix-apply-hobby または make nix-apply-work で適用
-make nix-apply-hobby
-```
+初回セットアップの手順は[README.md](README.md)にある（Xcode Command Line Tools → HTTPSでclone → `make init-hobby` / `make init-work`）。`/etc/zshrc`・`/etc/bashrc`はnix-darwinが管理するため、`init`が`.before-nix-darwin`へ退避する。
 
 **注意事項:**
 
