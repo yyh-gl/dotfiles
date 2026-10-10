@@ -55,36 +55,48 @@ const findWindow = (
   return w && { percent: w.percentUsed, resetsAt: w.resetsAt }
 }
 
-// dir/branch/modelはモデル切替やcheckoutで変わるため、利用量の更新やターン完了のたびに取り直す
-async function refresh($: EngineInterface) {
-  const usage = await $.session.usage()
-  const next: Snap = {
-    dir: basename(await $.session.cwd()),
-    branch: await readBranch($),
-    model: await $.session.model(),
-    ctx: usage.context.percent,
-    five: findWindow(usage.rateLimits, 'five_hour'),
-    seven: findWindow(usage.rateLimits, 'seven_day'),
-    costUsd: usage.cost?.usd,
+// 利用量・cwd・modelはモデル切替などで変わるため、更新のたびに並行して取り直す。
+// branchはcheckoutがターンの中で起きるため、session.startとturn.completeのときだけgitを起動して取り直す（measureのたびには起動しない）。
+// 取得に失敗してもフックが例外を投げると失敗通知が出続けるため、表示は前回のままにする
+async function refresh($: EngineInterface, refetchBranch: boolean) {
+  try {
+    const [usage, cwd, model, prev, fetchedBranch] = await Promise.all([
+      $.session.usage(),
+      $.session.cwd(),
+      $.session.model(),
+      read($, snapAtom),
+      refetchBranch ? readBranch($) : Promise.resolve(undefined),
+    ])
+    const next: Snap = {
+      dir: basename(cwd),
+      branch: fetchedBranch ?? prev?.branch ?? '',
+      model,
+      ctx: usage.context.percent,
+      five: findWindow(usage.rateLimits, 'five_hour'),
+      seven: findWindow(usage.rateLimits, 'seven_day'),
+      costUsd: usage.cost?.usd,
+    }
+    await update($, snapAtom, () => next)
+  } catch {
+    // 前回のスナップショットを残す
   }
-  await update($, snapAtom, () => next)
 }
 
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
-    await refresh($)
+    await refresh($, true)
 
     return next(e)
   })
 
   on('session.measure', async ($, e, next) => {
-    await refresh($)
+    await refresh($, false)
 
     return next(e)
   })
 
   on('turn.complete', async ($, e, next) => {
-    await refresh($)
+    await refresh($, true)
 
     return next(e)
   })
