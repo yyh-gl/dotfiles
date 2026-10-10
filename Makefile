@@ -68,6 +68,11 @@ gitleaks-all: # Scan git history for secrets
 gitleaks-staged: # Scan staged changes for secrets
 	gitleaks git -v --redact --staged
 
+# ClaudeとCodexのsandbox・permissionsの差分を検出する（CIでも実行）
+.PHONY: check-policy
+check-policy: # Check that Claude and Codex policies match
+	python3 scripts/check-agent-policy.py
+
 .PHONY: test-mods
 test-mods: # Test and validate Claude Code mods
 	bun test claude/mods/prompt-highlight-md/hooks/lib

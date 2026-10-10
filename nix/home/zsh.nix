@@ -76,7 +76,7 @@ in {
       typeset -U path cdpath fpath manpath
 
       # Environment variables
-      ${if mode == "hobby" then ''
+      ${lib.optionalString (mode == "hobby") ''
       # sandbox内から書き換えられても任意コードが動かないよう、sourceせずKEY=VALUEの行だけを読む
       local _dotenv="$HOME/workspaces/github.com/yyh-gl/dotfiles/.env" _k _v
       if [[ -r "$_dotenv" ]]; then
@@ -87,7 +87,7 @@ in {
           export "$_k=$_v"
         done < "$_dotenv"
       fi
-      '' else ""}
+      ''}
 
       # このリポジトリに載せたくない機械固有の設定（個人的なパスのエイリアスなど）
       [[ -r "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
@@ -218,7 +218,7 @@ in {
       ksh = ''kubectl exec -it $(kubectl get po | fzf --header-lines=1 | cut -f 1 -d " ") -- /bin/bash'';
       dot = "cd $HOME/workspaces/github.com/yyh-gl/dotfiles";
       my = "cd $HOME/workspaces/github.com/yyh-gl/my-agent-teams";
-    } // (if mode == "hobby" then {
+    } // (lib.optionalAttrs (mode == "hobby") {
       supabase = "npx supabase";
       sb = "supabase";
       tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
@@ -234,9 +234,9 @@ in {
       sl = "cd $HOME/workspaces/github.com/yyh-gl/slide-decks/";
       kf = "cd $HOME/workspaces/github.com/yyh-gl/slide-decks/slides/261114_kotlin-fest_lincheck/";
       ant = "cd $HOME/workspaces/github.com/yyh-gl/assist-ant/";
-    } else if mode == "work" then {
+    }) // (lib.optionalAttrs (mode == "work") {
       # Add aliases for work
-    } else {});
+    });
   };
 
   # compinit -Cは補完の追加を自動検知しないので、applyのたびに.zcompdumpを捨てて次の起動で作り直させる

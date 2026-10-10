@@ -5,7 +5,7 @@ Claudeの`claude/managed-settings.json`と同じルールをCodexにも適用し
 - `codex/requirements.toml` → `/etc/codex/requirements.toml`。Claudeの`managed-settings.json`に相当し、ユーザーが上書きできず、CLIフラグでも外せない。permission profile `dotfiles`・network allowlist・filesystemのdeny・`forbidden`/`prompt`ルール・`allowed_*`の制限（`danger-full-access`やapproval policy `never`への切り替え禁止）を置く
 - `codex/managed_config.toml` → `/etc/codex/managed_config.toml`。user層（`~/.codex/config.toml`）より優先される既定値（`approval_policy`・`shell_environment_policy`）。user層に同じ項目を書かない
 
-Claudeの設定を変えたらCodex側も揃える。対応関係と注意点:
+Claudeの設定を変えたらCodex側も揃える。`make check-policy`（`scripts/check-agent-policy.py`。CIの`check-policy`ワークフローでも実行）がドメイン・環境変数・書き込み/読み取りの許可・Bashのforbidden/promptの差分を検出する。意図的な差分はスクリプトの`INTENTIONAL_*`に理由つきで追加する。対応関係と注意点:
 
 - `sandbox.filesystem.allowWrite` → `[permissions.dotfiles.filesystem]`の`write`
 - `sandbox.credentials.files`・`permissions.deny`の`Read(...)` → `[permissions.filesystem]`の`deny_read`（ワークスペース外にも効く）

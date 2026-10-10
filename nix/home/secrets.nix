@@ -4,6 +4,12 @@ let
   op = "${pkgs._1password-cli}/bin/op";
   # 1Passwordがロック中・CLI連携が無効などでopが失敗すると、home-managerのactivationがそこで止まって
   # 後続のClaude設定やmodの配置まで適用されない。失敗は警告だけ出して続ける
+  injects = [
+    { tpl = "ssh-config.tpl";      out = ".ssh/config"; }
+    { tpl = "aws-credentials.tpl"; out = ".aws/credentials"; }
+    { tpl = "kube-config.tpl";     out = ".kube/config"; }
+    { tpl = "deck-credentials.tpl"; out = ".local/share/deck/credentials.json"; }
+  ];
   opHelpers = ''
     op_read() { # <op:// reference> <output file>
       if ${op} read "$1" --out-file "$2" --force; then
@@ -23,14 +29,15 @@ let
 in {
   home.packages = [ pkgs._1password-cli ];
 
+  # 公開鍵は秘密ではないので、symlinkで配置する
+  home.file = lib.genAttrs
+    (map (name: ".ssh/keys/${name}.pub") [ "hobigon-k8s-master" "hobigon-k8s-worker" "hobigon-wsl" ])
+    (path: { source = "${dotfiles}/${path}"; });
+
   home.activation.sshSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     mkdir -p "${hd}/.ssh/keys"
     chmod 700 "${hd}/.ssh"
     chmod 700 "${hd}/.ssh/keys"
-    cp -f "${dotfiles}/.ssh/keys/hobigon-k8s-master.pub" "${hd}/.ssh/keys/hobigon-k8s-master.pub"
-    cp -f "${dotfiles}/.ssh/keys/hobigon-k8s-worker.pub" "${hd}/.ssh/keys/hobigon-k8s-worker.pub"
-    cp -f "${dotfiles}/.ssh/keys/hobigon-wsl.pub"        "${hd}/.ssh/keys/hobigon-wsl.pub"
-    chmod 600 "${hd}/.ssh/keys/hobigon-k8s-master.pub" "${hd}/.ssh/keys/hobigon-k8s-worker.pub" "${hd}/.ssh/keys/hobigon-wsl.pub"
   '';
 
   # Import SSH private keys from 1Password so they can be referenced locally
@@ -72,15 +79,9 @@ in {
   #   - "deck-credentials" : Secure Note (notesPlain)
   home.activation.injectSecrets = lib.hm.dag.entryAfter [ "writeBoundary" "sshSetup" ] ''
     ${opHelpers}
-    op_inject "${dotfiles}/op-templates/ssh-config.tpl" "${hd}/.ssh/config"
-
-    mkdir -p "${hd}/.aws"
-    op_inject "${dotfiles}/op-templates/aws-credentials.tpl" "${hd}/.aws/credentials"
-
-    mkdir -p "${hd}/.kube"
-    op_inject "${dotfiles}/op-templates/kube-config.tpl" "${hd}/.kube/config"
-
-    mkdir -p "${hd}/.local/share/deck"
-    op_inject "${dotfiles}/op-templates/deck-credentials.tpl" "${hd}/.local/share/deck/credentials.json"
+    ${lib.concatMapStrings (i: ''
+      mkdir -p "$(dirname "${hd}/${i.out}")"
+      op_inject "${dotfiles}/op-templates/${i.tpl}" "${hd}/${i.out}"
+    '') injects}
   '';
 }
