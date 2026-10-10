@@ -77,9 +77,11 @@ PR作成にはリモートへのpushが必要です。
 
 確認する場所:
 
-- `.github/PULL_REQUEST_TEMPLATE.md`
+- `.github/PULL_REQUEST_TEMPLATE.md`・`.github/pull_request_template.md`
 - `.github/PULL_REQUEST_TEMPLATE/`（複数テンプレート）配下のファイル
-- リポジトリ直下の `PULL_REQUEST_TEMPLATE.md`
+- リポジトリ直下と`docs/`配下の `PULL_REQUEST_TEMPLATE.md`・`pull_request_template.md`
+
+GitHubは大文字小文字のどちらも認めるので、Globは大文字小文字を区別しない形で探す（例: `**/[Pp][Uu][Ll][Ll]_[Rr][Ee][Qq][Uu][Ee][Ss][Tt]_[Tt][Ee][Mm][Pp][Ll][Aa][Tt][Ee]*`）。
 
 テンプレートが見つかれば、その各セクションを変更内容で埋める。
 無ければStep 6のデフォルト構成を使う。
