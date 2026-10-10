@@ -12,3 +12,4 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: python3 scripts/check-agent-policy.py
+      - run: python3 -m unittest discover -s claude/hooks -p 'test_*.py'

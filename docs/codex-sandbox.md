@@ -22,6 +22,7 @@ Claudeに揃えられない点（意図的な差分）:
 - `defaultMode: auto`: `approvals_reviewer = "auto_review"`はmanaged側に置くと`-c`で上書きできず、デッドロックしたときに抜けられないため設定していない（既定の`user`）。使うなら`~/.codex/config.toml`に書く
 - `git push`のforbiddenや`gh`・`docker`のpromptは前方一致なので、環境変数の前置（`GH_CONFIG_DIR=x gh ...`など）で迂回できる。Claudeの`Bash(git push*)`も同じ弱点を持ち、実質の防御はsandboxが担う
 - `git commit --no-verify`・`gh auth`などのdeny: Claudeは`Bash(git commit*--no-verify*)`のように後ろに付いた形も止めるが、Codexのforbiddenは前方一致のため`git commit --no-verify`・`git commit -n`の直後形だけを止める
+- `claude/hooks/bash-guard.py`（PreToolUse(Bash)でコマンドをトークン化し、前置オプションや新サブコマンドを含めて`git push`・`docker`・`gh`を判定する）: Codexにはコマンドを判定するhookがないため、`prefix_rules`が唯一の防御になる
 - `--dangerously-bypass-approvals-and-sandbox`などは、起動エラーにはならず、警告を出してrequirementsの値に戻される
 
 受け入れているリスク:

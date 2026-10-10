@@ -73,6 +73,10 @@ gitleaks-staged: # Scan staged changes for secrets
 check-policy: # Check that Claude and Codex policies match
 	python3 scripts/check-agent-policy.py
 
+.PHONY: test-hooks
+test-hooks: # Test Claude Code command hooks
+	python3 -m unittest discover -s claude/hooks -p 'test_*.py'
+
 .PHONY: test-mods
 test-mods: # Test and validate Claude Code mods
 	bun test claude/mods/prompt-highlight-md/hooks/lib
