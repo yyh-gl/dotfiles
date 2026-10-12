@@ -1,6 +1,12 @@
-# 公開履歴から個人情報を消す手順（`mn`エイリアス）
+# 公開履歴から個人情報を消す手順（`mn`エイリアス（自宅の物件名と市区町村を含む`cd`先）は、旧履歴の`feat(Zsh): add mn alias`（`3fcdd92`）で入り、`nix/home/zsh.nix`に載っていた。
 
-`mn`エイリアス（自宅の物件名と市区町村を含む`cd`先）は、`feat(Zsh): add mn alias`（`3fcdd92`）で入り、`origin/main`の`nix/home/zsh.nix`に今も残っている。`claude/adversarial-review-plan`ブランチでは削除済み（`~/.zshrc.local`へ移す運用）だが、**mainに取り込まれるまでmainには残る**し、**過去のコミットには残り続ける**。このドキュメントは、履歴ごと消したくなったときにユーザー自身が実行するための手順で、実行は自動化していない。
+## 現在の状態
+
+- **main**: 履歴の書き換えは実施済み。該当の文字列は`REDACTED`に置換され、`chore(Zsh): remove unused mn alias`でエイリアス自体も削除されている。全履歴・現在のツリー・コミットメッセージのどこにも文字列は残っていない（`git log -S`で確認済み）
+- **旧履歴を持つブランチ**: 書き換え前の`claude/adversarial-review-plan`には、文字列を含むコミットが残っている。書き換え後のmainにこのブランチを`merge`すると、旧履歴ごと文字列がmainに戻るため、`merge`せず、新しいmainの上に付け替えたブランチ（`claude/adversarial-review-plan-rebased`）を使う。旧ブランチはリモートから削除する（下の手順6）
+- **GitHub側**: `refs/pull/*`とキャッシュされたビューに旧コミットが残る可能性がある。GitHubサポートへの削除依頼は、まだ必要
+
+以下は、同じ作業をもう一度する必要が出たとき（別の文字列を消したいときなど）の手順。
 
 ## 先に知っておくこと
 
@@ -52,7 +58,7 @@
    - オープン中のPRと他のブランチ（`claude/*`など）は、書き換え後の履歴に作り直すか閉じる
    - GitHubサポートに、古いコミットとキャッシュ、`refs/pull/*`の削除を依頼する
    - 保護ブランチの保護を元に戻す
-   - 消したあとにこのブランチ（`claude/adversarial-review-plan`）をmainに取り込む場合は、書き換え後の履歴に対してやり直す
+   - 書き換え前の履歴を持つブランチ（`claude/*`など）は、`git rebase --onto origin/main <旧mainの先頭>`で書き換え後のmainの上に付け替えてから、旧ブランチをリモートから削除する（`git push origin --delete <旧ブランチ>`）。`merge`すると旧履歴が戻る
 
 ## 再発防止
 
