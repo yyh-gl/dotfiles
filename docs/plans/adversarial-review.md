@@ -208,7 +208,7 @@
 | --- | --- | --- |
 | `flake.nix:14-17,32`の`nix-vscode-extensions` | overlayを入れているが、どこからも使っていない（VS Codeはcask） | inputごと削除。eval時間と`flake.lock`の更新が減る |
 | `claude/hooks/slack-notify.sh` | どのhookからも呼ばれていない。JSONを文字列連結で組んでおり、`"`や改行を含むと壊れる | 削除するか、使うなら`jq -n --arg`で組み、`curl -fsS`と空URLのガードを入れる |
-| `.emacs.d/lang/nesc.el` | `init.el:32`の読み込みリストにない | 削除 |
+| `.emacs.d/lang/nesc.el` | `init.el:32`の読み込みリストにない | 削除を提案したが、置いておくことにした（ユーザーの判断）。読み込まれないままの状態で残す |
 | `ghostty-config`・`zed/*` | 配置しているがGhostty・Zedはどこでもインストールしていない | 使うならcaskに足す、使わないなら削除 |
 | `.idea/` | リポジトリに追跡されている。`copilot.data.migration.*.xml`は自分のグローバルignoreでも除外対象 | 削除して`.gitignore`へ |
 | `Makefile:44,48`の`.PHONY` | `gitleaks-detect`/`gitleaks-protect`を宣言しているが、ターゲット名は`gitleaks-all`/`gitleaks-staged` | 名前を揃える |
@@ -386,7 +386,7 @@
 | P1-12 | ✅ | `git apply --cached --unidiff-zero`の手順に置き換え。一時リポジトリで確認済み |
 | P1-13 | ✅ | 公式ドキュメントで確認: `Agent`・`SendMessage`は有効なtool名、`Task*`系はteammateに自動付与で`tools`には不要（削除）、`AskUserQuestion`はsubagentから常に除外される（plannerのLeadへ返す手順が正しい）。planner/reviewer/leadにWriteを追加済み |
 | P2-1 | ✅ | README・AGENTS.md・CLAUDE.md・コメント・ignoreの`sonarlint`行（`check-ignore`で確認）・`manual.sh`を修正 |
-| P2-2 | ✅ | nix-vscode-extensions・hub・slack-notify・nesc・`.idea/`・`use-package`・`_module.args`を削除、aliasは元ファイルを開くよう変更、eglotはサーバーがあるときだけ起動、laminateの依存はHomebrewに追加、`ghostty`/`zed`は手動インストール前提とコメント |
+| P2-2 | ✅ | nix-vscode-extensions・hub・slack-notify・`.idea/`・`use-package`・`_module.args`を削除、`.emacs.d/lang/nesc.el`は置いておく判断で残した。aliasは元ファイルを開くよう変更、eglotはサーバーがあるときだけ起動、laminateの依存はHomebrewに追加、`ghostty`/`zed`は手動インストール前提とコメント |
 | P2-3 | ✅ | 記念日スクリプトを`source`する関数に（旧出力と5日付で一致を確認）、バナーは対話シェルのみ、デフォルトルートのインターフェース |
 | P2-4 | ✅ | statuslineのtry/catch・並行取得・branchの取得条件、`make test-mods`は全modをループ。`claude plugin validate`で両modが通り（改変後のhooksと`$.session.*`の呼び出しを認識）、`claude plugin test`も8件通過 |
 | P2-5 | ✅ | OSC文字列の無害化（制御文字が落ちることを確認）、`wezterm-state.sh`を実行可能に、`idle_prompt`の質問通知を外した |
