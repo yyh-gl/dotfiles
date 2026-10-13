@@ -14,7 +14,6 @@
 ;; ▼ Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; パッケージはNix（nix/home/emacs.nix の extraPackages）で入れる。MELPAからは取得しない。
-;; use-packageはEmacs 29から組み込み。
 ;; Package Management
 (require 'use-package)
 
