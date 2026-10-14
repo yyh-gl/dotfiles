@@ -30,17 +30,14 @@
   navigate = true
   side-by-side = true
 
-# pushだけSSHに振り替える。HTTPSのままだと、sandbox内のgitがcredential helper（gh auth git-credential）経由で
-# ghのトークンを借りてpushできてしまう（トークンはキーチェーンにあり、hosts.ymlのdenyでは守れない）。
-# SSH鍵は~/.sshにあり、sandboxからは読めない。fetchはHTTPSのままで、helperも使えるのでprivate repoも取れる。
-# コマンドラインのHTTPS URL（git push https://github.com/...）や`git -C . push`でも振り替わる。
-# 設定を上書きする経路（git -c url...、GIT_CONFIG*）は、bash-guardのhookがdeny/askにしている
+# pushだけSSHに振り替える
+# HTTPSのままだと、sandbox内のgitがcredential helper（gh auth git-credential）経由で
+# ghのトークンを借りてpushできてしまう（トークンはキーチェーンにあり、hosts.ymlのdenyでは守れない）
 [url "git@github.com:"]
   pushInsteadOf = https://github.com/
 
-# 署名鍵はhobbyモードでだけ1Passwordから配置する（nix/home/secrets.nix）ため、署名設定は別ファイルに分けている。
-# workモードにはこのファイルを置かないので、署名なしでコミットできる（存在しないincludeは無視される）
+# modeごとにインポートする設定を分ける
 [include]
   path = ~/.config/git/signing
-  # 機械ごとの上書き用（workのuser.emailなど）。Nixでは管理しない
+  # emailといったmodeごとの上書き用設定（Nixでは管理しない）
   path = ~/.config/git/local
