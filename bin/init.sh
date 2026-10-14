@@ -30,6 +30,18 @@ Host *
 SSH_EOF
 fi
 
+## Create a template for the git config that Nix does not manage
+## (.git-config/config includes ~/.config/git/local; existing files are never overwritten)
+mkdir -p "$HOME"/.config/git
+if [[ ! -e "$HOME"/.config/git/local ]]; then
+  cat <<'GIT_EOF' > "$HOME"/.config/git/local
+# modeごとの上書き用設定（Nixでは管理しない。.git-config/configからincludeされる）
+# 例: workモードでcommitのemailを変える
+# [user]
+#   email = you@example.com
+GIT_EOF
+fi
+
 # Setup for Xcode
 if ! xcode-select -p >/dev/null 2>&1; then
   xcode-select --install

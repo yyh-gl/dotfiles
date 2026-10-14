@@ -74,7 +74,7 @@ sandbox・permissionsなどの設定は、Claude Code（`claude/managed-settings
 
 テンプレートファイルは`op-templates/`ディレクトリに配置。`op://Vault/Item/Field`形式で参照。
 
-SSH秘密鍵は`op inject`ではなく`op read`で1Passwordから直接ローカルファイルへ書き出す運用のものもある（`nix/home/secrets.nix`の`sshKeysImport`・`gitSigningKeyImport`、vaultは既存の`ssh-config`等と同じ`PC`）。これらはhobbyモードだけで配置する。commit署名の設定も別ファイル（`.git-config/signing`）に分けていて、hobbyモードだけ`~/.config/git/signing`に置く。workモードでemailなどを変えたいときは、Nix管理外の`~/.config/git/local`に書く:
+SSH秘密鍵は`op inject`ではなく`op read`で1Passwordから直接ローカルファイルへ書き出す運用のものもある（`nix/home/secrets.nix`の`sshKeysImport`・`gitSigningKeyImport`、vaultは既存の`ssh-config`等と同じ`PC`）。これらはhobbyモードだけで配置する。commit署名の設定も別ファイル（`.git-config/signing`）に分けていて、hobbyモードだけ`~/.config/git/signing`に置く。workモードでemailなどを変えたいときは、Nix管理外の`~/.config/git/local`に書く（雛形は`bin/init.sh`が、ファイルがないときだけ作る）:
 
 | Item名           | カテゴリ | フィールド                                                                                                       |
 | ---------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
