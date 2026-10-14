@@ -30,11 +30,11 @@
   navigate = true
   side-by-side = true
 
-# `gh auth git-credential`などのcredential helperを経由させない。sandbox内のgitがghのトークンでHTTPS pushできてしまうのを防ぐ。
-# pushだけSSHに振り替える（SSH鍵は~/.sshにあり、sandboxからは読めない）。fetchはHTTPSのまま
-[credential "https://github.com"]
-  helper =
-
+# pushだけSSHに振り替える。HTTPSのままだと、sandbox内のgitがcredential helper（gh auth git-credential）経由で
+# ghのトークンを借りてpushできてしまう（トークンはキーチェーンにあり、hosts.ymlのdenyでは守れない）。
+# SSH鍵は~/.sshにあり、sandboxからは読めない。fetchはHTTPSのままで、helperも使えるのでprivate repoも取れる。
+# コマンドラインのHTTPS URL（git push https://github.com/...）や`git -C . push`でも振り替わる。
+# 設定を上書きする経路（git -c url...、GIT_CONFIG*）は、bash-guardのhookがdeny/askにしている
 [url "git@github.com:"]
   pushInsteadOf = https://github.com/
 

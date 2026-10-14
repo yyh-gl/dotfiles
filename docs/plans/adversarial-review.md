@@ -375,7 +375,7 @@
 | P1-1b | ✅ | `.env`を`source`せずKEY=VALUEパーサーに（zshで確認済み）。公式ドキュメントで、`sandbox.filesystem.denyWrite`が存在しmanaged settingsでも有効で`~/`を受け付けること、`Edit()`のdenyがdenyWriteに統合されBashからの書き込みにも効くこと、`Edit(.env)`が任意の深さに一致することを確認済み。`hooks/`のaskはEditツール経由のみ（Bash経由は未対応と明記）。Codexは、公式のconfig schemaで現行の値が`deny`（`none`は互換用の旧名）と分かったため`deny`に変更済み |
 | P1-2 | ✅ | 認証情報のパスを3か所（credentials.files・Read deny・deny_read）に追加 |
 | P1-3 | ✅ | `.env`は全シェルexportを続けつつ、変数名をenvVars deny・Codex excludeに追加。`slack-notify.sh`は削除 |
-| P1-4 | ✅ | 検証の代わりに根本から塞いだ。`.git-config/config`でgithub.comのcredential helperをリセットし、`pushInsteadOf`でpushだけSSHに振り替え（helperが呼ばれないこと・push URLの書き換えをgitで実行して確認済み）。`git -C/-c/--git-dir/--work-tree ... push`のdenyも残す。副作用: sandbox内でのprivate repoのHTTPS fetchはできなくなる |
+| P1-4 | ✅ | 検証の代わりに根本から塞いだ。`.git-config/config`の`pushInsteadOf`でpushだけSSHに振り替える。設定したremote・コマンドラインのHTTPS URL・`git -C . push`のどれでもSSHに振り替わり、credential helperが呼ばれないことを、gitで実行して確認済み。fetchはHTTPSのままでhelperも使え、private repoも取れる（当初はhelperをリセットしていたが、private repoのfetchが困るため外した。pushの防御は`pushInsteadOf`だけで足りる）。設定を上書きする`git -c`・`GIT_CONFIG*`は、bash-guardがdeny/askにする |
 | P1-5 | ✅ | `docker -* *`・`docker compose -* *`をask（Codexのprefix_rulesでは表現できず、意図的な差分として`scripts/check-agent-policy.py`に記録） |
 | P1-6 | ✅ | workモードのsettings.jsonはjqでマージ。user層の強度の違いをCLAUDE.mdに明記。マージは実際に実行して確認済み |
 | P1-7 | ✅ | darwin側の配置は失敗しても警告だけで続行（失敗経路を実行して確認済み） |
