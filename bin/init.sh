@@ -35,10 +35,11 @@ fi
 mkdir -p "$HOME"/.config/git
 if [[ ! -e "$HOME"/.config/git/local ]]; then
   cat <<'GIT_EOF' > "$HOME"/.config/git/local
-# modeごとの上書き用設定（Nixでは管理しない。.git-config/configからincludeされる）
+# modeごとの上書き用設定
 # 例: workモードでcommitのemailを変える
-# [user]
-#   email = you@example.com
+[user]
+  name = yyh-gl
+  email = you@example.com
 GIT_EOF
 fi
 
