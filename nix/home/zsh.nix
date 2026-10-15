@@ -57,8 +57,7 @@ in {
       export HOMEBREW_REPOSITORY="/opt/homebrew"
       fpath[1,0]="/opt/homebrew/share/zsh/site-functions"
       export FPATH
-      # Nixで入れたツール（git・nodeなど）を優先するため、Homebrewは後ろに足す（`brew shellenv`は先頭に足す）
-      export PATH="''${PATH+$PATH:}/opt/homebrew/bin:/opt/homebrew/sbin"
+      export PATH="/opt/homebrew/bin:/opt/homebrew/sbin''${PATH+:$PATH}"
       [ -z "''${MANPATH-}" ] || { export MANPATH="''${MANPATH%"''${MANPATH##*[!:]}"}"; export MANPATH=":''${MANPATH#"''${MANPATH%%[!:]*}"}"; }
       export INFOPATH="/opt/homebrew/share/info:''${INFOPATH:-}"
     '';
@@ -72,6 +71,7 @@ in {
       export EDITOR=emacs VISUAL=emacs
 
       export PATH=$PATH:$HOME/go/bin
+      export PATH="/opt/homebrew/bin:$PATH"
       export PATH="$HOME/.local/bin:$PATH"
       typeset -U path cdpath fpath manpath
 
