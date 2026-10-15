@@ -15,7 +15,6 @@
 
   outputs = { self, nixpkgs, nix-darwin, home-manager, ... }:
   let
-    # usernameは通常のMacでは固定。CI（GitHubのmacOSランナー）だけrunnerユーザーで実際に適用して検証する
     makeDarwinSystem = { mode, username ? "yyh-gl", extraModules ? [ ] }:
       let homeDirectory = "/Users/${username}"; in
       assert nixpkgs.lib.elem mode [ "hobby" "work" ];
@@ -55,12 +54,6 @@
     darwinConfigurations = {
       "yyh-gl-mac-hobby" = makeDarwinSystem { mode = "hobby"; };
       "yyh-gl-mac-work"  = makeDarwinSystem { mode = "work"; };
-      # CI専用。runnerユーザーにworkモードを適用する。Homebrewのcaskは入れない（時間がかかり、検証の対象でもない）
-      "yyh-gl-mac-ci" = makeDarwinSystem {
-        mode = "work";
-        username = "runner";
-        extraModules = [ ({ lib, ... }: { homebrew.enable = lib.mkForce false; }) ];
-      };
     };
   };
 }
