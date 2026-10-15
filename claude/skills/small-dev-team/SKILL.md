@@ -98,7 +98,7 @@ TaskUpdateで `owner` をメンバー名に設定してタスクのオーナー�
    既存パターン・アーキテクチャ制約をImplementerが自力で再調査しない。同じ調査を
    二重に行うとトークンの無駄になる）
 
-Plannerは`.dev-team/plan.md`にプランを書く。フォーマットは`~/.claude/agents/planner.md`の「プランフォーマット」に従う（ここでは重複して定義しない）。
+Plannerは`.dev-team/plan.md`にプランを書く。フォーマットは`~/.claude/agents/planner.md`の「プランフォーマット」に従う。
 
 ## ファイル所有権
 
