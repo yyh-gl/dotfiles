@@ -101,7 +101,7 @@ CLAUDE.mdは`@AGENTS.md`で共通ルールをインポートし、Claude固有�
 
 ## CLAUDE.mdテンプレート
 
-````markdown
+```markdown
 @AGENTS.md
 
 [以下はClaude固有の設定がある場合のみ追記する]
@@ -123,7 +123,7 @@ CLAUDE.mdは`@AGENTS.md`で共通ルールをインポートし、Claude固有�
 
 - 回答は日本語で行う
 - 説明は簡潔に。コードが自明な場合はコメントを省く
-````
+```
 
 ---
 
