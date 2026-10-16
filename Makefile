@@ -68,10 +68,6 @@ gitleaks-all: # Scan git history for secrets
 gitleaks-staged: # Scan staged changes for secrets
 	gitleaks git -v --redact --staged
 
-.PHONY: test-hooks
-test-hooks: # Test Claude Code command hooks
-	python3 -m unittest discover -s claude/hooks -p 'test_*.py'
-
 .PHONY: test-mods
 test-mods: # Test and validate Claude Code mods
 	bun test claude/mods/prompt-highlight-md/hooks/lib
