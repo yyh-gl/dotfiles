@@ -38,6 +38,5 @@ macOS向けのdotfiles。Nix（nix-darwin + home-manager）で宣言的に管理
 - `.emacs.d/`: Emacsの設定
 - `.ssh/keys/`: SSH公開鍵
 - `op-templates/`: 1Passwordから展開する機密ファイルのテンプレート
-- `hooks/`: このリポジトリのGit hooks（gitleaks）
 - `scripts/`: シェルから呼ぶスクリプト（`~/.local/bin`に配置）
 - `wezterm.lua`・`karabiner.json`・`RectangleConfig.json`・`starship.toml`など: 各アプリの設定
