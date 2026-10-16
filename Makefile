@@ -25,13 +25,17 @@ _init:
 	@# makeのシェルにはインストール直後のNixのPATHが通っていないため、フルパスで呼ぶ
 	sudo $(NIX) --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake .#yyh-gl-mac-$(MODE)
 
+.PHONY: setup-hooks
+setup-hooks: # Set up local git hooks for this repo
+	git config core.hooksPath hooks
+
 .PHONY: build-hobby
-build-hobby: # Setup my macOS (hobby mode)
+build-hobby: setup-hooks # Setup my macOS (hobby mode)
 	$(MAKE) nix-apply-hobby
 	./bin/manual.sh
 
 .PHONY: build-work
-build-work: # Setup my macOS (work mode)
+build-work: setup-hooks # Setup my macOS (work mode)
 	$(MAKE) nix-apply-work
 	./bin/manual.sh
 
