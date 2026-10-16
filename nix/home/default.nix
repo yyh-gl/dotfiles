@@ -14,7 +14,6 @@
     pkgs.gopls
     pkgs.gradle
     pkgs.helmfile
-    pkgs.hub
     pkgs.hugo
     pkgs.jq
     pkgs.kubectl
@@ -45,8 +44,6 @@
     enable = true;
     package = pkgs.jdk25;
   };
-
-  _module.args = { inherit mode; };
 
   imports = [
     ./dotfiles.nix

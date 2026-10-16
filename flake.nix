@@ -11,27 +11,22 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-vscode-extensions = {
-      url = "github:nix-community/nix-vscode-extensions";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-vscode-extensions, ... }:
+  outputs = { self, nixpkgs, nix-darwin, home-manager, ... }:
   let
-    username = "yyh-gl";
-    homeDirectory = "/Users/${username}";
-    makeDarwinSystem = mode:
+    makeDarwinSystem = { mode, username ? "yyh-gl", extraModules ? [ ] }:
+      let homeDirectory = "/Users/${username}"; in
       assert nixpkgs.lib.elem mode [ "hobby" "work" ];
       nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
-        specialArgs = { inherit mode username homeDirectory; };
+        specialArgs = { dotfiles = self; inherit mode username homeDirectory; };
         modules = [
           {
             nixpkgs.overlays = [
-              nix-vscode-extensions.overlays.default
               # pandas-stubsのテストがpytest 9.1のPytestRemovedIn10Warningでエラーになりビルド失敗するため一時的にスキップ
               # (nixpkgs-unstable側のpytestバージョンアップとpandas-stubsのテストコードの非互換。upstream修正待ち)
+              # 外す条件: nix flake update後にこのoverlayなしでpandas-stubsがビルドできるようになったら削除する（`nix build nixpkgs#python3Packages.pandas-stubs`で確認）
               (final: prev: {
                 pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
                   (pyfinal: pyprev: {
@@ -53,12 +48,12 @@
             home-manager.extraSpecialArgs = { dotfiles = self; inherit mode username homeDirectory; };
             home-manager.users.${username} = import ./nix/home/default.nix;
           }
-        ];
+        ] ++ extraModules;
       };
   in {
     darwinConfigurations = {
-      "yyh-gl-mac-hobby" = makeDarwinSystem "hobby";
-      "yyh-gl-mac-work"  = makeDarwinSystem "work";
+      "yyh-gl-mac-hobby" = makeDarwinSystem { mode = "hobby"; };
+      "yyh-gl-mac-work"  = makeDarwinSystem { mode = "work"; };
     };
   };
 }

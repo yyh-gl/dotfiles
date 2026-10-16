@@ -2,8 +2,9 @@
   homebrew = {
     enable = true;
     onActivation = {
-      autoUpdate = true;
-      upgrade = true;
+      # applyのたびにHomebrewを更新すると、同じflake.lockでも結果が変わりapplyも遅くなる。更新は`make brew-upgrade`で行う
+      autoUpdate = false;
+      upgrade = false;
       cleanup = "zap";
     };
     taps = [
@@ -19,6 +20,7 @@
       "codex"
       "font-hackgen-nerd"
       "font-ricty-diminished"
+      "1password"
       "docker-desktop"
       "figma"
       "google-chrome"
@@ -40,7 +42,6 @@
       "adobe-acrobat-reader"
       "discord"
       "godot"
-      "1password"
       "tailscale-app"
     ];
     masApps = lib.optionalAttrs (mode == "hobby") {

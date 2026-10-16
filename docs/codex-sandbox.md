@@ -21,4 +21,11 @@ Claudeに揃えられない点（意図的な差分）:
 - `sandbox.excludedCommands`（`gh *`・`docker *`・`hunk session *`）: Codexにはコマンド単位でsandbox外へ出す仕組みがないため、これらはCodexでは使えない
 - `defaultMode: auto`: `approvals_reviewer = "auto_review"`はmanaged側に置くと`-c`で上書きできず、デッドロックしたときに抜けられないため設定していない（既定の`user`）。使うなら`~/.codex/config.toml`に書く
 - `git push`のforbiddenや`gh`・`docker`のpromptは前方一致なので、環境変数の前置（`GH_CONFIG_DIR=x gh ...`など）で迂回できる。Claudeの`Bash(git push*)`も同じ弱点を持ち、実質の防御はsandboxが担う
+- `git commit --no-verify`・`gh auth`などのdeny: Claudeは`Bash(git commit*--no-verify*)`のように後ろに付いた形も止めるが、Codexのforbiddenは前方一致のため`git commit --no-verify`・`git commit -n`の直後形だけを止める
 - `--dangerously-bypass-approvals-and-sandbox`などは、起動エラーにはならず、警告を出してrequirementsの値に戻される
+
+受け入れているリスク:
+
+- `~/Library/Caches/go-build`・`~/go/pkg/mod`をsandboxから書き込み可能にしている。GOCACHEのエントリはビルド時に再検証されず、改ざんされたオブジェクトがsandbox外のビルドにリンクされうる。キャッシュを共有しないとGoのビルドが毎回フルになるため受け入れている。Gradleは`init.d`・`init.gradle`・`gradle.properties`だけ書き込み禁止にしている
+- `Edit(hooks/**)`はClaudeのEditツール経由だけをaskにしている。Bashからの書き込みは止めていない（dotfilesで作業する際に`hooks/`を編集できなくなるため）。Codexには対応するaskがない
+- GitHubへのpushは、`.git-config/config`の`pushInsteadOf`でSSHに振り替えている。ghのトークンはキーチェーンにあり`hosts.yml`のdenyでは守れないため、HTTPS pushがcredential helper（`gh auth git-credential`）経由で通らないようにしている。fetchはHTTPSのままで、helperも使えるのでprivate repoも取れる（ClaudeもCodexも同じ）。設定を上書きする`git -c url...`・`GIT_CONFIG*`は、ClaudeもCodexも前方一致のdeny/forbiddenだけで、コマンドを判定するhookはどちらにもない

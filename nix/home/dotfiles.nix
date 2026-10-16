@@ -14,10 +14,15 @@ let
   ];
 in {
   home.file.".config/wezterm/wezterm.lua".source = "${dotfiles}/wezterm.lua";
+  # GhosttyとZedはNix/Homebrewでは入れていない（手動インストール）。設定だけここで配置する
   home.file.".config/ghostty/config".source = "${dotfiles}/ghostty-config";
   home.file.".config/starship.toml".source = "${dotfiles}/starship.toml";
   home.file.".config/git/config".source = "${dotfiles}/.git-config/config";
   home.file.".config/git/ignore".source = "${dotfiles}/.git-config/ignore";
+  # 署名鍵を配置するhobbyモードだけ署名を有効にする（nix/home/secrets.nixのgitSigningKeyImport）
+  home.file.".config/git/signing" = lib.mkIf (mode == "hobby") {
+    source = "${dotfiles}/.git-config/signing";
+  };
   home.file.".config/laminate/config.yaml".source = "${dotfiles}/laminate/config.yaml";
   home.file.".config/hunk/config.toml".source = "${dotfiles}/hunk/config.toml";
 
@@ -31,14 +36,24 @@ in {
     executable = true;
   };
 
+  # アプリがGUIから書き換える設定は、applyのたびに上書きすると変更が消える。
+  # 上書き前に差分を警告するので、残したい変更はdotfilesの元ファイルへ書き戻す
   home.activation.rectangleConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    mkdir -p "${hd}/Library/Application Support/Rectangle"
-    install -m 644 "${dotfiles}/RectangleConfig.json" "${hd}/Library/Application Support/Rectangle/RectangleConfig.json"
+    dest="${hd}/Library/Application Support/Rectangle/RectangleConfig.json"
+    mkdir -p "$(dirname "$dest")"
+    if [ -e "$dest" ] && ! cmp -s "${dotfiles}/RectangleConfig.json" "$dest"; then
+      echo "warning: $dest differs from the dotfiles and will be overwritten" >&2
+    fi
+    install -m 644 "${dotfiles}/RectangleConfig.json" "$dest"
   '';
 
   home.activation.karabinerConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    mkdir -p "${hd}/.config/karabiner"
-    install -m 600 "${dotfiles}/karabiner.json" "${hd}/.config/karabiner/karabiner.json"
+    dest="${hd}/.config/karabiner/karabiner.json"
+    mkdir -p "$(dirname "$dest")"
+    if [ -e "$dest" ] && ! cmp -s "${dotfiles}/karabiner.json" "$dest"; then
+      echo "warning: $dest differs from the dotfiles and will be overwritten" >&2
+    fi
+    install -m 600 "${dotfiles}/karabiner.json" "$dest"
   '';
 
   home.activation.desktopSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

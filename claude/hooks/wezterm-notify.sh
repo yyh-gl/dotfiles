@@ -6,8 +6,12 @@ PROJECT_NAME=$(basename "$PROJECT_DIR")
 MESSAGE="${1}"
 AGENT_NAME="${2:-main}"
 
-TITLE="${MESSAGE}"
-BODY="${PROJECT_NAME} (${AGENT_NAME})"
+# OSC 777は`;`でフィールドを区切り、ESCで終端する。ディレクトリ名などに含まれる制御文字と`;`を落として、
+# フィールドのずれやエスケープシーケンスの注入を防ぐ
+sanitize() { printf '%s' "$1" | tr -d '\000-\037\177;'; }
+
+TITLE="$(sanitize "${MESSAGE}")"
+BODY="$(sanitize "${PROJECT_NAME} (${AGENT_NAME})")"
 
 source "$(dirname "${BASH_SOURCE[0]}")/lib/wezterm-tty.sh"
 

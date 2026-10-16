@@ -8,7 +8,7 @@ effort: high
 ## 目的
 
 作業ディレクトリの全変更を分析し、**論理的な変更単位ごとに**1コミットを作成する。
-コミットメッセージ（subject・body問わず全体）はすべて英語のSemantic Commit Messages形式に従う。
+コミットメッセージ（subject・body問わず全体）はSemantic Commit Messages形式に従う。言語はリポジトリの過去のコミット（Step 1の`git log`）に合わせ、判断できなければ英語にする。
 
 「論理的な変更単位」とは、1つの目的・意図のこと。
 「この変更群を一文で説明できるか？」という問いに答えられるなら1コミット。
@@ -39,7 +39,7 @@ git log --oneline -5
 - 新機能 + そのテスト → 1コミット（同じ意図で追加されたため）
 - バグ修正 + 無関係なフォーマット修正 → 2コミット
 - 認証ミドルウェアの書き直し + それを支えるDBスキーマ変更 → 1コミット（同一機能）
-- 同じファイル内に2つの別機能の変更 → `git add -p` で分割して2コミット
+- 同じファイル内に2つの別機能の変更 → ハンクを分けて2コミット（手順はStep 5の「ハンク単位でステージする」）
 
 **判断に迷ったときは分割を優先する。**
 
@@ -97,7 +97,7 @@ chore(Zsh): remove scripts submodule and related aliases
 
 **Step 3完了前にscopeが決まっているか自己チェックすること。決まっていなければ省略せず再考する。**
 
-### subject — 命令形・現在形・英語
+### subject — 命令形・現在形（英語の場合）
 
 - "add JWT refresh token support" ✓
 - "added JWT refresh token support" ✗（過去形NG）
@@ -128,7 +128,7 @@ subjectは「何を変えたか」を一行にまとめたもの。だが**diff�
 
 subjectだけで意図が自明な変更（typo修正、単純な依存関係アップグレード等）にbodyは不要。書くこと自体を目的化しない。
 
-bodyもsubjectと同様に**必ず英語**で書く。
+bodyもsubjectと同じ言語で書く。
 
 ```bash
 git commit -m "fix(auth): retry token refresh with exponential backoff" \
@@ -173,16 +173,26 @@ git commit -m "fix(auth): retry token refresh with exponential backoff" \
 
 各論理グループについて順番に：
 
-1. `git add <files>` または `git add -p`（ハンク単位の場合）で対象をステージ
-2. `git commit -m "<message>"` でコミット（bodyが必要な場合はStep 3のbody節に従い`-m`を追加）
-3. 次のグループに進む前に `git status` で確認
+1. `git add <files>`（ハンク単位の場合は下の手順）で対象をステージ
+2. 対象にシークレットが混ざっていないかを機械でも確認する: `gitleaks git --staged -v --redact`（`gitleaks`が入っていれば。検出されたらコミットせずStep 4の形式で報告する）
+3. `git commit -m "<message>"` でコミット（bodyが必要な場合はStep 3のbody節に従い`-m`を追加）
+4. 次のグループに進む前に `git status` で確認
+
+### ハンク単位でステージする
+
+BashツールはTTYを持たないため、対話式の`git add -p`は使えない。次の手順でハンクを選ぶ。
+
+1. `git diff HEAD -- <file>`でハンクを確認する
+2. このグループに含めるハンクだけのpatchをscratchpadディレクトリに書く（`git diff HEAD -U0 -- <file>`の出力から該当ハンクをヘッダごと抜き出す）
+3. `git apply --cached --unidiff-zero <patchファイルの絶対パス>`でindexにだけ反映する。作業ツリーは変わらない
+4. `git diff --cached`で意図したハンクだけが入っていることを確認してからコミットする
 
 コミット順は依存関係を考慮する（スキーマ・設定などの基盤変更を先に、機能変更を後に）。
 
 ## 注意事項
 
 - 無関係な変更をまとめてコミット数を減らすことはしない
-- 1ファイルに2つの異なる変更がある場合は `git add -p` で分割する
+- 1ファイルに2つの異なる変更がある場合は、上の手順でハンクを分けてステージする
 - ユーザーへの確認は不要 — 全グループを自動的にコミットする
 - `git push` は絶対に実行しない
 - コミットメッセージに `Claude-Session` や `Co-Authored-By: Claude` などのメタデータトレーラーを付けない

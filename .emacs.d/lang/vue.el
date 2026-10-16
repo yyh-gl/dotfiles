@@ -6,7 +6,6 @@
 ;; vue-mode is unavailable on MELPA; use web-mode for .vue files.
 ;; web-mode is used only for .vue here (tsx/jsx live in the tree-sitter modes).
 (use-package web-mode
-  :ensure t
   :mode "\\.vue\\'"
   :config
   (setq web-mode-markup-indent-offset 2

@@ -29,15 +29,12 @@
 ;; ▼ Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package dape
-  :ensure t
   :after go-ts-mode)
 
 (use-package yasnippet
-  :ensure t
   :defer t)
 
 (use-package yasnippet-snippets
-  :ensure t
   :defer t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -48,7 +45,10 @@
     (lambda () (interactive) (compile "go test .")))
   (define-key go-ts-mode-map (kbd "C-c t t")
     (lambda () (interactive)
-      (compile (format "go test -run %s ." (thing-at-point 'symbol)))))
+      (let ((name (thing-at-point 'symbol t)))
+        (if name
+            (compile (format "go test -run '^%s$' ." name))
+          (user-error "No test name at point")))))
   (define-key go-ts-mode-map (kbd "C-c t p")
     (lambda () (interactive) (compile "go test ./...")))
   (define-key go-ts-mode-map (kbd "C-c t b")
