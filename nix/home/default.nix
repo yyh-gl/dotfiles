@@ -12,7 +12,7 @@
     pkgs.git
     pkgs.google-cloud-sdk
     pkgs.gopls
-    pkgs.gradle
+    pkgs.gradle_9
     pkgs.helmfile
     pkgs.hugo
     pkgs.jq
