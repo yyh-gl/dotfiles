@@ -9,6 +9,6 @@
 
 # sandbox下でのコマンドの書き方
 
-- `gh`・`docker`・`hunk session`は、1回の呼び出しに含まれるすべてのコマンドがsandbox.excludedCommandsに一致したときだけsandbox外で動く。パイプ・`;`・`&&`でほかのコマンドとつながない。絞り込みは`--jq`・`-q`などコマンド自身のオプションで行う
+- `gh`・`docker`・`hunk session`・`./gradlew`は、1回の呼び出しに含まれるすべてのコマンドがsandbox.excludedCommandsに一致したときだけsandbox外で動く。パイプ・`;`・`&&`でほかのコマンドとつながない。絞り込みは`--jq`・`-q`などコマンド自身のオプションで行う
 - `$(...)`・ファイルへのリダイレクト・`cd`を含めない。必要な値は先に別の呼び出しで取得し、リテラルで渡す。`2>&1`だけなら問題ない
 - SSHリモートとの`git fetch`・`git pull`・`git ls-remote`はsandbox内では失敗する。試さずに、ユーザーへ`! git pull`などでの実行を依頼する

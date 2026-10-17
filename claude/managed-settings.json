@@ -510,7 +510,8 @@
     "excludedCommands": [
       "gh *",
       "docker *",
-      "hunk session *"
+      "hunk session *",
+      "./gradlew test *"
     ]
   },
   "plansDirectory": "docs/plans",

@@ -12,7 +12,7 @@ This file provides guidance specific to Claude Code (claude.ai/code). Rules that
 - `enabledPlugins`・`effortLevel`のようなClaude Code自身が書き換える設定は`~/.claude/settings.json`側に残し、Nixでは管理しない（`extraKnownMarketplaces`は例外でmanaged側）
 - 旧配置の`managed-settings.json`はapplyでは消さない。移行後の初回だけ`sudo rm "/Library/Application Support/ClaudeCode/managed-settings.json"`で手動削除する（残ると消したルールが効き続ける）
 - 仕事PCでは`/Library/Application Support/`への書き込みがMDMで拒否されることがある（その場合はapplyがそこで失敗する）。代わりにworkモードに限り`nix/home/claude.nix`が同じ内容を`~/.claude/settings.json`へjqで上書きマージする。user層なので、クローンしたリポジトリの`.claude/settings.json`に上書きされうる（managed層ほど強くない）
-- `sandbox.excludedCommands`のパターンは`"gh *"`のように`*`の前にスペースを入れる（`"gh*"`は効かない）。`gh`・`docker`・`hunk session *`はsandbox内で動かせないため除外が必須。1回の呼び出しに含まれるすべてのコマンドが一致したときだけsandbox外になるので、パイプ・`;`・`$(...)`・リダイレクト・`cd`を付けると丸ごとsandbox内で動き失敗する。ClaudeにHunk・`gh`・`docker`を操作させる際は単体コマンドにする（`claude/CLAUDE.md`に指示がある）
+- `sandbox.excludedCommands`のパターンは`"gh *"`のように`*`の前にスペースを入れる（`"gh*"`は効かない）。`gh`・`docker`・`hunk session *`はsandbox内で動かせないため除外が必須。`./gradlew *`はsandbox内のネットワーク・ファイルシステム許可を揃えてもテスト実行が実際に失敗したため追加で除外している。1回の呼び出しに含まれるすべてのコマンドが一致したときだけsandbox外になるので、パイプ・`;`・`$(...)`・リダイレクト・`cd`を付けると丸ごとsandbox内で動き失敗する。ClaudeにHunk・`gh`・`docker`・`./gradlew`を操作させる際は単体コマンドにする（`claude/CLAUDE.md`に指示がある）
 - permissionsは「deny→ask→allow」の順に評価され、具体性は関係ない。広い`ask`（`Bash(docker*)`など）は具体的な`allow`を打ち消すため、dockerのaskは書き込み・実行系サブコマンドの列挙にしている。`chmod`はdenyだと作業が止まるため`ask`
 
 経緯・実機で確認した挙動・hunkの除外の詳細は`docs/claude-settings.md`を参照。
