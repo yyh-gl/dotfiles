@@ -218,6 +218,7 @@ in {
       ksh = ''kubectl exec -it $(kubectl get po | fzf --header-lines=1 | cut -f 1 -d " ") -- /bin/bash'';
       dot = "cd $HOME/workspaces/github.com/yyh-gl/dotfiles";
       my = "cd $HOME/workspaces/github.com/yyh-gl/my-agent-teams";
+      hd = "hunk diff";
     } // (lib.optionalAttrs (mode == "hobby") {
       supabase = "npx supabase";
       sb = "supabase";
