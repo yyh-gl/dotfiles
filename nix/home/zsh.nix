@@ -73,6 +73,9 @@ in {
       export PATH=$PATH:$HOME/go/bin
       export PATH="/opt/homebrew/bin:$PATH"
       export PATH="$HOME/.local/bin:$PATH"
+      if [ -n "''${REX_BIN_DIR:-}" ]; then
+          export PATH="$REX_BIN_DIR:$PATH"
+      fi
       typeset -U path cdpath fpath manpath
 
       # Environment variables
