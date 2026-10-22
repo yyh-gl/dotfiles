@@ -35,7 +35,7 @@
 
   programs.go = {
     enable = true;
-    package = pkgs.go_1_26;
+    package = pkgs.go_1_27;
     env.GOPATH = "${homeDirectory}/go";
     env.GOBIN  = "${homeDirectory}/go/bin";
   };
