@@ -41,6 +41,7 @@ All config files live here and are managed by **Nix home-manager** (`nix/home/do
 Key configs managed by Nix home-manager (`nix/home/dotfiles.nix`):
 
 - `wezterm.lua` → `$HOME/.config/wezterm/wezterm.lua`
+- `wezterm-work.lua` → `$HOME/.config/wezterm/work.lua`（workモードのみ。TUIアプリのマウスキャプチャ中もテキスト選択を優先するバインディング。`wezterm.lua`があれば読み込む）
 - `.git-config/` → `$HOME/.config/git/`
 - `aws/config` → `$HOME/.aws/config`
 - `karabiner.json` → `$HOME/.config/karabiner/karabiner.json`（Karabiner-Elementsは設定変更のたびにこのファイルをwrite-temp-then-renameで書き換え、symlinkを実ファイルに置き換えてしまう。Rectangleと同様の理由で`home.file`ではなくactivation scriptで実ファイルとしてコピーしている）
@@ -132,4 +133,4 @@ zsh-benchで計測して、起動（first_prompt_lag）を短くするために�
 Nixのflake設定名でモードを指定する（`.env.public`でのMODE指定は廃止済み）:
 
 - `yyh-gl-mac-hobby` (`make nix-apply-hobby`) — 1password/tailscaleをインストール、Google DriveへのSymlinkを`$HOME/Desktop/hobby`と`$HOME/Pictures`に作成
-- `yyh-gl-mac-work` (`make nix-apply-work`) — `$HOME/Desktop/work`ディレクトリを作成
+- `yyh-gl-mac-work` (`make nix-apply-work`) — `$HOME/Desktop/work`ディレクトリを作成、WezTermに`work.lua`（`wezterm-work.lua`）を配置

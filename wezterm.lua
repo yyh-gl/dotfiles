@@ -326,4 +326,17 @@ config.keys = {
 	},
 }
 
+---------------------------------
+-- work
+---------------------------------
+-- workモードだけ配置されるwork.lua（リポジトリのwezterm-work.lua）で設定を追加する。
+-- 構文エラーなどを握りつぶさないよう、pcall(require, ...)ではなく存在確認してからdofileする
+local work_config = wezterm.config_dir .. "/work.lua"
+local work_file = io.open(work_config, "r")
+if work_file then
+	work_file:close()
+	wezterm.add_to_config_reload_watch_list(work_config)
+	dofile(work_config)(config)
+end
+
 return config

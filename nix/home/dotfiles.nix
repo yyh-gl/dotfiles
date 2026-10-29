@@ -14,6 +14,10 @@ let
   ];
 in {
   home.file.".config/wezterm/wezterm.lua".source = "${dotfiles}/wezterm.lua";
+  # TUIアプリのマウスキャプチャ中もWezTermのテキスト選択を優先する設定は、workモードだけ有効にする
+  home.file.".config/wezterm/work.lua" = lib.mkIf (mode == "work") {
+    source = "${dotfiles}/wezterm-work.lua";
+  };
   home.file.".config/starship.toml".source = "${dotfiles}/starship.toml";
   home.file.".config/git/config".source = "${dotfiles}/.git-config/config";
   home.file.".config/git/ignore".source = "${dotfiles}/.git-config/ignore";
