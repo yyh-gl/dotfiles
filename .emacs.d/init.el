@@ -76,6 +76,11 @@
 (unless (display-graphic-p)
   (define-key key-translation-map "\e[102;6u" (kbd "C-S-f"))
   (define-key key-translation-map "\e[70;6u"  (kbd "C-S-f"))
+  ;; Rexのkitty keyboard protocol対応により
+  ;; 曖昧なキーがCSI u形式(ESC[<keycode>;<modifier>u)で送られてくる。
+  ;; Emacsはこの形式を解釈できないため、key-translation-mapで元のキーへ変換する。
+  ;; （`C-m`に限った話）
+  (define-key key-translation-map "\e[109;5u" (kbd "C-m"))
   (when (eq system-type 'darwin)
     (setq interprogram-paste-function
           (lambda () (shell-command-to-string "pbpaste")))
