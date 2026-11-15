@@ -79,8 +79,8 @@
   ;; Rexのkitty keyboard protocol対応により
   ;; 曖昧なキーがCSI u形式(ESC[<keycode>;<modifier>u)で送られてくる。
   ;; Emacsはこの形式を解釈できないため、key-translation-mapで元のキーへ変換する。
-  ;; （`C-m`に限った話）
   (define-key key-translation-map "\e[109;5u" (kbd "C-m"))
+  (define-key key-translation-map "\e[120;5u" (kbd "C-x"))
   (when (eq system-type 'darwin)
     (setq interprogram-paste-function
           (lambda () (shell-command-to-string "pbpaste")))
