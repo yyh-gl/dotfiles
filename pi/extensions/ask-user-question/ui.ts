@@ -34,8 +34,8 @@ interface QuestionState {
 }
 
 export async function runQuestionsUI(ctx: ExtensionToolContext, questions: QuestionInput[]): Promise<QuestionsResult> {
-	const isMulti = questions.length > 1;
-	const totalTabs = isMulti ? questions.length + 1 : questions.length;
+	const hasMultipleQuestions = questions.length > 1;
+	const totalTabs = hasMultipleQuestions ? questions.length + 1 : questions.length;
 	const states: QuestionState[] = questions.map(() => ({ checked: new Set() }));
 
 	function isAnswered(index: number): boolean {
@@ -98,7 +98,7 @@ export async function runQuestionsUI(ctx: ExtensionToolContext, questions: Quest
 
 			function advanceTab() {
 				optionIndex = 0;
-				if (!isMulti) {
+				if (!hasMultipleQuestions) {
 					finish(false);
 					return;
 				}
@@ -144,7 +144,7 @@ export async function runQuestionsUI(ctx: ExtensionToolContext, questions: Quest
 					return;
 				}
 
-				if (isMulti) {
+				if (hasMultipleQuestions) {
 					if (matchesKey(data, Key.right) || matchesKey(data, Key.tab)) {
 						currentTab = (currentTab + 1) % totalTabs;
 						optionIndex = 0;
@@ -159,7 +159,7 @@ export async function runQuestionsUI(ctx: ExtensionToolContext, questions: Quest
 					}
 				}
 
-				if (isMulti && currentTab === questions.length) {
+				if (hasMultipleQuestions && currentTab === questions.length) {
 					if (matchesKey(data, Key.enter) && allAnswered()) {
 						finish(false);
 					} else if (matchesKey(data, Key.escape)) {
@@ -186,8 +186,12 @@ export async function runQuestionsUI(ctx: ExtensionToolContext, questions: Quest
 
 				if (q.multiSelect && matchesKey(data, Key.space)) {
 					if (optionIndex === otherIndex) {
-						inputMode = true;
-						editor.setText(state.customText ?? "");
+						if (state.customText) {
+							state.customText = undefined;
+						} else {
+							inputMode = true;
+							editor.setText("");
+						}
 					} else if (state.checked.has(optionIndex)) {
 						state.checked.delete(optionIndex);
 					} else {
@@ -242,7 +246,7 @@ export async function runQuestionsUI(ctx: ExtensionToolContext, questions: Quest
 
 				lines.push(theme.fg("accent", "─".repeat(renderWidth)));
 
-				if (isMulti) {
+				if (hasMultipleQuestions) {
 					const tabs: string[] = ["← "];
 					for (let i = 0; i < questions.length; i++) {
 						const isActive = i === currentTab;
@@ -264,7 +268,7 @@ export async function runQuestionsUI(ctx: ExtensionToolContext, questions: Quest
 					lines.push("");
 				}
 
-				if (isMulti && currentTab === questions.length) {
+				if (hasMultipleQuestions && currentTab === questions.length) {
 					addWrappedWithPrefix(" ", theme.fg("accent", theme.bold("送信の確認")));
 					lines.push("");
 					for (let i = 0; i < questions.length; i++) {
@@ -318,13 +322,13 @@ export async function runQuestionsUI(ctx: ExtensionToolContext, questions: Quest
 				}
 
 				lines.push("");
-				if (isMulti && currentTab === questions.length) {
+				if (hasMultipleQuestions && currentTab === questions.length) {
 					addWrappedWithPrefix(" ", theme.fg("dim", "Tab/←→でタブ切替 • Enterで送信 • Escでキャンセル"));
 				} else if (inputMode) {
 					addWrappedWithPrefix(" ", theme.fg("dim", "Enterで確定 • Escで選択肢へ戻る"));
 				} else {
 					const q = questions[currentTab];
-					const tabHelp = isMulti ? "Tab/←→でタブ切替 • " : "";
+					const tabHelp = hasMultipleQuestions ? "Tab/←→でタブ切替 • " : "";
 					const help = q.multiSelect
 						? "↑↓で移動 • Spaceで選択切替 • Enterで確定 • Escでキャンセル"
 						: "↑↓で移動 • Enterで選択 • Escでキャンセル";
