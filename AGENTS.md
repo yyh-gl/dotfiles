@@ -68,7 +68,7 @@ sandbox・permissionsなどの設定は、Claude Code（`claude/managed-settings
 
 `ask_user_question`（`pi/extensions/ask-user-question/`）は、Piに組み込みの質問UIがないためClaude CodeのAskUserQuestionの代わりとして自作したExtensionである。Claude版のskillをPiへ移すときは、ツール名（`AskUserQuestion` → `ask_user_question`）と、Piにない機能（`model`・`effort`のfrontmatter、Agentツールへの調査委譲、`plansDirectory`）の書き換えが必要になる。
 
-この拡張には自動テストがない（TUIの自動テストが難しいため）。Piを更新したら、`pi -e`・`pi --skill`での手動確認をやり直す。
+この拡張には自動テストがない（TUIの自動テストが難しいため）。Piを更新したら、`pi -e`・`pi --skill`での手動確認に加えて、配備後に`-e`・`--skill`なしで起動し、`ask-user-question`の読み込みエラーがないこと・`/skill:ponder`が一覧にあることも確かめる（skillは読み込めなくてもエラーを出さず一覧から消えるだけなので、一覧表示の確認が欠かせない）。
 
 Piにはsandboxやツール実行ごとの承認の仕組みがなく、上の「Claude・Codexの設定」にある「両方を変える」ルールの対象外である。
 
