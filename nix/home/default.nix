@@ -51,6 +51,7 @@
     ./zsh.nix
     ./emacs.nix
     ./claude.nix
+    ./pi.nix
     ./gh.nix
   ] ++ (if mode == "hobby" then [ ./secrets.nix ] else []);
 }
