@@ -108,13 +108,16 @@ export async function runQuestionsUI(ctx: ExtensionToolContext, questions: Quest
 
 			editor.onSubmit = (value) => {
 				const trimmed = value.trim();
+				const state = states[currentTab];
 				if (!trimmed) {
+					if (questions[currentTab].multiSelect) {
+						state.customText = undefined;
+					}
 					inputMode = false;
 					editor.setText("");
 					refresh();
 					return;
 				}
-				const state = states[currentTab];
 				state.customText = trimmed;
 				if (!questions[currentTab].multiSelect) {
 					state.checked = new Set();
@@ -195,9 +198,9 @@ export async function runQuestionsUI(ctx: ExtensionToolContext, questions: Quest
 				}
 
 				if (matchesKey(data, Key.enter)) {
-					if (optionIndex === otherIndex && !state.customText) {
+					if (optionIndex === otherIndex && (!q.multiSelect || !state.customText)) {
 						inputMode = true;
-						editor.setText("");
+						editor.setText(state.customText ?? "");
 						refresh();
 						return;
 					}
