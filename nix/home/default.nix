@@ -19,6 +19,7 @@
     pkgs.kubectl
     pkgs.kubectx
     pkgs.kubernetes-helm
+    pkgs.lean4
     pkgs.nodejs_26
     pkgs.typescript-language-server
     pkgs.pnpm
