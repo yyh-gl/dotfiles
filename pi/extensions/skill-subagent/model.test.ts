@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { isValidThinkingLevel, splitModelReference } from "./model.ts";
+import { isValidThinkingLevel, resolveThinkingLevel, splitModelReference } from "./model.ts";
 
 describe("splitModelReference", () => {
 	test("provider/model-id形式を最初の/で分割する", () => {
@@ -48,5 +48,11 @@ describe("isValidThinkingLevel", () => {
 
 	test.each([[true], [false], [123], [null], [undefined], [[]]])("非文字列(%p)は妥当ではない", (value) => {
 		expect(isValidThinkingLevel(value)).toBe(false);
+	});
+});
+
+describe("resolveThinkingLevel", () => {
+	test("valueが有効な7値のいずれかならそのまま返す", () => {
+		expect(resolveThinkingLevel("xhigh", "off")).toBe("xhigh");
 	});
 });

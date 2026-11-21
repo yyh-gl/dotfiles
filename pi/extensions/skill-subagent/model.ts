@@ -6,6 +6,10 @@ export function isValidThinkingLevel(value: unknown): value is ThinkingLevelValu
 	return typeof value === "string" && (THINKING_LEVELS as readonly string[]).includes(value);
 }
 
+export function resolveThinkingLevel(value: unknown, fallback: ThinkingLevelValue): ThinkingLevelValue {
+	return isValidThinkingLevel(value) ? value : fallback;
+}
+
 export interface ModelReference {
 	provider: string;
 	modelId: string;
