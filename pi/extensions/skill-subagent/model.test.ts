@@ -41,4 +41,12 @@ describe("isValidThinkingLevel", () => {
 	test.each(["off", "minimal", "low", "medium", "high", "xhigh", "max"])("%sは妥当な値である", (level) => {
 		expect(isValidThinkingLevel(level)).toBe(true);
 	});
+
+	test.each(["XHIGH", "Off", "ultra", ""])("大文字小文字違いや未知の文字列(%p)は妥当ではない", (level) => {
+		expect(isValidThinkingLevel(level)).toBe(false);
+	});
+
+	test.each([[true], [false], [123], [null], [undefined], [[]]])("非文字列(%p)は妥当ではない", (value) => {
+		expect(isValidThinkingLevel(value)).toBe(false);
+	});
 });
