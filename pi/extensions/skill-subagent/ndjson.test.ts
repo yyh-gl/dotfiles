@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { decodeNdjsonChunks, feedNdjsonChunk, parseNdjsonLine } from "./ndjson.ts";
+import { createBufferDecoder, feedNdjsonChunk, parseNdjsonLine } from "./ndjson.ts";
 
 describe("feedNdjsonChunk", () => {
 	test("1チャンクに複数行あれば全て行として返す", () => {
@@ -41,14 +41,16 @@ describe("feedNdjsonChunk", () => {
 	});
 });
 
-describe("decodeNdjsonChunks", () => {
+describe("createBufferDecoder", () => {
 	test("マルチバイト文字の生バイト列がチャンク境界で分割されても正しく復元される", () => {
 		const text = "こんにちは";
 		const raw = Buffer.from(text, "utf-8");
 		const splitAt = 7;
-		const chunks = [raw.subarray(0, splitAt), raw.subarray(splitAt)];
+		const decode = createBufferDecoder();
 
-		expect(decodeNdjsonChunks(chunks)).toBe(text);
+		const result = decode(raw.subarray(0, splitAt)) + decode(raw.subarray(splitAt));
+
+		expect(result).toBe(text);
 	});
 });
 

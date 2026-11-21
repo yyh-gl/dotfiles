@@ -1,8 +1,9 @@
 import { StringDecoder } from "node:string_decoder";
 
-export function decodeNdjsonChunks(chunks: Buffer[]): string {
+/** Wraps a StringDecoder so multi-byte characters split across chunk boundaries decode correctly. */
+export function createBufferDecoder(): (chunk: Buffer) => string {
 	const decoder = new StringDecoder("utf-8");
-	return chunks.map((chunk) => decoder.write(chunk)).join("") + decoder.end();
+	return (chunk) => decoder.write(chunk);
 }
 
 export interface NdjsonFeedResult {

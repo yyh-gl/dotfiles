@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { Model } from "@earendil-works/pi-ai";
 import { Key, matchesKey } from "@earendil-works/pi-tui";
-import { feedNdjsonChunk, parseNdjsonLine } from "./ndjson.ts";
+import { createBufferDecoder, feedNdjsonChunk, parseNdjsonLine } from "./ndjson.ts";
 import { extractAssistantText } from "./message.ts";
 import type { ThinkingLevelValue } from "./model.ts";
 import { buildCtxUiCall, buildUiResponse } from "./ui-request.ts";
@@ -31,6 +31,7 @@ export async function runSkillSubagent(ctx: ExtensionContext, options: RunSkillS
 		let settled = false;
 		let pending = "";
 		let unsubscribeTerminalInput: (() => void) | undefined;
+		const decodeStdoutChunk = createBufferDecoder();
 
 		function finish() {
 			if (settled) return;
@@ -94,7 +95,7 @@ export async function runSkillSubagent(ctx: ExtensionContext, options: RunSkillS
 		}
 
 		child.stdout.on("data", (chunk: Buffer) => {
-			const { lines, pending: nextPending } = feedNdjsonChunk(pending, chunk.toString("utf-8"));
+			const { lines, pending: nextPending } = feedNdjsonChunk(pending, decodeStdoutChunk(chunk));
 			pending = nextPending;
 			for (const line of lines) void handleLine(line);
 		});
