@@ -42,6 +42,7 @@ export async function runSkillSubagent(ctx: ExtensionContext, options: RunSkillS
 		function finish() {
 			if (settled) return;
 			settled = true;
+			currentDialogAbort?.abort();
 			unsubscribeTerminalInput?.();
 			resolve();
 		}
