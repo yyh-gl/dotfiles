@@ -55,4 +55,12 @@ describe("resolveThinkingLevel", () => {
 	test("valueが有効な7値のいずれかならそのまま返す", () => {
 		expect(resolveThinkingLevel("xhigh", "off")).toBe("xhigh");
 	});
+
+	test("valueが無効な値ならfallbackを返す", () => {
+		expect(resolveThinkingLevel("ultra", "medium")).toBe("medium");
+	});
+
+	test("valueがundefinedならfallbackを返す", () => {
+		expect(resolveThinkingLevel(undefined, "medium")).toBe("medium");
+	});
 });
