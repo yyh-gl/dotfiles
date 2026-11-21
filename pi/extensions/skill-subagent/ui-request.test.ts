@@ -63,4 +63,20 @@ describe("buildUiResponse", () => {
 	test("select/inputの結果が文字列ならvalueを持つレスポンスになる", () => {
 		expect(buildUiResponse("1", "選択肢A")).toEqual({ type: "extension_ui_response", id: "1", value: "選択肢A" });
 	});
+
+	test("confirmの結果がbooleanならconfirmedを持つレスポンスになる", () => {
+		expect(buildUiResponse("1", true)).toEqual({ type: "extension_ui_response", id: "1", confirmed: true });
+	});
+
+	test("ユーザーがキャンセル(undefined)した場合はcancelledを持つレスポンスになる", () => {
+		expect(buildUiResponse("1", undefined)).toEqual({ type: "extension_ui_response", id: "1", cancelled: true });
+	});
+
+	test("idはrequest.idをそのまま転記する", () => {
+		expect(buildUiResponse("リクエストID-42", "value")).toEqual({
+			type: "extension_ui_response",
+			id: "リクエストID-42",
+			value: "value",
+		});
+	});
 });
