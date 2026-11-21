@@ -33,8 +33,20 @@ describe("buildCtxUiCall", () => {
 		).toEqual({ method: "editor", args: ["編集", "下書き"] });
 	});
 
+	test("method:notifyはctx.ui.notify用の(message, notifyType)にマッピングされる", () => {
+		expect(
+			buildCtxUiCall({ type: "extension_ui_request", id: "1", method: "notify", message: "お知らせ", notifyType: "warning" }),
+		).toEqual({ method: "notify", args: ["お知らせ", "warning"] });
+	});
+
+	test("method:notifyでnotifyType省略時はundefinedのまま渡る", () => {
+		expect(buildCtxUiCall({ type: "extension_ui_request", id: "1", method: "notify", message: "お知らせ" })).toEqual({
+			method: "notify",
+			args: ["お知らせ", undefined],
+		});
+	});
+
 	test.each([
-		[{ type: "extension_ui_request" as const, id: "1", method: "notify" as const, message: "お知らせ" }],
 		[{ type: "extension_ui_request" as const, id: "1", method: "setStatus" as const, statusKey: "k", statusText: "t" }],
 		[
 			{

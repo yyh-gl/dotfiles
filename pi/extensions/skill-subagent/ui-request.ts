@@ -5,6 +5,7 @@ export type CtxUiCall =
 	| { method: "confirm"; args: [string, string] }
 	| { method: "input"; args: [string, string | undefined] }
 	| { method: "editor"; args: [string, string | undefined] }
+	| { method: "notify"; args: [string, "info" | "warning" | "error" | undefined] }
 	| { method: "none" };
 
 export function buildUiResponse(id: string, result: string | boolean | undefined): RpcExtensionUIResponse {
@@ -23,6 +24,8 @@ export function buildCtxUiCall(request: RpcExtensionUIRequest): CtxUiCall {
 			return { method: "input", args: [request.title, request.placeholder] };
 		case "editor":
 			return { method: "editor", args: [request.title, request.prefill] };
+		case "notify":
+			return { method: "notify", args: [request.message, request.notifyType] };
 		default:
 			return { method: "none" };
 	}
