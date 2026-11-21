@@ -8,4 +8,31 @@ describe("splitModelReference", () => {
 			modelId: "claude-opus-4-5",
 		});
 	});
+
+	test("modelId自体に/を含む場合は最初の/だけで区切る", () => {
+		expect(splitModelReference("openrouter/anthropic/claude-3-opus")).toEqual({
+			provider: "openrouter",
+			modelId: "anthropic/claude-3-opus",
+		});
+	});
+
+	test("/を含まない文字列はundefinedになる", () => {
+		expect(splitModelReference("opus")).toBeUndefined();
+	});
+
+	test.each([[123], [null], [undefined], [true], [[]], [{}]])("非文字列(%p)はundefinedになる", (value) => {
+		expect(splitModelReference(value)).toBeUndefined();
+	});
+
+	test("空文字列はundefinedになる", () => {
+		expect(splitModelReference("")).toBeUndefined();
+	});
+
+	test("先頭が/の場合はundefinedになる", () => {
+		expect(splitModelReference("/claude-opus")).toBeUndefined();
+	});
+
+	test("末尾が/の場合はundefinedになる", () => {
+		expect(splitModelReference("anthropic/")).toBeUndefined();
+	});
 });
