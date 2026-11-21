@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { buildSelectChoices, OTHER_LABEL } from "./choices.ts";
+import { buildMultiSelectConfirmMessage, buildSelectChoices, OTHER_LABEL } from "./choices.ts";
 
 describe("buildSelectChoices", () => {
 	test("description有りの選択肢はoptionStringsで'label — description'になる", () => {
@@ -49,5 +49,11 @@ describe("buildSelectChoices", () => {
 		expect(optionStrings[1]).toBe("赤 — descB");
 		expect(lookup.get("赤 — descA")).toEqual({ kind: "option", option: optionA });
 		expect(lookup.get("赤 — descB")).toEqual({ kind: "option", option: optionB });
+	});
+});
+
+describe("buildMultiSelectConfirmMessage", () => {
+	test("通常のlabelがそのまま埋め込まれる", () => {
+		expect(buildMultiSelectConfirmMessage("赤")).toBe("赤を選びますか？");
 	});
 });

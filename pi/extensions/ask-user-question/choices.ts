@@ -13,6 +13,10 @@ function formatOption(option: QuestionOptionInput): string {
 	return option.description ? `${option.label} — ${option.description}` : option.label;
 }
 
+export function buildMultiSelectConfirmMessage(label: string): string {
+	return `${label}を選びますか？`;
+}
+
 export function buildSelectChoices(options: QuestionOptionInput[]): SelectChoices {
 	const lookup = new Map<string, SelectChoice>();
 	const optionStrings = options.map((option) => {
