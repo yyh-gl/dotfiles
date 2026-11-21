@@ -1,8 +1,8 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Text } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
+import type { QuestionsResult } from "./questions.ts";
 import { runQuestionsUI } from "./ui.ts";
-import type { QuestionsResult } from "./ui.ts";
 
 const OptionSchema = Type.Object({
 	label: Type.String({ description: "Display label for the option. Put the recommended option first and append (Recommended) to its label." }),

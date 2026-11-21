@@ -1,32 +1,8 @@
 import type { ExtensionToolContext } from "@earendil-works/pi-coding-agent";
 import { Editor, type EditorTheme, Key, matchesKey, visibleWidth, wrapTextWithAnsi } from "@earendil-works/pi-tui";
-
-export interface QuestionOptionInput {
-	label: string;
-	description?: string;
-}
-
-export interface QuestionInput {
-	question: string;
-	header: string;
-	options: QuestionOptionInput[];
-	multiSelect?: boolean;
-}
-
-export interface AnsweredQuestion {
-	question: string;
-	header: string;
-	selectedLabels: string[];
-	customText?: string;
-	answer: string;
-}
-
-export interface QuestionsResult {
-	cancelled: boolean;
-	answers: AnsweredQuestion[];
-}
-
-const OTHER_LABEL = "その他（自由入力）";
+import { OTHER_LABEL } from "./choices.ts";
+import { buildAnswer as buildAnswerFromSelection } from "./questions.ts";
+import type { AnsweredQuestion, QuestionInput, QuestionsResult } from "./questions.ts";
 
 interface QuestionState {
 	checked: Set<number>;
@@ -50,18 +26,10 @@ export async function runQuestionsUI(ctx: ExtensionToolContext, questions: Quest
 	function buildAnswer(index: number): AnsweredQuestion {
 		const q = questions[index];
 		const state = states[index];
-		const selectedLabels = Array.from(state.checked)
+		const selectedOptions = Array.from(state.checked)
 			.sort((a, b) => a - b)
-			.map((i) => q.options[i].label);
-		const parts = [...selectedLabels];
-		if (state.customText) parts.push(state.customText);
-		return {
-			question: q.question,
-			header: q.header,
-			selectedLabels,
-			customText: state.customText,
-			answer: parts.join(", "),
-		};
+			.map((i) => q.options[i]);
+		return buildAnswerFromSelection(q, selectedOptions, state.customText);
 	}
 
 	return ctx.ui.custom<QuestionsResult>(
