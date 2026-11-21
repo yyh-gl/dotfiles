@@ -45,4 +45,15 @@ describe("buildAnswer", () => {
 			answer: "緑",
 		});
 	});
+
+	test("customTextが空文字の場合、customText指定なしと同じ扱いでanswerに含まれない", () => {
+		const question = { question: "好きな色は?", header: "色" };
+		expect(buildAnswer(question, [{ label: "赤" }], "")).toEqual({
+			question: "好きな色は?",
+			header: "色",
+			selectedLabels: ["赤"],
+			customText: "",
+			answer: "赤",
+		});
+	});
 });
