@@ -45,4 +45,16 @@ describe("parseNdjsonLine", () => {
 	test("妥当なJSON行はパース結果のオブジェクトを返す", () => {
 		expect(parseNdjsonLine('{"type":"response"}')).toEqual({ type: "response" });
 	});
+
+	test("不正なJSON文字列は例外を投げずundefinedを返す", () => {
+		expect(parseNdjsonLine("{not json")).toBeUndefined();
+	});
+
+	test("空文字列の行はundefinedを返す", () => {
+		expect(parseNdjsonLine("")).toBeUndefined();
+	});
+
+	test("空白・タブのみの行はundefinedを返す", () => {
+		expect(parseNdjsonLine("  \t ")).toBeUndefined();
+	});
 });
