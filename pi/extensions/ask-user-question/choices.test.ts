@@ -56,4 +56,8 @@ describe("buildMultiSelectConfirmMessage", () => {
 	test("通常のlabelがそのまま埋め込まれる", () => {
 		expect(buildMultiSelectConfirmMessage("赤")).toBe("赤を選びますか？");
 	});
+
+	test("labelに\"や改行を含む場合でもエスケープせずそのまま埋め込まれる", () => {
+		expect(buildMultiSelectConfirmMessage('赤"青\n緑')).toBe('赤"青\n緑を選びますか？');
+	});
 });
