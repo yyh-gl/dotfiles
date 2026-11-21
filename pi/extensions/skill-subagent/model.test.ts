@@ -69,4 +69,16 @@ describe("hasSubagentDirective", () => {
 	test("modelもeffortも無ければfalse", () => {
 		expect(hasSubagentDirective({})).toBe(false);
 	});
+
+	test("modelだけあればtrue", () => {
+		expect(hasSubagentDirective({ model: "anthropic/claude-opus-4-5" })).toBe(true);
+	});
+
+	test("effortだけあればtrue", () => {
+		expect(hasSubagentDirective({ effort: "xhigh" })).toBe(true);
+	});
+
+	test.each([[{ model: null }], [{ effort: undefined }]])("キーはあるが値がnull/undefinedなら無しと同じ扱いでfalse", (frontmatter) => {
+		expect(hasSubagentDirective(frontmatter)).toBe(false);
+	});
 });
