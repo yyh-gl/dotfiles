@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { splitModelReference } from "./model.ts";
+import { isValidThinkingLevel, splitModelReference } from "./model.ts";
 
 describe("splitModelReference", () => {
 	test("provider/model-id形式を最初の/で分割する", () => {
@@ -34,5 +34,11 @@ describe("splitModelReference", () => {
 
 	test("末尾が/の場合はundefinedになる", () => {
 		expect(splitModelReference("anthropic/")).toBeUndefined();
+	});
+});
+
+describe("isValidThinkingLevel", () => {
+	test.each(["off", "minimal", "low", "medium", "high", "xhigh", "max"])("%sは妥当な値である", (level) => {
+		expect(isValidThinkingLevel(level)).toBe(true);
 	});
 });
