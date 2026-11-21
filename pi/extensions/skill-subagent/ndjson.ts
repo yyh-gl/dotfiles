@@ -1,3 +1,10 @@
+import { StringDecoder } from "node:string_decoder";
+
+export function decodeNdjsonChunks(chunks: Buffer[]): string {
+	const decoder = new StringDecoder("utf-8");
+	return chunks.map((chunk) => decoder.write(chunk)).join("") + decoder.end();
+}
+
 export interface NdjsonFeedResult {
 	lines: string[];
 	pending: string;

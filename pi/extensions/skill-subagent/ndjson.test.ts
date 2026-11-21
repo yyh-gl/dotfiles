@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { feedNdjsonChunk, parseNdjsonLine } from "./ndjson.ts";
+import { decodeNdjsonChunks, feedNdjsonChunk, parseNdjsonLine } from "./ndjson.ts";
 
 describe("feedNdjsonChunk", () => {
 	test("1チャンクに複数行あれば全て行として返す", () => {
@@ -38,6 +38,17 @@ describe("feedNdjsonChunk", () => {
 
 	test("JSON文字列値中のエスケープされた改行では分割されず1行として保持される", () => {
 		expect(feedNdjsonChunk("", '{"text":"a\\nb"}\n')).toEqual({ lines: ['{"text":"a\\nb"}'], pending: "" });
+	});
+});
+
+describe("decodeNdjsonChunks", () => {
+	test("マルチバイト文字の生バイト列がチャンク境界で分割されても正しく復元される", () => {
+		const text = "こんにちは";
+		const raw = Buffer.from(text, "utf-8");
+		const splitAt = 7;
+		const chunks = [raw.subarray(0, splitAt), raw.subarray(splitAt)];
+
+		expect(decodeNdjsonChunks(chunks)).toBe(text);
 	});
 });
 
