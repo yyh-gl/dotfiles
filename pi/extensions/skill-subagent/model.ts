@@ -10,6 +10,10 @@ export function resolveThinkingLevel(value: unknown, fallback: ThinkingLevelValu
 	return isValidThinkingLevel(value) ? value : fallback;
 }
 
+export function hasSubagentDirective(frontmatter: Record<string, unknown>): boolean {
+	return frontmatter.model != null || frontmatter.effort != null;
+}
+
 export interface ModelReference {
 	provider: string;
 	modelId: string;

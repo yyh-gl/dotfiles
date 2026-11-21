@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { isValidThinkingLevel, resolveThinkingLevel, splitModelReference } from "./model.ts";
+import { hasSubagentDirective, isValidThinkingLevel, resolveThinkingLevel, splitModelReference } from "./model.ts";
 
 describe("splitModelReference", () => {
 	test("provider/model-id形式を最初の/で分割する", () => {
@@ -62,5 +62,11 @@ describe("resolveThinkingLevel", () => {
 
 	test("valueがundefinedならfallbackを返す", () => {
 		expect(resolveThinkingLevel(undefined, "medium")).toBe("medium");
+	});
+});
+
+describe("hasSubagentDirective", () => {
+	test("modelもeffortも無ければfalse", () => {
+		expect(hasSubagentDirective({})).toBe(false);
 	});
 });
