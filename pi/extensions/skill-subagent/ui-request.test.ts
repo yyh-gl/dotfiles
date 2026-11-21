@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { buildCtxUiCall } from "./ui-request.ts";
+import { buildCtxUiCall, buildUiResponse } from "./ui-request.ts";
 
 describe("buildCtxUiCall", () => {
 	test("method:selectはctx.ui.select用の(title, options)にマッピングされる", () => {
@@ -56,5 +56,11 @@ describe("buildCtxUiCall", () => {
 			typeof buildCtxUiCall
 		>[0];
 		expect(buildCtxUiCall(request)).toEqual({ method: "none" });
+	});
+});
+
+describe("buildUiResponse", () => {
+	test("select/inputの結果が文字列ならvalueを持つレスポンスになる", () => {
+		expect(buildUiResponse("1", "選択肢A")).toEqual({ type: "extension_ui_response", id: "1", value: "選択肢A" });
 	});
 });

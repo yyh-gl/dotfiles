@@ -7,6 +7,12 @@ export type CtxUiCall =
 	| { method: "editor"; args: [string, string | undefined] }
 	| { method: "none" };
 
+export function buildUiResponse(id: string, result: string | boolean | undefined): RpcExtensionUIResponse {
+	if (result === undefined) return { type: "extension_ui_response", id, cancelled: true };
+	if (typeof result === "boolean") return { type: "extension_ui_response", id, confirmed: result };
+	return { type: "extension_ui_response", id, value: result };
+}
+
 export function buildCtxUiCall(request: RpcExtensionUIRequest): CtxUiCall {
 	switch (request.method) {
 		case "select":
