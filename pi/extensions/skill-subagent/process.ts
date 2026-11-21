@@ -14,6 +14,7 @@ export interface RunSkillSubagentOptions {
 }
 
 const KILL_GRACE_PERIOD_MS = 5000;
+const STDERR_TAIL_LIMIT = 4000;
 const PROMPT_COMMAND_ID = "skill-subagent-prompt";
 
 function buildSpawnArgs(options: RunSkillSubagentOptions): string[] {
@@ -29,9 +30,14 @@ export async function runSkillSubagent(ctx: ExtensionContext, options: RunSkillS
 
 	await new Promise<void>((resolve) => {
 		let settled = false;
+		let agentSettled = false;
+		let terminationRequested = false;
 		let pending = "";
+		let stderrTail = "";
+		let currentDialogAbort: AbortController | undefined;
 		let unsubscribeTerminalInput: (() => void) | undefined;
 		const decodeStdoutChunk = createBufferDecoder();
+		const decodeStderrChunk = createBufferDecoder();
 
 		function finish() {
 			if (settled) return;
@@ -40,8 +46,27 @@ export async function runSkillSubagent(ctx: ExtensionContext, options: RunSkillS
 			resolve();
 		}
 
+		function terminateChild() {
+			terminationRequested = true;
+			child.kill("SIGTERM");
+			setTimeout(() => {
+				if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+			}, KILL_GRACE_PERIOD_MS);
+		}
+
 		function send(obj: unknown) {
+			if (settled || !child.stdin.writable) return;
 			child.stdin.write(`${JSON.stringify(obj)}\n`);
+		}
+
+		async function withDialogAbort<T>(run: (signal: AbortSignal) => Promise<T>): Promise<T> {
+			const controller = new AbortController();
+			currentDialogAbort = controller;
+			try {
+				return await run(controller.signal);
+			} finally {
+				if (currentDialogAbort === controller) currentDialogAbort = undefined;
+			}
 		}
 
 		async function handleLine(line: string) {
@@ -53,7 +78,7 @@ export async function runSkillSubagent(ctx: ExtensionContext, options: RunSkillS
 				const response = message as { success: boolean; error?: string };
 				if (!response.success) {
 					ctx.ui.notify(`サブエージェントの起動に失敗しました: ${response.error}`, "error");
-					child.kill("SIGTERM");
+					terminateChild();
 				}
 				return;
 			}
@@ -64,17 +89,24 @@ export async function runSkillSubagent(ctx: ExtensionContext, options: RunSkillS
 				let result: string | boolean | undefined;
 				switch (call.method) {
 					case "select":
-						result = await ctx.ui.select(...call.args);
+						result = await withDialogAbort((signal) => ctx.ui.select(...call.args, { signal }));
 						break;
 					case "confirm":
-						result = await ctx.ui.confirm(...call.args);
+						result = await withDialogAbort((signal) => ctx.ui.confirm(...call.args, { signal }));
 						break;
 					case "input":
-						result = await ctx.ui.input(...call.args);
+						result = await withDialogAbort((signal) => ctx.ui.input(...call.args, { signal }));
 						break;
 					case "editor":
+						// ExtensionUIContext.editor() takes no AbortSignal, so an Escape while it is open
+						// cannot cancel just this dialog; it falls through to the no-dialog-in-flight path
+						// and terminates the whole subagent instead. ask-user-question's RPC UI never emits
+						// an editor request (decision 8), so this is a dormant branch for other callers.
 						result = await ctx.ui.editor(...call.args);
 						break;
+					case "notify":
+						ctx.ui.notify(...call.args);
+						return;
 					case "none":
 						return;
 				}
@@ -89,6 +121,7 @@ export async function runSkillSubagent(ctx: ExtensionContext, options: RunSkillS
 			}
 
 			if (event.type === "agent_settled") {
+				agentSettled = true;
 				child.stdin.end();
 				finish();
 			}
@@ -97,7 +130,18 @@ export async function runSkillSubagent(ctx: ExtensionContext, options: RunSkillS
 		child.stdout.on("data", (chunk: Buffer) => {
 			const { lines, pending: nextPending } = feedNdjsonChunk(pending, decodeStdoutChunk(chunk));
 			pending = nextPending;
-			for (const line of lines) void handleLine(line);
+			for (const line of lines) {
+				handleLine(line).catch((error) => ctx.ui.notify(String(error), "error"));
+			}
+		});
+
+		child.stderr.on("data", (chunk: Buffer) => {
+			stderrTail = (stderrTail + decodeStderrChunk(chunk)).slice(-STDERR_TAIL_LIMIT);
+		});
+
+		child.stdin.on("error", () => {
+			// Writing after the child has exited or been killed raises EPIPE; terminateChild()/finish()
+			// already handle the lifecycle, so there is nothing more to do here than avoid crashing on it.
 		});
 
 		child.on("error", (error) => {
@@ -105,14 +149,20 @@ export async function runSkillSubagent(ctx: ExtensionContext, options: RunSkillS
 			finish();
 		});
 
-		child.on("exit", finish);
+		child.on("close", (code) => {
+			if (!agentSettled && !terminationRequested && code !== 0) {
+				ctx.ui.notify(`サブエージェントが異常終了しました(code=${code}): ${stderrTail.trim()}`, "error");
+			}
+			finish();
+		});
 
 		unsubscribeTerminalInput = ctx.ui.onTerminalInput((data) => {
 			if (!matchesKey(data, Key.escape)) return undefined;
-			child.kill("SIGTERM");
-			setTimeout(() => {
-				if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
-			}, KILL_GRACE_PERIOD_MS);
+			if (currentDialogAbort) {
+				currentDialogAbort.abort();
+			} else {
+				terminateChild();
+			}
 			return { consume: true };
 		});
 
