@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { feedNdjsonChunk } from "./ndjson.ts";
+import { feedNdjsonChunk, parseNdjsonLine } from "./ndjson.ts";
 
 describe("feedNdjsonChunk", () => {
 	test("1チャンクに複数行あれば全て行として返す", () => {
@@ -38,5 +38,11 @@ describe("feedNdjsonChunk", () => {
 
 	test("JSON文字列値中のエスケープされた改行では分割されず1行として保持される", () => {
 		expect(feedNdjsonChunk("", '{"text":"a\\nb"}\n')).toEqual({ lines: ['{"text":"a\\nb"}'], pending: "" });
+	});
+});
+
+describe("parseNdjsonLine", () => {
+	test("妥当なJSON行はパース結果のオブジェクトを返す", () => {
+		expect(parseNdjsonLine('{"type":"response"}')).toEqual({ type: "response" });
 	});
 });
