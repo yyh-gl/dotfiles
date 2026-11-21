@@ -1,6 +1,7 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Text } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
+import { runQuestionsUIRpc } from "./questions-rpc.ts";
 import type { QuestionsResult } from "./questions.ts";
 import { runQuestionsUI } from "./ui.ts";
 
@@ -34,7 +35,7 @@ export default function askUserQuestion(pi: ExtensionAPI) {
 		executionMode: "sequential",
 
 		async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
-			if (ctx.mode !== "tui") {
+			if (ctx.mode !== "tui" && ctx.mode !== "rpc") {
 				return {
 					content: [
 						{
@@ -63,7 +64,8 @@ export default function askUserQuestion(pi: ExtensionAPI) {
 				}
 			}
 
-			const result = await runQuestionsUI(ctx, params.questions);
+			const result =
+				ctx.mode === "tui" ? await runQuestionsUI(ctx, params.questions) : await runQuestionsUIRpc(ctx.ui, params.questions);
 
 			if (result.cancelled) {
 				return {
