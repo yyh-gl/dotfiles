@@ -60,6 +60,18 @@ Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 
 sandbox・permissionsなどの設定は、Claude Code（`claude/managed-settings.json`）とCodex（`codex/requirements.toml`・`codex/managed_config.toml`）の両方に置いている。**ClaudeまたはCodexの設定を変更するときは、必ず両方について変更する**。対応関係と、揃えられない点（意図的な差分）は`docs/codex-sandbox.md`を参照。
 
+### Pi
+
+`pi/skills/*`・`pi/extensions/*`の各ディレクトリは、`nix/home/pi.nix`が`builtins.readDir`で列挙して`~/.pi/agent/{skills,extensions}/<名前>`へ個別にsymlinkする。ディレクトリを追加・削除しても`pi.nix`自体は変更しなくてよい。
+
+`~/.pi/agent/settings.json`はPiが`lastChangelogVersion`などを自分で書き換えるため、Nixでは管理しない。
+
+`ask_user_question`（`pi/extensions/ask-user-question/`）は、Piに組み込みの質問UIがないためClaude CodeのAskUserQuestionの代わりとして自作したExtensionである。Claude版のskillをPiへ移すときは、ツール名（`AskUserQuestion` → `ask_user_question`）と、Piにない機能（`model`・`effort`のfrontmatter、Agentツールへの調査委譲、`plansDirectory`）の書き換えが必要になる。
+
+この拡張には自動テストがない（TUIの自動テストが難しいため）。Piを更新したら、`pi -e`・`pi --skill`での手動確認に加えて、配備後に`-e`・`--skill`なしで起動し、`ask-user-question`の読み込みエラーがないこと・`/skill:ponder`が一覧にあることも確かめる（skillは読み込めなくてもエラーを出さず一覧から消えるだけなので、一覧表示の確認が欠かせない）。
+
+Piにはsandboxやツール実行ごとの承認の仕組みがなく、上の「Claude・Codexの設定」にある「両方を変える」ルールの対象外である。
+
 ### 1Password Secrets Management
 
 機密ファイルは`op inject`で1Passwordから展開する。`make nix-apply-hobby/work`実行時に自動適用される。
@@ -104,6 +116,7 @@ nix/
     ├── zsh.nix        # programs.zsh (起動速度の工夫は下の「Zsh起動速度」)
     ├── emacs.nix      # Emacs本体とtree-sitterの文法
     ├── claude.nix     # ~/.claude 配下 (CLAUDE.md, agents, skills, hooks, mods)
+    ├── pi.nix         # ~/.pi/agent 配下 (skills, extensions)
     ├── gh.nix         # programs.gh
     └── secrets.nix    # 1Password連携 (hobbyモードのみ)
 ```
