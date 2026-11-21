@@ -20,6 +20,7 @@
     pkgs.kubectx
     pkgs.kubernetes-helm
     pkgs.lean4
+    pkgs.pi-coding-agent
     pkgs.nodejs_26
     pkgs.typescript-language-server
     pkgs.pnpm
