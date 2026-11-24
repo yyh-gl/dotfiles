@@ -29,6 +29,8 @@ model: opus
 
 Medium/Largeの重要な設計判断は、Pros・Cons・代替案・決定根拠を明記して行う。レッドフラグ（God Object・密結合・銀の弾丸・過度な複雑性）に注意。
 
+**敵対的検証（`/adversarial-verification`、`~/.claude/skills/adversarial-verification/references/skeptics.md`）の実施判定**: Largeでは常に実施する。Small・Mediumでは、ユーザーが依頼文、または作業中・最終報告後の追加指示で明示的に求めたときだけ実施する（懐疑役3体がopusで動くため、通常レビューの3〜10倍のトークンを使う）。
+
 ### Phase 2: 割当
 
 割当メッセージには、何をするか・対象ファイル・既存パターンや前提・期待する成果物を含める。加えて:
@@ -47,6 +49,21 @@ Medium/Largeの重要な設計判断は、Pros・Cons・代替案・決定根拠
 
 バグ発見時はTDDで修正する: Implementerに「バグを再現する失敗テストを1つ追加してRedを確認し、最小修正でGreenにする」と指示し、修正後にTesterへ再監査を依頼。
 
+#### 敵対的検証（実施する場合）
+
+ReviewerがいるフローではAPPROVE・WARNINGになったあと、Reviewerを起動しなかったSmallではImplementer（とTester監査を行った場合はその完了）のあと、いずれも1回だけ実施する。対象はチーム開始時点（`.dev-team/base-sha`）から現在（`git rev-parse HEAD`）までの差分全体。
+
+1. `~/.claude/skills/adversarial-verification/references/skeptics.md`を読む
+2. `git status -s`で未コミットの変更を確認し、`git diff --stat <BASE>...<HEAD>`で差分があることを確認する（空なら実施せずユーザーに伝える）
+3. 「作者の主張」として、`git log <BASE>..<HEAD> --format=%B`のコミットメッセージと、`.dev-team/request.md`の依頼文の原文を用意する。依頼文がユーザー自身の書いた仕様・プランのファイルを指していれば、そのパスも渡す。**Leadの要約・`.dev-team/plan.md`・`.dev-team/test-list.md`・Reviewer/Implementerの報告は渡さない**（懐疑役の独立性を保つため）
+4. `references/skeptics.md`の手順で懐疑役3体を並列起動し、全員の完了を待つ
+5. `references/skeptics.md`の統合手順（重複のまとめ・根拠の実在確認）だけを行う。**指摘の妥当性は判断しない**（実装した側が判断すると自分に甘くなる。採否は人間が決める）
+6. レポートを会話に書き、Reviewerの未対応のWARNING（あれば）と合わせて、AskUserQuestionで採否を聞く（選択肢: 全件採用／深刻度・高だけ採用／全件見送り。個別に指定したい場合はOtherの自由記述で指摘を指定してもらう）
+7. 採用された指摘を`.dev-team/adversarial-fixes.md`に書き、Implementerに「指摘を再現する失敗テストを1つ追加してRedを確認し、最小修正でGreenにする」と指示 → Tester再監査 → Reviewer再レビューの順に回す。**敵対的検証そのものは自動では再実施しない**。ユーザーが再実施を求めたときだけ、同じ`BASE`で差分全体を対象に行う
+8. チーム起動手順6の「全タスク完了」には、ここまで（検証・採否判断・採用分の修正と再検証）を含める。これが終わってから`shutdown_request`を送る
+
+最終報告後にユーザーが敵対的検証を求めた場合は、上記1〜7を実施する。採用された指摘があれば、チーム起動手順に従って必要なメンバーを`name`付きで起動し直して修正を回す（`.dev-team/base-sha`・`.dev-team/request.md`は残っている）。
+
 ### Phase 4: 最終報告
 
-全作業完了後、ユーザーへ報告: 概要 / 変更ファイル一覧 / 重要な設計判断 / テスト結果（カバレッジ含む）/ レビュー判定と残課題。
+全作業完了後、ユーザーへ報告: 概要 / 変更ファイル一覧 / 重要な設計判断 / テスト結果（カバレッジ含む）/ レビュー判定と残課題 / 敵対的検証を実施した場合は各懐疑役の判定と採用・見送りの内訳。

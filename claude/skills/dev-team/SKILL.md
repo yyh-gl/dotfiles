@@ -11,7 +11,7 @@ description: devチームを起動するスキル。Lead・Planner・Implementer
 
 本チームは**Canon TDD**（`~/.claude/skills/tdd/SKILL.md`）に準拠する。方法論はそこを参照し、再記述しない。Implementerは実装着手時に読み込む（`references/`は必要時のみ）。
 
-役割分担: **Tester**がテストリスト（自然言語の箇条書き）を作成 → **Implementer**がred-green-refactorサイクルを1サイクル1テストで回す（テストとプロダクションコードの両方を書く）→ **Tester**が全サイクル完了後に品質監査・エッジケース追加 → **Reviewer**が品質・セキュリティレビュー。
+役割分担: **Tester**がテストリスト（自然言語の箇条書き）を作成 → **Implementer**がred-green-refactorサイクルを1サイクル1テストで回す（テストとプロダクションコードの両方を書く）→ **Tester**が全サイクル完了後に品質監査・エッジケース追加 → **Reviewer**が品質・セキュリティレビュー → （Largeは常時、Small・Mediumは依頼時のみ）**Lead**が懐疑役3体を起動する敵対的検証。
 
 TDDの鉄則（全員が遵守）:
 
@@ -30,11 +30,12 @@ TDDの鉄則（全員が遵守）:
 
 Leadは**メインセッション**が務める（`lead.md`はその行動規範）。subagentとして起動したLeadはAgentツールでメンバーを起動できないため、`name`付きでメンバーを起動するのはメインセッションの役割。
 
-1. **TaskCreate**でタスク登録（subject・description）。依存関係はTaskUpdateでblockedBy設定
-2. **Agentツールでメンバー起動**。`name`を必ず指定する（SendMessageの宛先になる）。例: `subagent_type: "implementer"`, `name: "Implementer"`（tester/reviewer/plannerも同様）。**複雑度に応じて必要なメンバーのみ起動する**（判断基準は`~/.claude/agents/lead.md`）
-3. **SendMessage**でタスク割当（`to`=メンバー名、`message`=対象ファイル・期待成果物・コンテキスト、`summary`=タスク名5-10語）。TaskUpdateで`owner`を設定
-4. 進捗管理: メンバーの報告はSendMessageで自動配信される。完了報告を受けたらTaskUpdateで`completed`に更新し、unblockされたタスクを次のメンバーに割当
-5. 全タスク完了後、各メンバーに`{"type": "shutdown_request", "reason": "全タスク完了"}`をSendMessageし、全員の確認後にユーザーへ最終報告
+1. **記録**: `git rev-parse HEAD`を単体のBash呼び出しで実行し、値をWriteツールで`.dev-team/base-sha`に書く。ユーザーの依頼文の原文をWriteツールで`.dev-team/request.md`に書く（作業中にユーザーが要件の追加・変更を明示的に指示したら、その原文を追記する）。敵対的検証を実施するときの対象・主張（手順は`~/.claude/agents/lead.md`）を用意するための記録で、実施するかどうかに関係なく毎回行う
+2. **TaskCreate**でタスク登録（subject・description）。依存関係はTaskUpdateでblockedBy設定
+3. **Agentツールでメンバー起動**。`name`を必ず指定する（SendMessageの宛先になる）。例: `subagent_type: "implementer"`, `name: "Implementer"`（tester/reviewer/plannerも同様）。**複雑度に応じて必要なメンバーのみ起動する**（判断基準は`~/.claude/agents/lead.md`）
+4. **SendMessage**でタスク割当（`to`=メンバー名、`message`=対象ファイル・期待成果物・コンテキスト、`summary`=タスク名5-10語）。TaskUpdateで`owner`を設定
+5. 進捗管理: メンバーの報告はSendMessageで自動配信される。完了報告を受けたらTaskUpdateで`completed`に更新し、unblockされたタスクを次のメンバーに割当
+6. 全タスク完了後（敵対的検証を実施する場合は、検証・ユーザーの採否判断・採用分の修正とその再監査・再レビューの完了まで含む）、各メンバーに`{"type": "shutdown_request", "reason": "全タスク完了"}`をSendMessageし、全員の確認後にユーザーへ最終報告
 
 ## ファイル所有権
 
@@ -87,5 +88,8 @@ Leadは**メインセッション**が務める（`lead.md`はその行動規範
 | Implementer | TDDドライバー（テスト+実装） | sonnet | `~/.claude/agents/implementer.md` |
 | Tester | テストリスト作成・品質監査 | sonnet | `~/.claude/agents/tester.md` |
 | Reviewer | 品質・セキュリティレビュー（読み取り専用） | opus | `~/.claude/agents/reviewer.md` |
+| 懐疑役 | 敵対的検証（Leadが起動。Largeは常時、Small・Mediumは依頼時のみ） | opus | `~/.claude/skills/adversarial-verification/references/skeptics.md` |
+
+懐疑役はチームメンバーではない（`name`を付けず、SendMessage・TaskUpdate・`shutdown_request`の対象にしない）。起動条件・手順は`~/.claude/agents/lead.md`を参照。
 
 各プロジェクトの情報は`docs/`配下を参照すること。
