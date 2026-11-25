@@ -91,14 +91,6 @@ git rev-parse <BASE>
 git rev-parse <HEAD>
 ```
 
-次に差分の有無を確認する。
-
-```bash
-git diff --stat <BASE>...<HEAD>
-```
-
-出力が空なら中断し「差分がありません」と伝える（マージ済みPRで`BASE`がマージ後のベースブランチ先端を指し`HEAD`を含んでしまっている場合もここに該当する。疑わしければ`git merge-base <BASE> <HEAD>`と`<HEAD>`を比べ、一致するなら`BASE`の取り方を見直す）。
-
 Step 5のコメント位置決定（LEFT側の判定）で使うため、マージベースも取得しておく。
 
 ```bash
@@ -106,6 +98,14 @@ git merge-base <BASE> <HEAD>
 ```
 
 この結果を`MERGE_BASE`とする。
+
+次に差分の有無を確認する。
+
+```bash
+git diff --stat <BASE>...<HEAD>
+```
+
+出力が空なら中断し「差分がありません」と伝える（マージ済みPRで`BASE`がマージ後のベースブランチ先端を指し`HEAD`を含んでしまっている場合もここに該当する。疑わしければ取得済みの`MERGE_BASE`と`HEAD`のフルSHAを比べ、一致するなら`BASE`の取り方を見直す）。
 
 未コミットの変更（`git status -s`）があれば、それはこのスキルの対象に含めていない旨を、Step 5で生成するHTMLのヘッダーとターミナル要約に書く。
 
