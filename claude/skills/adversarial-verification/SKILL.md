@@ -64,16 +64,6 @@ git symbolic-ref --short refs/remotes/origin/HEAD
 
 **現ブランチがデフォルトブランチ自身のとき**（引数なし、またはブランチ名として明示的に指定したとき）は、比較対象がないので中断し「検証したいブランチ・PR番号・コミット範囲を指定してください」と伝える。
 
-`BASE`・`HEAD`を確定したら、Step 5のファイル名で使う短SHAのためにフルSHAを取得する。
-
-```bash
-git rev-parse <BASE>
-```
-
-```bash
-git rev-parse <HEAD>
-```
-
 ### コミットの用意と差分の確認
 
 `BASE`・`HEAD`がローカルのコミットとして存在するかを確かめる。
@@ -91,7 +81,17 @@ git cat-file -e <HEAD>
 - PRの場合: `! git fetch origin pull/<n>/head <baseRefName>`
 - ブランチの場合: `! git fetch origin <branch>:<branch>`（またはユーザーの普段の取得方法）
 
-両方そろったら差分の有無を確認する。
+両方そろったら、Step 5のファイル名で使う短SHAのためにフルSHAを取得する。
+
+```bash
+git rev-parse <BASE>
+```
+
+```bash
+git rev-parse <HEAD>
+```
+
+次に差分の有無を確認する。
 
 ```bash
 git diff --stat <BASE>...<HEAD>
