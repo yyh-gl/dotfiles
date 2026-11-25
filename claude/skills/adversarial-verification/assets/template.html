@@ -282,17 +282,20 @@
   使い方（SKILL.mdのStep 5から埋める）:
   1. このファイルをコピーし、各プレースホルダーを実際の検証結果に置き換える
   2. コード抜粋・懐疑役の文章・PR説明文やコミットメッセージの引用は、埋め込む前に
-     `<` `>` `&` `"` をすべてエスケープする（`&`を最初に置換すること）
+     `<``>``&``"`をすべてエスケープする（`&`を最初に置換すること）
   3. 根拠が出典URLのみ、または「根拠の行を確認できず」の指摘では、.finding内の
-     pre.snippetブロックを省く（コード抜粋がないため）
+     pre.snippetブロックを省く（コード抜粋がないため）。ただし.meta-rowの根拠欄は
+     どの指摘でも必ず出す（出典URL、または「根拠の行を確認できず」の注記を書く）
   4. 1つの指摘に根拠が複数あるときは、.snippet-ref + pre.snippetのブロックを
      根拠の数だけ繰り返す
-  5. コード抜粋には行番号を付け、根拠の行には.line.highlightを付けて強調する
+  5. コード抜粋には行番号を付け、根拠の行には.line.highlightを付けて強調する。
+     pre.snippet内の.line用span同士の間に改行を入れない（display:blockと
+     white-space:preの組み合わせで、改行を入れると行間に空行が入ってしまう）
   6. PR対象でないとき（ブランチ・コミット範囲が対象のとき）は、blockquote.pr-comment
      を含むブロック（.pr-comment-posとblockquote.pr-comment）を丸ごと削除する
   7. PRコメント案には、決定10の4段フォールバックで決めた位置を.pr-comment-posに
-     ラベルとして書く（例: 「RIGHT側 HEAD:path/to/file.go:42」「LEFT側 BASE:...」
-     「ファイル単位: path/to/file.go」「PR全体」）
+     ラベルとして書く（例:「RIGHT側（HEAD:path/to/file.go:42）」「LEFT側（BASE:...）」
+     「ファイル単位（path/to/file.go）」「PR全体」）
   8. 懐疑役が対象を絞った場合（skeptics.md「対象が大きすぎる場合」）は、絞った旨を
      ヘッダーの.noteに追記する
   9. 判定バッジのクラスはGO/該当なし→go、条件付きGO→conditional、NO-GO→nogoを使う
@@ -343,16 +346,17 @@
 
       <div>
         <p class="snippet-ref">HEAD:path/to/file.go:42</p>
-        <pre class="snippet"><span class="line"><span class="lineno">40</span>ここに根拠行の前の行</span><span class="line highlight"><span class="lineno">42</span>ここに根拠の行</span><span class="line"><span class="lineno">44</span>ここに根拠行の後の行</span></pre>
+        <pre class="snippet"><span class="line"><span class="lineno">41</span>ここに根拠行の前の行</span><span class="line highlight"><span class="lineno">42</span>ここに根拠の行</span><span class="line"><span class="lineno">43</span>ここに根拠行の後の行</span></pre>
       </div>
 
       <div class="meta-row">
+        <span><strong>根拠:</strong> HEAD:path/to/file.go:42</span>
         <span><strong>確度:</strong> 高</span>
         <span><strong>出典:</strong> 壊れ方</span>
       </div>
 
       <div>
-        <p class="pr-comment-pos">RIGHT側 HEAD:path/to/file.go:42</p>
+        <p class="pr-comment-pos">RIGHT側（HEAD:path/to/file.go:42）</p>
         <blockquote class="pr-comment">ここにPRコメント案の文面</blockquote>
       </div>
     </div>
