@@ -13,7 +13,6 @@
     ];
     brews = [
       "deck"
-      "docker/tap/sbx"
       "hunk"
       "python@3.11"
       "songmu/tap/laminate"
@@ -24,6 +23,7 @@
       "font-ricty-diminished"
       "1password"
       "docker-desktop"
+      "docker/tap/sbx"
       "figma"
       "google-chrome"
       "google-drive"
