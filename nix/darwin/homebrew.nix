@@ -8,10 +8,12 @@
       cleanup = "zap";
     };
     taps = [
+      "docker/tap"
       "songmu/tap"
     ];
     brews = [
       "deck"
+      "docker/tap/sbx"
       "hunk"
       "python@3.11"
       "songmu/tap/laminate"
