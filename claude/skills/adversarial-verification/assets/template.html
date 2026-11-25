@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>敵対的検証レポート</title>
+<style>
+  /* ============================================================
+     デザイントークン（explain-diff/assets/template.htmlのトークンを再利用し、
+     本スキル用に深刻度・判定の色分けを追加したもの）
+     Color: bg/surface/text/text-muted/accent
+            + 深刻度 sev-high(赤)/sev-mid(黄)/sev-low(灰) はadd/delとは独立
+     Type:  見出し=ui-serif / 本文=system-ui / コード=ui-monospace
+     Layout: 最大840pxの縦一列ドキュメント。セクションはsurfaceカードで区切る
+     ============================================================ */
+  :root {
+    --bg: #faf9f7;
+    --surface: #f1efea;
+    --surface-2: #e8e5dd;
+    --text: #23262b;
+    --text-muted: #6b6f76;
+    --border: #ddd9d0;
+    --accent: #4c5fd5;
+    --accent-soft: #e8eafc;
+    --add-fg: #1e8e5a;
+    --add-bg: #e4f5ec;
+    --del-fg: #c23b32;
+    --del-bg: #fbe9e7;
+    --sev-high-fg: #b3261e;
+    --sev-high-bg: #fbe4e2;
+    --sev-mid-fg: #8a6d1a;
+    --sev-mid-bg: #faf0d2;
+    --sev-low-fg: #5a5e66;
+    --sev-low-bg: #e8e5dd;
+    --verdict-nogo-fg: #b3261e;
+    --verdict-nogo-bg: #fbe4e2;
+    --verdict-conditional-fg: #8a6d1a;
+    --verdict-conditional-bg: #faf0d2;
+    --verdict-go-fg: #5a5e66;
+    --verdict-go-bg: #e8e5dd;
+    --font-display: "Hiragino Mincho ProN", "Yu Mincho", ui-serif, Georgia, serif;
+    --font-body: "Hiragino Sans", "Yu Gothic", -apple-system, "Segoe UI", system-ui, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181c;
+      --surface: #1d2025;
+      --surface-2: #262a31;
+      --text: #e8e6e1;
+      --text-muted: #9a9fa8;
+      --border: #33373e;
+      --accent: #8b98f2;
+      --accent-soft: #262b45;
+      --add-fg: #4fd18f;
+      --add-bg: #16291f;
+      --del-fg: #ff8078;
+      --del-bg: #331c1a;
+      --sev-high-fg: #ff8078;
+      --sev-high-bg: #3a1e1c;
+      --sev-mid-fg: #e3c34f;
+      --sev-mid-bg: #3a331a;
+      --sev-low-fg: #9a9fa8;
+      --sev-low-bg: #262a31;
+      --verdict-nogo-fg: #ff8078;
+      --verdict-nogo-bg: #3a1e1c;
+      --verdict-conditional-fg: #e3c34f;
+      --verdict-conditional-bg: #3a331a;
+      --verdict-go-fg: #9a9fa8;
+      --verdict-go-bg: #262a31;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16181c;
+    --surface: #1d2025;
+    --surface-2: #262a31;
+    --text: #e8e6e1;
+    --text-muted: #9a9fa8;
+    --border: #33373e;
+    --accent: #8b98f2;
+    --accent-soft: #262b45;
+    --add-fg: #4fd18f;
+    --add-bg: #16291f;
+    --del-fg: #ff8078;
+    --del-bg: #331c1a;
+    --sev-high-fg: #ff8078;
+    --sev-high-bg: #3a1e1c;
+    --sev-mid-fg: #e3c34f;
+    --sev-mid-bg: #3a331a;
+    --sev-low-fg: #9a9fa8;
+    --sev-low-bg: #262a31;
+    --verdict-nogo-fg: #ff8078;
+    --verdict-nogo-bg: #3a1e1c;
+    --verdict-conditional-fg: #e3c34f;
+    --verdict-conditional-bg: #3a331a;
+    --verdict-go-fg: #9a9fa8;
+    --verdict-go-bg: #262a31;
+  }
+  :root[data-theme="light"] {
+    --bg: #faf9f7;
+    --surface: #f1efea;
+    --surface-2: #e8e5dd;
+    --text: #23262b;
+    --text-muted: #6b6f76;
+    --border: #ddd9d0;
+    --accent: #4c5fd5;
+    --accent-soft: #e8eafc;
+    --add-fg: #1e8e5a;
+    --add-bg: #e4f5ec;
+    --del-fg: #c23b32;
+    --del-bg: #fbe9e7;
+    --sev-high-fg: #b3261e;
+    --sev-high-bg: #fbe4e2;
+    --sev-mid-fg: #8a6d1a;
+    --sev-mid-bg: #faf0d2;
+    --sev-low-fg: #5a5e66;
+    --sev-low-bg: #e8e5dd;
+    --verdict-nogo-fg: #b3261e;
+    --verdict-nogo-bg: #fbe4e2;
+    --verdict-conditional-fg: #8a6d1a;
+    --verdict-conditional-bg: #faf0d2;
+    --verdict-go-fg: #5a5e66;
+    --verdict-go-bg: #e8e5dd;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.7;
+  }
+  main {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  /* ---- ヘッダー / 対象範囲 ---- */
+  .scope {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 0.3em 0.9em;
+    width: fit-content;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0.4em 0 0;
+    text-wrap: balance;
+  }
+  .note {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  /* ---- セクション共通 ---- */
+  section { display: flex; flex-direction: column; gap: 1rem; }
+  h2 {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+  }
+
+  /* ---- 懐疑役の判定3件 ---- */
+  .verdicts { display: flex; flex-direction: column; gap: 0.75rem; }
+  .verdict {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1.1rem;
+  }
+  .verdict-label { font-weight: 600; white-space: nowrap; }
+  .verdict-badge {
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.15em 0.7em;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .verdict-badge.nogo { color: var(--verdict-nogo-fg); background: var(--verdict-nogo-bg); }
+  .verdict-badge.conditional { color: var(--verdict-conditional-fg); background: var(--verdict-conditional-bg); }
+  .verdict-badge.go { color: var(--verdict-go-fg); background: var(--verdict-go-bg); }
+  .verdict-reason { color: var(--text-muted); }
+
+  /* ---- 指摘カード ---- */
+  .finding {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .finding h3 { margin: 0; font-size: 1.05rem; display: flex; align-items: center; gap: 0.6rem; }
+  .sev-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.15em 0.7em;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .sev-badge.high { color: var(--sev-high-fg); background: var(--sev-high-bg); }
+  .sev-badge.mid { color: var(--sev-mid-fg); background: var(--sev-mid-bg); }
+  .sev-badge.low { color: var(--sev-low-fg); background: var(--sev-low-bg); }
+
+  .field-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 0.25em;
+  }
+  .field-body { margin: 0; font-size: 0.95rem; }
+
+  /* ---- コード抜粋 ---- */
+  pre.snippet {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 0.75rem 0;
+    overflow-x: auto;
+    margin: 0;
+  }
+  pre.snippet .line { display: block; padding: 0 1rem; white-space: pre; }
+  pre.snippet .lineno { display: inline-block; width: 3em; color: var(--text-muted); text-align: right; margin-right: 1em; }
+  pre.snippet .line.highlight { background: var(--accent-soft); }
+  .snippet-ref {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+
+  /* ---- 根拠・確度・出典 ---- */
+  .meta-row { display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: 0.88rem; }
+  .meta-row code { font-family: var(--font-mono); font-size: 0.85rem; }
+
+  /* ---- PRコメント案 ---- */
+  blockquote.pr-comment {
+    margin: 0;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 0.75rem 1rem;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.92rem;
+  }
+  .pr-comment-pos {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 0 0 0.4em;
+  }
+
+  /* ---- 壊せなかった点 ---- */
+  ul.unbroken { margin: 0; padding-left: 1.3em; font-size: 0.95rem; }
+  ul.unbroken li { margin-bottom: 0.4em; }
+  ul.unbroken li::marker { color: var(--accent); }
+</style>
+</head>
+<body>
+<!--
+  使い方（SKILL.mdのStep 5から埋める）:
+  1. このファイルをコピーし、各プレースホルダーを実際の検証結果に置き換える
+  2. コード抜粋・懐疑役の文章・PR説明文やコミットメッセージの引用は、埋め込む前に
+     `<` `>` `&` `"` をすべてエスケープする（`&`を最初に置換すること）
+  3. 根拠が出典URLのみ、または「根拠の行を確認できず」の指摘では、.finding内の
+     pre.snippetブロックを省く（コード抜粋がないため）
+  4. 1つの指摘に根拠が複数あるときは、.snippet-ref + pre.snippetのブロックを
+     根拠の数だけ繰り返す
+  5. コード抜粋には行番号を付け、根拠の行には.line.highlightを付けて強調する
+  6. PR対象でないとき（ブランチ・コミット範囲が対象のとき）は、blockquote.pr-comment
+     を含むブロック（.pr-comment-posとblockquote.pr-comment）を丸ごと削除する
+  7. PRコメント案には、決定10の4段フォールバックで決めた位置を.pr-comment-posに
+     ラベルとして書く（例: 「RIGHT側 HEAD:path/to/file.go:42」「LEFT側 BASE:...」
+     「ファイル単位: path/to/file.go」「PR全体」）
+  8. 懐疑役が対象を絞った場合（skeptics.md「対象が大きすぎる場合」）は、絞った旨を
+     ヘッダーの.noteに追記する
+  9. 判定バッジのクラスはGO/該当なし→go、条件付きGO→conditional、NO-GO→nogoを使う
+-->
+<main>
+  <header>
+    <span class="scope">敵対的検証: ここに対象の説明（PR番号・ブランチ名・コミット範囲）</span>
+    <h1>ここに対象の説明（<code>BASEの短SHA</code>...<code>HEADの短SHA</code>）</h1>
+    <p class="note">（未コミットの変更がある場合、または懐疑役が対象を絞った場合のみ）ここに注記を書く。なければこの行を削除する。</p>
+  </header>
+
+  <section>
+    <h2>懐疑役の判定</h2>
+    <div class="verdicts">
+      <div class="verdict">
+        <span class="verdict-label">主張の反証</span>
+        <span class="verdict-badge go">GO</span>
+        <span class="verdict-reason">ここに理由を1行</span>
+      </div>
+      <div class="verdict">
+        <span class="verdict-label">壊れ方</span>
+        <span class="verdict-badge conditional">条件付きGO</span>
+        <span class="verdict-reason">ここに理由を1行</span>
+      </div>
+      <div class="verdict">
+        <span class="verdict-label">運用・互換性</span>
+        <span class="verdict-badge nogo">NO-GO</span>
+        <span class="verdict-reason">ここに理由を1行</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>指摘（深刻度順）</h2>
+
+    <div class="finding">
+      <h3><span class="sev-badge high">高</span>ここに指摘の要約</h3>
+
+      <div>
+        <p class="field-label">失敗シナリオ</p>
+        <p class="field-body">ここにどの入力・状態で何が起きるかを書く</p>
+      </div>
+
+      <div>
+        <p class="field-label">壊れる経路</p>
+        <p class="field-body">ここに入力・状態→通過するコード→どこで何が起きるかを書く</p>
+      </div>
+
+      <div>
+        <p class="snippet-ref">HEAD:path/to/file.go:42</p>
+        <pre class="snippet"><span class="line"><span class="lineno">40</span>ここに根拠行の前の行</span><span class="line highlight"><span class="lineno">42</span>ここに根拠の行</span><span class="line"><span class="lineno">44</span>ここに根拠行の後の行</span></pre>
+      </div>
+
+      <div class="meta-row">
+        <span><strong>確度:</strong> 高</span>
+        <span><strong>出典:</strong> 壊れ方</span>
+      </div>
+
+      <div>
+        <p class="pr-comment-pos">RIGHT側 HEAD:path/to/file.go:42</p>
+        <blockquote class="pr-comment">ここにPRコメント案の文面</blockquote>
+      </div>
+    </div>
+
+    <!-- 指摘の数だけ.findingブロックを繰り返す -->
+  </section>
+
+  <section>
+    <h2>壊せなかった点</h2>
+    <ul class="unbroken">
+      <li>ここに観点名: 反証を試みたが崩せなかった点</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
