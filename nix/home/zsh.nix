@@ -156,6 +156,18 @@ in {
         git reset HEAD~
       }
 
+      # Piはホストに直接インストールせず、常にDocker Sandbox内のpiを使う。
+      # sandboxは明示的に`sbx rm pi`するまで永続するので、初回だけ`sbx run`で作成・ログインし、
+      # 以降は`sbx exec`で中のpiコマンドを呼ぶ（認証情報の設定はbin/manual.sh参照）
+      pi() {
+        if sbx ls 2>/dev/null | awk 'NR>1 {print $1}' | grep -qx pi; then
+          sbx exec pi -- pi "$@"
+        else
+          echo "pi sandbox not found; creating it (first run only)..." >&2
+          sbx run --kit "docker.io/sbx/pi-kit:latest" pi
+        fi
+      }
+
     '';
 
     loginExtra = ''

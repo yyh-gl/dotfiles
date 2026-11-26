@@ -8,6 +8,7 @@
       cleanup = "zap";
     };
     taps = [
+      "docker/tap"
       "songmu/tap"
     ];
     brews = [
@@ -22,6 +23,7 @@
       "font-ricty-diminished"
       "1password"
       "docker-desktop"
+      "docker/tap/sbx"
       "figma"
       "google-chrome"
       "google-drive"
