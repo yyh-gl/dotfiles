@@ -60,6 +60,20 @@ Secrets managed by Nix home-manager via 1Password (`nix/home/secrets.nix`):
 
 sandbox・permissionsなどの設定は、Claude Code（`claude/managed-settings.json`）とCodex（`codex/requirements.toml`・`codex/managed_config.toml`）の両方に置いている。**ClaudeまたはCodexの設定を変更するときは、必ず両方について変更する**。対応関係と、揃えられない点（意図的な差分）は`docs/codex-sandbox.md`を参照。
 
+### Pi
+
+`pi/skills/*`・`pi/extensions/*`の各ディレクトリは、`nix/home/pi.nix`が`builtins.readDir`で列挙して`~/.pi/agent/{skills,extensions}/<名前>`へ個別にsymlinkする。ディレクトリを追加・削除しても`pi.nix`自体は変更しなくてよい。
+
+`~/.pi/agent/settings.json`はPiが`lastChangelogVersion`などを自分で書き換えるため、Nixでは管理しない。
+
+`ask_user_question`（`pi/extensions/ask-user-question/`）は、Piに組み込みの質問UIがないためClaude CodeのAskUserQuestionの代わりとして自作したExtensionである。Claude版のskillをPiへ移すときは、ツール名（`AskUserQuestion` → `ask_user_question`）と、Piにない機能（Agentツールへの調査委譲・`plansDirectory`）の書き換えが必要になる。`model`・`effort`のfrontmatterはそのままPiでも使える（下記の`skill-subagent`拡張）。
+
+`skill-subagent`（`pi/extensions/skill-subagent/`）は、SKILL.mdのfrontmatterに`model`（`provider/model-id`形式。例: `anthropic/claude-opus-5-5`）または`effort`（`ThinkingLevel`の文字列。例: `xhigh`）があるskillを`/skill:<name> <args>`で明示的に呼び出したとき、そのskillを別プロセス（`pi --mode rpc --no-session`）のサブエージェントとして実行する汎用の仕組みである。他のskillをPiへ移植するときも、この2フィールドを足すだけで同じ仕組みに乗れる（最初の利用者は`pi/skills/ponder/SKILL.md`）。モデルが未解決・未認証のときは通常呼び出しにフォールバックする。決定事項・調査結果は`docs/plans/pi-skill-subagent.md`を参照。
+
+`ask-user-question`・`skill-subagent`とも、端末・子プロセスの起動を伴わない純粋関数部分（`/skill:`構文解析、NDJSON行分割・パース、frontmatterの`model`/`effort`抽出・検証、選択肢・回答の組み立てなど）は`bun test pi/extensions/skill-subagent pi/extensions/ask-user-question`で自動テストできる（`make test-mods`はClaude Code mods専用でこちらは対象外）。一方、TUI・子プロセスとの実際のやりとりを伴う結合部分（`ask-user-question/ui.ts`のTUI描画、`skill-subagent/index.ts`・`process.ts`）は自動テストの対象外で、引き続き手動確認が必要。Piを更新したら、`pi -e`・`pi --skill`での手動確認に加えて、配備後に`-e`・`--skill`なしで起動し、`ask-user-question`の読み込みエラーがないこと・`/skill:ponder`が一覧にあることも確かめる（skillは読み込めなくてもエラーを出さず一覧から消えるだけなので、一覧表示の確認が欠かせない）。
+
+Piにはsandboxやツール実行ごとの承認の仕組みがなく、上の「Claude・Codexの設定」にある「両方を変える」ルールの対象外である。
+
 ### 1Password Secrets Management
 
 機密ファイルは`op inject`で1Passwordから展開する。`make nix-apply-hobby/work`実行時に自動適用される。
@@ -104,6 +118,7 @@ nix/
     ├── zsh.nix        # programs.zsh (起動速度の工夫は下の「Zsh起動速度」)
     ├── emacs.nix      # Emacs本体とtree-sitterの文法
     ├── claude.nix     # ~/.claude 配下 (CLAUDE.md, agents, skills, hooks, mods)
+    ├── pi.nix         # ~/.pi/agent 配下 (skills, extensions)
     ├── gh.nix         # programs.gh
     └── secrets.nix    # 1Password連携 (hobbyモードのみ)
 ```

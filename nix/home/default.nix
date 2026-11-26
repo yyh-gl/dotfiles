@@ -20,6 +20,7 @@
     pkgs.kubectx
     pkgs.kubernetes-helm
     pkgs.lean4
+    pkgs.pi-coding-agent
     pkgs.nodejs_26
     pkgs.typescript-language-server
     pkgs.pnpm
@@ -51,6 +52,7 @@
     ./zsh.nix
     ./emacs.nix
     ./claude.nix
+    ./pi.nix
     ./gh.nix
   ] ++ (if mode == "hobby" then [ ./secrets.nix ] else []);
 }
