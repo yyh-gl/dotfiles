@@ -510,7 +510,8 @@
       "gh *",
       "docker *",
       "hunk session *",
-      "./gradlew test *"
+      "./gradlew test *",
+      "rex *"
     ]
   },
   "plansDirectory": "docs/plans",
