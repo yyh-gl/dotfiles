@@ -1,0 +1,16 @@
+kind: mixin
+requires:
+  agent: pi
+permissions:
+  network:
+    allow:
+      - openrouter.ai
+credentials:
+  - service: openrouter
+    apiKey:
+      name: OPENROUTER_API_KEY
+      proxyManaged: true
+    inject:
+      domain: openrouter.ai
+      header: Authorization
+      format: 'Bearer %s'
