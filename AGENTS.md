@@ -74,6 +74,8 @@ sandbox・permissionsなどの設定は、Claude Code（`claude/managed-settings
 
 Piにはsandboxやツール実行ごとの承認の仕組みがなく、上の「Claude・Codexの設定」にある「両方を変える」ルールの対象外である。
 
+Pi自体はホストに直接インストールせず、常にDocker Sandbox（`sbx`。`docker/sbx-kits-contrib`のkit機構）内で動かす。`nix/home/zsh.nix`の`pi()`関数が、`docker.io/sbx/pi-kit:latest`に`pi/sbx-mixins/openrouter/spec.yaml`を`--kit`で重ねてサンドボックスを作成する（`pi/skills`・`pi/extensions`と違い、このmixinは`~/.pi/agent/`へのsymlink対象ではなく、リポジトリ内のパスをそのまま`sbx run --kit <path>`に渡す）。OpenRouterのAPIキーは実行中のコンテナに直接渡らず、ホスト側で`sbx secret set openrouter`（1Passwordの"OpenRouter"アイテムから読む。手順は`bin/manual.sh`）として登録し、`sbx`のプロキシが通信時にセンチネル値を実鍵へ差し替える。認証情報の束縛はサンドボックス作成時に固定されるため、変更したときは`sbx rm -f pi`からの再作成が必要。デフォルトのモデルは`pi()`関数内の`defaultModel`で常に指定し、別モデルを使いたいときは起動後に`/model`で切り替える。決定事項・調査結果は`docs/plans/pi-sbx-openrouter-mixin.md`を参照。
+
 ### 1Password Secrets Management
 
 機密ファイルは`op inject`で1Passwordから展開する。`make nix-apply-hobby/work`実行時に自動適用される。
