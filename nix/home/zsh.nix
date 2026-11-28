@@ -162,7 +162,7 @@ in {
       # OpenRouter経由で使うため、pi/sbx-mixins/openrouterをmixinとして重ね、
       # デフォルトモデルを常に付与する（別モデルを使いたいときは起動後に/modelで切り替える）
       pi() {
-        local defaultModel="openrouter/openai/gpt-astra-latest"
+        local defaultModel="openrouter/openai/sol"
         if sbx ls 2>/dev/null | awk 'NR>1 {print $1}' | grep -qx pi; then
           sbx exec pi -- pi --model "$defaultModel" "$@"
         else
